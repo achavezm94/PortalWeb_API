@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -24,7 +25,7 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ip = await _context.Equipos.ToListAsync();
+                var ip = await _context.Database.SqlQuery<string>($"select [IpEquipo] From [Equipos] WHERE Active = 'A'").ToListAsync();
 
                 if (ip == null)
                 {
@@ -38,7 +39,7 @@ namespace PortalWeb_API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("ActualizarEquipoIp")]
         public async Task<IActionResult> ActualizarEquipo([FromBody] List<EquiposDto> model)
         {
@@ -66,7 +67,20 @@ namespace PortalWeb_API.Controllers
                     await _pinghub.Clients.All.SendAsync("SendPingEquipo", model);
                 }
             }
-            return Ok("actualizado");
+            return Ok("Actualizado");
+        }
+
+        [HttpPost]
+        [Route("UsuarioTempIngresar")]
+        public async Task<IActionResult> IngresarUsuario([FromBody] UsuariosTemporales model)
+        {
+            string Sentencia = "exec SP_Servicios +" +
+                "@id_SP = 1" +
+                ",@Usuario = " + model.Usuario +
+                ",@UserName = " + model.UserName +
+                ",@IPMachineSolicitud = " + model.IpMachineSolicitud;
+            var response = await _context.UsuariosTemporales.FromSqlRaw(Sentencia).ToArrayAsync();
+            return Ok(response);
         }
     }
 }

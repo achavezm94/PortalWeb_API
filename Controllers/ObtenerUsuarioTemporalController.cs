@@ -22,7 +22,6 @@ namespace PortalWeb_API.Controllers
         [Route("Usuario/{ip}")]
         public IActionResult ObtenerUsuarioTemporal([FromRoute] string ip)
         {
-
             string Sentencia = "exec SP_ObtenerUsuarioTemp @IP ";
 
             DataTable dt = new();
