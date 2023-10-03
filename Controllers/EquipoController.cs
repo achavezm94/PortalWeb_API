@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +13,12 @@ namespace PortalWeb_API.Controllers
     public class EquipoController : ControllerBase
     {
         private readonly PortalWebContext _context;
-        private readonly IHubContext<PingHubEquipos> _pinghub;
+        //private readonly IHubContext<PingHubEquipos> _pinghub;
 
         public EquipoController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub)
         {
             _context = context;
-            _pinghub = pingHub;
+            //_pinghub = pingHub;
         }
 
         [HttpGet]
@@ -44,9 +43,7 @@ namespace PortalWeb_API.Controllers
             {
                 return NotFound("No se ha podido crear...");
             }
-
             return Ok(dt);
-
         }
 
         [HttpPost]
@@ -59,6 +56,13 @@ namespace PortalWeb_API.Controllers
 
                 if (await _context.SaveChangesAsync() > 0)
                 {
+                    var res = _context.EquiposTemporales.FirstOrDefault(x => x.IpEquipo == model.IpEquipo);
+                    if (res != null)
+                    {
+                        res.Active = "F";
+                        _context.EquiposTemporales.Entry(res).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
                     return Ok(model);
                 }
                 else
@@ -87,7 +91,7 @@ namespace PortalWeb_API.Controllers
 
         }
 
-
+        /*
         [HttpPost]
         [Route("ActualizarEquipoIp")]
         public async Task<IActionResult> ActualizarEquipo([FromBody] List<EquiposDto> model )
@@ -117,7 +121,7 @@ namespace PortalWeb_API.Controllers
                 }
             }
             return Ok("actualizado");
-        }
+        }*/
 
         [HttpDelete]
         [Route("BorrarEquipo/{id}")]
@@ -145,8 +149,8 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet]
-        [Route("EquipoNuevo/{ip}")]
-        public IActionResult ObtenerEquipoTemporal([FromRoute] string ip)
+        [Route("EquipoNuevo")]
+        public IActionResult ObtenerEquipoTemporal()
         {
 
             string Sentencia = "exec SP_ObtenerEquipoTemp @ip ";
@@ -158,7 +162,6 @@ namespace PortalWeb_API.Controllers
                 {
                     SqlDataAdapter adapter = new(cmd);
                     adapter.SelectCommand.CommandType = CommandType.Text;
-                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@ip", ip));
                     adapter.Fill(dt);
                 }
             }

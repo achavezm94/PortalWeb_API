@@ -51,7 +51,7 @@ app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
 
-// TUNELES HUB DE COMUNICACIÓN
+// TUNELES HUB DE COMUNICACIï¿½N
 #region
 app.MapHub<PingHubEquipos>("/hubs/PingHubEquipos");
 #endregion

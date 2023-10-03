@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Grafico")]
     [ApiController]
     public class GraficoTotalesAnualController : ControllerBase
     {
