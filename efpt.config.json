@@ -1,0 +1,127 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "PortalWebContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "PortalWeb_API",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[asignacion_equipos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[asignModUser]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[centro_proceso]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Clientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[cuentas_bancarias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[cuentaSignaTienda]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Datos_Personales]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Depositos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Equipos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EquiposTemporales]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[errorAlerts]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ManualDepositos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[marca]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MasterEquipos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MasterTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[modelo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ModulosApp]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Recolecciones]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Tiendas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Usuarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Usuarios_Portal]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UsuariosTemporales]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "servidor-desarrollo\\sqlexpress.PortalWeb.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

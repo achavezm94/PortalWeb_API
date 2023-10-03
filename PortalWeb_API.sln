@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalWeb_API", "PortalWeb_API.csproj", "{4C02A68B-A30E-42C8-B230-2AB0BF330145}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C02A68B-A30E-42C8-B230-2AB0BF330145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C02A68B-A30E-42C8-B230-2AB0BF330145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C02A68B-A30E-42C8-B230-2AB0BF330145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C02A68B-A30E-42C8-B230-2AB0BF330145}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DEB71DED-EE0D-43D1-A4C5-AB66835A3965}
+	EndGlobalSection
+EndGlobal
