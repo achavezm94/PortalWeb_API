@@ -88,6 +88,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[RespuestaSentencia]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Tiendas]",
          "ObjectType": 0
       },

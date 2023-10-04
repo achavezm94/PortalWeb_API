@@ -50,6 +50,8 @@ public partial class PortalWebContext : DbContext
 
     public virtual DbSet<Recolecciones> Recolecciones { get; set; }
 
+    public virtual DbSet<RespuestaSentencia> RespuestaSentencia { get; set; }
+
     public virtual DbSet<Tiendas> Tiendas { get; set; }
 
     public virtual DbSet<Usuarios> Usuarios { get; set; }

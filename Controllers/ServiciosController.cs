@@ -74,12 +74,25 @@ namespace PortalWeb_API.Controllers
         [Route("UsuarioTempIngresar")]
         public async Task<IActionResult> IngresarUsuario([FromBody] UsuariosTemporales model)
         {
-            string Sentencia = "exec SP_Servicios +" +
+            string Sentencia = "exec SP_Servicios " +
                 "@id_SP = 1" +
-                ",@Usuario = " + model.Usuario +
-                ",@UserName = " + model.UserName +
-                ",@IPMachineSolicitud = " + model.IpMachineSolicitud;
-            var response = await _context.UsuariosTemporales.FromSqlRaw(Sentencia).ToArrayAsync();
+                ",@Usuario = '" +model.Usuario +
+                "',@UserName = '" + model.UserName +
+                "',@IPMachineSolicitud = '" + model.IpMachineSolicitud + "'";
+            var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("EquipoTempIngresar")]
+        public async Task<IActionResult> IngresarEquipo([FromBody] EquiposTemporalesResponse model)
+        {
+            string Sentencia = "exec SP_Servicios " +
+                "@id_SP = 2" +
+                ",@serieEquipo = '" + model.SerieEquipo +
+                "',@serieEquiponew = '" + model.SerieEquiponew +
+                "',@IPMachineSolicitud = '" + model.IPMachineSolicitud + "'";
+            var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
             return Ok(response);
         }
     }
