@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -93,6 +92,17 @@ namespace PortalWeb_API.Controllers
                 "',@serieEquiponew = '" + model.SerieEquiponew +
                 "',@IPMachineSolicitud = '" + model.IPMachineSolicitud + "'";
             var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("ManualIngresar")]
+        public async Task<IActionResult> IngresarManual([FromBody] ManualDepositos model)
+        {
+            string Sentencia = "exec SP_IngresoManualDepositos "+model;
+            var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
+            //
+            //var response = await _context.Database.ExecuteStoredProcedure(Sentencia).ToArrayAsync();
             return Ok(response);
         }
     }
