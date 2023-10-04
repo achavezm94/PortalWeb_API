@@ -18,16 +18,18 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpGet("ObtenerTransacciones/{id}")]
-        public IActionResult ObtenerTransacciones([FromRoute] int id)
+        [HttpGet("ObtenerTransacciones/{id}/{tp}")]
+        public IActionResult ObtenerTransacciones([FromRoute] string id, [FromRoute] int tp)
         {
-            string Sentencia = "SP_TablaTransaccionalPrincipal "+@id;
+            string Sentencia = "SP_TablaTransaccionalPrincipal @ids, @type ";
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
             {
                 using SqlCommand cmd = new(Sentencia, connection);
                 SqlDataAdapter adapter = new(cmd);
                 adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.SelectCommand.Parameters.Add(new SqlParameter("@ids", id));
+                adapter.SelectCommand.Parameters.Add(new SqlParameter("@type", tp));
                 adapter.Fill(dt);
             }
 
