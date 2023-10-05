@@ -104,7 +104,7 @@ namespace PortalWeb_API.Controllers
         {
             ManualDepositosCollection manual_depositos = new()
             {
-                        model
+                model
             };
 
             SqlParameter param = new()
@@ -114,13 +114,9 @@ namespace PortalWeb_API.Controllers
                 Value = manual_depositos,
                 Direction = ParameterDirection.Input
             };
-
-            //String? dbConnStr = _context.Database.GetConnectionString();
-            //String dbConnStr = ConfigurationManager.ConnectionStrings["Conexion"].ConnectionString;
-            //SqlConnection conn;
             using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
             {
-                SqlCommand sqlCmd = new SqlCommand("dbo.SP_IngresoManualDepositos");
+                SqlCommand sqlCmd = new("dbo.SP_IngresoManualDepositos");
                 conn.Open();
                 sqlCmd.Connection = conn;
                 sqlCmd.CommandType = CommandType.StoredProcedure;
@@ -133,17 +129,7 @@ namespace PortalWeb_API.Controllers
                     return Ok(0);
                 }
             }
-                return Ok(1);
-
-
-
-
-            /*
-            string Sentencia = "exec SP_IngresoManualDepositos "+model;
-            var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
-            //
-            //var response = await _context.Database.ExecuteStoredProcedure(Sentencia).ToArrayAsync();
-            return Ok(response);*/
+            return Ok(1);
         }
     }
 }
