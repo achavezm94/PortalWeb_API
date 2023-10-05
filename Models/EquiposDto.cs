@@ -2,7 +2,7 @@
 {
     public class EquiposDto
     {
-        public string IpEquipo { get; set; }
+        public string? IpEquipo { get; set; }
         public int EstadoPing { get; set; }
     }
 }

@@ -17,10 +17,10 @@ namespace PortalWeb_API.Controllers
         {
             _context = context;
         }
-        [HttpGet("ObtenerIndicadores/{id}")]
-        public IActionResult ObtenerIndicadores([FromRoute] int id)
+        [HttpGet("ObtenerIndicadores/{id}/{tp}")]
+        public IActionResult ObtenerIndicadores([FromRoute] string id, [FromRoute] int tp)
         {
-            string Sentencia = " EXEC SP_IndicadoresLlenado " +id;
+            string Sentencia = " EXEC SP_IndicadoresLlenado " +id +", "+tp;
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
             {
