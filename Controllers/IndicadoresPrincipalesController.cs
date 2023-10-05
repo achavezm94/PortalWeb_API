@@ -20,16 +20,15 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerIndicadores/{id}/{tp}")]
         public IActionResult ObtenerIndicadores([FromRoute] string id, [FromRoute] int tp)
         {
-            string Sentencia = " EXEC SP_IndicadoresLlenado " +id +", "+tp;
+            string Sentencia = " EXEC SP_IndicadoresLlenado @ids, " + tp;
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
             {
-                using (SqlCommand cmd = new(Sentencia, connection))
-                {
-                    SqlDataAdapter adapter = new(cmd);
-                    adapter.SelectCommand.CommandType = CommandType.Text;
-                    adapter.Fill(dt);
-                }
+                using SqlCommand cmd = new(Sentencia, connection);
+                SqlDataAdapter adapter = new(cmd);
+                adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.SelectCommand.Parameters.Add(new SqlParameter("@ids", id));
+                adapter.Fill(dt);
             }
             if (dt == null)
             {
