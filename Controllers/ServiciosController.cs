@@ -131,5 +131,73 @@ namespace PortalWeb_API.Controllers
             }
             return Ok(1);
         }
+
+        [HttpPost]
+        [Route("DepositoIngresar")]
+        public IActionResult IngresarDeposito([FromBody] ODeposito model)
+        {
+            DepositosCollection depositos = new()
+            {
+                model
+            };
+
+            SqlParameter param = new()
+            {
+                ParameterName = "Depositos",
+                SqlDbType = SqlDbType.Structured,
+                Value = depositos,
+                Direction = ParameterDirection.Input
+            };
+            using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
+            {
+                SqlCommand sqlCmd = new SqlCommand("dbo.SP_IngresoDepositos");
+                conn.Open();
+                sqlCmd.Connection = conn;
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                sqlCmd.Parameters.Add(param);
+                var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+                returnParameter.Direction = ParameterDirection.ReturnValue;
+                int result = sqlCmd.ExecuteNonQuery();
+                if (Int32.Parse(returnParameter.Value.ToString()) == 0)
+                {
+                    return Ok(0);
+                }
+            }
+            return Ok(1);
+        }
+
+        [HttpPost]
+        [Route("RecoleccionIngresar")]
+        public IActionResult IngresarRecoleccion([FromBody] ORecoleccion model)
+        {
+            RecoleccionCollection recolecciones = new ()
+            {
+                model
+            };
+
+            SqlParameter param = new()
+            {
+                ParameterName = "Recoleccion",
+                SqlDbType = SqlDbType.Structured,
+                Value = recolecciones,
+                Direction = ParameterDirection.Input
+            };
+            using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
+            {
+                SqlCommand sqlCmd = new SqlCommand("dbo.SP_IngresoRecolecciones");
+                conn.Open();
+                sqlCmd.Connection = conn;
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                sqlCmd.Parameters.Add(param);
+                var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+                returnParameter.Direction = ParameterDirection.ReturnValue;
+                int result = sqlCmd.ExecuteNonQuery();
+                if (Int32.Parse(returnParameter.Value.ToString()) == 0)
+                {
+                    return Ok(0);
+                }
+            }
+            return Ok(1);
+        }
     }
 }
