@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using PortalWeb_API.Collection;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
+using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
@@ -97,13 +100,50 @@ namespace PortalWeb_API.Controllers
 
         [HttpPost]
         [Route("ManualIngresar")]
-        public async Task<IActionResult> IngresarManual([FromBody] ManualDepositos model)
+        public IActionResult IngresarManual([FromBody] OManual model)
         {
+            ManualDepositosCollection manual_depositos = new()
+            {
+                        model
+            };
+
+            SqlParameter param = new()
+            {
+                ParameterName = "Manual",
+                SqlDbType = SqlDbType.Structured,
+                Value = manual_depositos,
+                Direction = ParameterDirection.Input
+            };
+
+            //String? dbConnStr = _context.Database.GetConnectionString();
+            //String dbConnStr = ConfigurationManager.ConnectionStrings["Conexion"].ConnectionString;
+            //SqlConnection conn;
+            using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
+            {
+                SqlCommand sqlCmd = new SqlCommand("dbo.SP_IngresoManualDepositos");
+                conn.Open();
+                sqlCmd.Connection = conn;
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                sqlCmd.Parameters.Add(param);
+                var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+                returnParameter.Direction = ParameterDirection.ReturnValue;
+                int result = sqlCmd.ExecuteNonQuery();
+                if (Int32.Parse(returnParameter.Value.ToString()) == 0)
+                {
+                    return Ok(0);
+                }
+            }
+                return Ok(1);
+
+
+
+
+            /*
             string Sentencia = "exec SP_IngresoManualDepositos "+model;
             var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
             //
             //var response = await _context.Database.ExecuteStoredProcedure(Sentencia).ToArrayAsync();
-            return Ok(response);
+            return Ok(response);*/
         }
     }
 }
