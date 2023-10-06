@@ -155,7 +155,7 @@ namespace PortalWeb_API.Controllers
             };
             using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
             {
-                SqlCommand sqlCmd = new SqlCommand("dbo.SP_IngresoDepositos");
+                SqlCommand sqlCmd = new("dbo.SP_IngresoDepositos");
                 conn.Open();
                 sqlCmd.Connection = conn;
                 sqlCmd.CommandType = CommandType.StoredProcedure;
@@ -189,7 +189,7 @@ namespace PortalWeb_API.Controllers
             };
             using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
             {
-                SqlCommand sqlCmd = new SqlCommand("dbo.SP_IngresoRecolecciones");
+                SqlCommand sqlCmd = new("dbo.SP_IngresoRecolecciones");
                 conn.Open();
                 sqlCmd.Connection = conn;
                 sqlCmd.CommandType = CommandType.StoredProcedure;

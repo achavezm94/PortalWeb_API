@@ -119,7 +119,7 @@ namespace PortalWeb_API.Controllers
         public IActionResult ObtenerEquipoTemporal()
         {
 
-            string Sentencia = "exec SP_ObtenerEquipoTemp @ip ";
+            string Sentencia = "exec SP_ObtenerEquipoTemp";
 
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
