@@ -124,7 +124,7 @@ namespace PortalWeb_API.Controllers
                 var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
                 returnParameter.Direction = ParameterDirection.ReturnValue;
                 int result = sqlCmd.ExecuteNonQuery();
-                if (Int32.Parse(returnParameter.Value.ToString()) == 0)
+                if (returnParameter.Value.ToString() == "0")
                 {
                     return Ok(0);
                 }
@@ -158,7 +158,7 @@ namespace PortalWeb_API.Controllers
                 var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
                 returnParameter.Direction = ParameterDirection.ReturnValue;
                 int result = sqlCmd.ExecuteNonQuery();
-                if (Int32.Parse(returnParameter.Value.ToString()) == 0)
+                if (returnParameter.Value.ToString() == "0")
                 {
                     return Ok(0);
                 }
@@ -192,7 +192,7 @@ namespace PortalWeb_API.Controllers
                 var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
                 returnParameter.Direction = ParameterDirection.ReturnValue;
                 int result = sqlCmd.ExecuteNonQuery();
-                if (Int32.Parse(returnParameter.Value.ToString()) == 0)
+                if (returnParameter.Value.ToString() == "0")
                 {
                     return Ok(0);
                 }

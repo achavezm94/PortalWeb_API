@@ -2,34 +2,8 @@
 {
     public class ORecoleccion
     {
-
-        private string _user_id;
-        public string User_id
-        {
-            get
-            {
-                return _user_id;
-            }
-            set
-            {
-                _user_id = value;
-
-            }
-        }
-
-        private string _machine_sn;
-        public string Machine_Sn
-        {
-            get
-            {
-                return _machine_sn;
-            }
-            set
-            {
-                _machine_sn = value;
-
-            }
-        }
+        public string? User_id { get; set; }
+        public string? Machine_Sn { get; set; }
 
         private int _transaction_no;
         public int Transaction_no
@@ -59,19 +33,7 @@
             }
         }
 
-        private string _collection_currency;
-        public string Collection_currency
-        {
-            get
-            {
-                return _collection_currency;
-            }
-            set
-            {
-                _collection_currency = value;
-
-            }
-        }
+        public string? Collection_currency { get; set; }
 
         private int _total_deposit_denom_1;
         public int Total_deposit_denom_1
@@ -353,18 +315,6 @@
             }
         }
 
-        private string _active;
-        public string Active
-        {
-            get
-            {
-                return _active;
-            }
-            set
-            {
-                _active = value;
-
-            }
-        }
+        public string? Active { get; set; }
     }
 }

@@ -2,33 +2,8 @@
 {
     public class ODeposito
     {
-        private string _user_id;
-        public string User_id
-        {
-            get
-            {
-                return _user_id;
-            }
-            set
-            {
-                _user_id = value;
-
-            }
-        }
-
-        private string _machine_sn;
-        public string Machine_Sn
-        {
-            get
-            {
-                return _machine_sn;
-            }
-            set
-            {
-                _machine_sn = value;
-
-            }
-        }
+        public string? User_id { get; set; }
+        public string? Machine_Sn { get; set; }
 
         private int _transaction_no;
         public int Transaction_no
@@ -59,19 +34,7 @@
             }
         }
 
-        private string _deposit_currency;
-        public string Deposit_currency
-        {
-            get
-            {
-                return _deposit_currency;
-            }
-            set
-            {
-                _deposit_currency = value;
-
-            }
-        }
+        public string? Deposit_currency { get; set; }
 
         private int _deposit_denom_1;
         public int Deposit_denom_1
@@ -451,18 +414,6 @@
             }
         }
 
-        private string _active;
-        public string Active
-        {
-            get
-            {
-                return _active;
-            }
-            set
-            {
-                _active = value;
-
-            }
-        }
+        public string? Active { get; set; }
     }
 }
