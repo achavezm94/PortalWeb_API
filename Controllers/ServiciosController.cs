@@ -64,6 +64,11 @@ namespace PortalWeb_API.Controllers
                         res.TiempoSincronizacion = DateTime.Now;
                         res.Active = "A";
                     }
+                    else if (equipo.EstadoPing == 2)
+                    {
+                        res.EstadoPing = equipo.EstadoPing;
+                        res.Active = "A";
+                    }
                     _context.Entry(res).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     await _pinghub.Clients.All.SendAsync("SendPingEquipo", model);
