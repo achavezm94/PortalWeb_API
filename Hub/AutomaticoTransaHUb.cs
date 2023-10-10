@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using PortalWeb_API.Models;
 
-namespace PortalWeb_API
+namespace PortalWeb_APIs
 {
     public class AutomaticoTransaHUb: Hub
     {

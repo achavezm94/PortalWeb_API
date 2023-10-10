@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API;
 using PortalWeb_API.Data;
+using PortalWeb_APIs;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,11 +52,12 @@ app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
 
-// TUNELES HUB DE COMUNICACI�N
+// TUNELES HUB DE COMUNICACION
 #region
 app.MapHub<PingHubEquipos>("/hubs/PingHubEquipos");
 app.MapHub<ManualesHub>("/hubs/manualTransaction");
 app.MapHub<AutomaticoTransaHUb>("/hubs/autoTransaccion");
+app.MapHub<RecoleccionHub>("/hubs/recoleccionTransaccion");
 #endregion
 
 app.Run();

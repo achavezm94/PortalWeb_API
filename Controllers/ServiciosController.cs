@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Collection;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
+using PortalWeb_APIs;
 using System.Data;
 using System.Data.SqlTypes;
 
@@ -18,12 +19,14 @@ namespace PortalWeb_API.Controllers
         private readonly IHubContext<PingHubEquipos> _pinghub;
         private readonly IHubContext<AutomaticoTransaHUb> _autoTranhub;
         private readonly IHubContext<ManualesHub> _manualesHub;
-        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub)
+        private readonly IHubContext<RecoleccionHub> _recoleccionHub;
+        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub)
         {
             _context = context;
             _pinghub = pingHub;
             _autoTranhub = autoTranhub;
             _manualesHub = manualesHub;
+            _recoleccionHub = recoleccionHub;
         }
 
         [HttpGet]
@@ -136,15 +139,12 @@ namespace PortalWeb_API.Controllers
                 int result = sqlCmd.ExecuteNonQuery();
                 if (returnParameter.Value.ToString() == "0")
                 {
+                    var ultimoDeposito = _context.ManualDepositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
+                    await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito);
                     return Ok(0);
                 }
             }
-
-            var ultimoIdDeposito = _context.ManualDepositos.Max(d => d.Id);
-            var ultimoDeposito   = _context.ManualDepositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
-            await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito);
             return Ok(1);
-
         }
 
         [HttpPost]
@@ -175,41 +175,21 @@ namespace PortalWeb_API.Controllers
                 int result = sqlCmd.ExecuteNonQuery();
                 if (returnParameter.Value.ToString() == "0")
                 {
+                    var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
+                    await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
                     return Ok(0);
                 }
             }
 
-            var ultimoIdDeposito = _context.Depositos.Max(d => d.Id);
-            var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
-            await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
+            //var ultimoIdDeposito = _context.Depositos.Max(d => d.Id);
+            //var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
+            //await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
             return Ok(1);
         }
 
-
-        [HttpGet]
-        [Route("Automaticos")]
-        public async Task<IActionResult> ObtenerUltimoDeposito()
-        {
-            // Obtiene el último ID de la lista de depósitos
-            var ultimoIdDeposito = _context.Depositos.Max(d => d.Id);
-
-            // Busca el depósito correspondiente al último ID
-            var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
-
-            if (ultimoDeposito != null)
-            {
-                return Ok(ultimoDeposito);
-            }
-            else
-            {
-                return NotFound("No se encontró ningún depósito.");
-            }
-        }
-
-
         [HttpPost]
         [Route("RecoleccionIngresar")]
-        public IActionResult IngresarRecoleccion([FromBody] ORecoleccion model)
+        public async Task<IActionResult> IngresarRecoleccionAsync([FromBody] ORecoleccion model)
         {
             RecoleccionCollection recolecciones = new ()
             {
@@ -235,6 +215,8 @@ namespace PortalWeb_API.Controllers
                 int result = sqlCmd.ExecuteNonQuery();
                 if (returnParameter.Value.ToString() == "0")
                 {
+                    var ultimoDeposito = _context.Recolecciones.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
+                    await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", ultimoDeposito);
                     return Ok(0);
                 }
             } 

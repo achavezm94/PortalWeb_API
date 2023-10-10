@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace PortalWeb_API
+namespace PortalWeb_APIs
 {
     public class PingHubEquipos: Hub
     {
