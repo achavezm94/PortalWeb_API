@@ -58,6 +58,7 @@ app.MapHub<PingHubEquipos>("/hubs/PingHubEquipos");
 app.MapHub<ManualesHub>("/hubs/manualTransaction");
 app.MapHub<AutomaticoTransaHUb>("/hubs/autoTransaccion");
 app.MapHub<RecoleccionHub>("/hubs/recoleccionTransaccion");
+app.MapHub<UsuarioHub>("/hubs/usuarioTemporal");
 #endregion
 
 app.Run();

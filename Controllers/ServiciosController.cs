@@ -7,7 +7,6 @@ using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using PortalWeb_APIs;
 using System.Data;
-using System.Data.SqlTypes;
 
 namespace PortalWeb_API.Controllers
 {
@@ -20,13 +19,15 @@ namespace PortalWeb_API.Controllers
         private readonly IHubContext<AutomaticoTransaHUb> _autoTranhub;
         private readonly IHubContext<ManualesHub> _manualesHub;
         private readonly IHubContext<RecoleccionHub> _recoleccionHub;
-        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub)
+        private readonly IHubContext<UsuarioHub> _usuarioHub;
+        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub, IHubContext<UsuarioHub> usuarioHub)
         {
             _context = context;
             _pinghub = pingHub;
             _autoTranhub = autoTranhub;
             _manualesHub = manualesHub;
             _recoleccionHub = recoleccionHub;
+            _usuarioHub = usuarioHub;
         }
 
         [HttpGet]
@@ -78,8 +79,10 @@ namespace PortalWeb_API.Controllers
                         res.Active = "A";
                     }
                     _context.Entry(res).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                    await _pinghub.Clients.All.SendAsync("SendPingEquipo", model);
+                    if (await _context.SaveChangesAsync() > 0) 
+                    {
+                        await _pinghub.Clients.All.SendAsync("SendPingEquipo", model);
+                    }
                 }
             }
             return Ok("Actualizado");
@@ -95,7 +98,17 @@ namespace PortalWeb_API.Controllers
                 "',@UserName = '" + model.UserName +
                 "',@IPMachineSolicitud = '" + model.IpMachineSolicitud + "'";
             var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
-            return Ok(response);
+            if (response.Length > 0)
+            {
+                var ultimoUsuario = _context.UsuariosTemporales.FirstOrDefault(d => d.Usuario == model.Usuario && d.IpMachineSolicitud == model.IpMachineSolicitud);
+                await _usuarioHub.Clients.All.SendAsync("SendUsuarioTemporal", ultimoUsuario);
+                return Ok(response);
+            }
+            else 
+            {
+                return BadRequest("No se registro");
+            }
+            
         }
 
         [HttpPost]
@@ -108,7 +121,14 @@ namespace PortalWeb_API.Controllers
                 "',@serieEquiponew = '" + model.SerieEquiponew +
                 "',@IPMachineSolicitud = '" + model.IPMachineSolicitud + "'";
             var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
-            return Ok(response);
+            if (response.Length > 0)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("No se registro");
+            }
         }
 
         [HttpPost]
@@ -127,24 +147,32 @@ namespace PortalWeb_API.Controllers
                 Value = manual_depositos,
                 Direction = ParameterDirection.Input
             };
-            using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
+            try
             {
-                SqlCommand sqlCmd = new("dbo.SP_IngresoManualDepositos");
-                conn.Open();
-                sqlCmd.Connection = conn;
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                sqlCmd.Parameters.Add(param);
-                var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
-                returnParameter.Direction = ParameterDirection.ReturnValue;
-                int result = sqlCmd.ExecuteNonQuery();
-                if (returnParameter.Value.ToString() == "0")
+                using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
                 {
-                    var ultimoDeposito = _context.ManualDepositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
-                    await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito);
-                    return Ok(0);
+                    SqlCommand sqlCmd = new("dbo.SP_IngresoManualDepositos");
+                    conn.Open();
+                    sqlCmd.Connection = conn;
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.Add(param);
+                    var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+                    returnParameter.Direction = ParameterDirection.ReturnValue;
+                    int result = sqlCmd.ExecuteNonQuery();
+                    if (returnParameter.Value.ToString() == "1")
+                    {
+                        var ultimoDeposito = _context.ManualDepositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
+                        await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito);
+                        return Ok(1);
+                        
+                    }
                 }
+                return Ok(0);
             }
-            return Ok(1);
+            catch (Exception)
+            {
+                return Ok(0);
+            }
         }
 
         [HttpPost]
@@ -163,28 +191,33 @@ namespace PortalWeb_API.Controllers
                 Value = depositos,
                 Direction = ParameterDirection.Input
             };
-            using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
+            try
             {
-                SqlCommand sqlCmd = new("dbo.SP_IngresoDepositos");
-                conn.Open();
-                sqlCmd.Connection = conn;
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                sqlCmd.Parameters.Add(param);
-                var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
-                returnParameter.Direction = ParameterDirection.ReturnValue;
-                int result = sqlCmd.ExecuteNonQuery();
-                if (returnParameter.Value.ToString() == "0")
+                using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
                 {
-                    var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
-                    await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
-                    return Ok(0);
+                    SqlCommand sqlCmd = new("dbo.SP_IngresoDepositos");
+                    conn.Open();
+                    sqlCmd.Connection = conn;
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.Add(param);
+                    var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+                    returnParameter.Direction = ParameterDirection.ReturnValue;
+                    int result = sqlCmd.ExecuteNonQuery();
+                    if (returnParameter.Value.ToString() == "1")
+                    {
+                        var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
+                        await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
+                        
+                        return Ok(1);
+                    }
                 }
+                return Ok(0);
             }
-
-            //var ultimoIdDeposito = _context.Depositos.Max(d => d.Id);
-            //var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
-            //await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
-            return Ok(1);
+            catch (Exception)
+            {
+                return Ok(0);
+            }
+            
         }
 
         [HttpPost]
@@ -203,24 +236,31 @@ namespace PortalWeb_API.Controllers
                 Value = recolecciones,
                 Direction = ParameterDirection.Input
             };
-            using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
+            try
             {
-                SqlCommand sqlCmd = new("dbo.SP_IngresoRecolecciones");
-                conn.Open();
-                sqlCmd.Connection = conn;
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                sqlCmd.Parameters.Add(param);
-                var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
-                returnParameter.Direction = ParameterDirection.ReturnValue;
-                int result = sqlCmd.ExecuteNonQuery();
-                if (returnParameter.Value.ToString() == "0")
+                using (SqlConnection conn = new(_context.Database.GetDbConnection().ConnectionString))
                 {
-                    var ultimoDeposito = _context.Recolecciones.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
-                    await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", ultimoDeposito);
-                    return Ok(0);
+                    SqlCommand sqlCmd = new("dbo.SP_IngresoRecolecciones");
+                    conn.Open();
+                    sqlCmd.Connection = conn;
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.Add(param);
+                    var returnParameter = sqlCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+                    returnParameter.Direction = ParameterDirection.ReturnValue;
+                    int result = sqlCmd.ExecuteNonQuery();
+                    if (returnParameter.Value.ToString() == "1")
+                    {
+                        var ultimoDeposito = _context.Recolecciones.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
+                        await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", ultimoDeposito);
+                        return Ok(1);
+                    }
                 }
-            } 
-            return Ok(1);
+                return Ok(0);
+            }
+            catch (Exception)
+            {
+                return Ok(0);
+            }            
         }
     }
 }
