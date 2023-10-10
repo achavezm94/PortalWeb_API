@@ -14,6 +14,12 @@ namespace PortalWeb_API.Controllers
     [ApiController]
     public class ServiciosController : ControllerBase
     {
+        readonly double moneda1 = 2.50, 
+                        moneda5 = 5.00, 
+                        moneda10 = 2.27, 
+                        moneda25 = 5.67, 
+                        moneda50 = 11.34, 
+                        moneda100 = 8.10;
         private readonly PortalWebContext _context;
         private readonly IHubContext<PingHubEquipos> _pinghub;
         private readonly IHubContext<AutomaticoTransaHUb> _autoTranhub;
@@ -162,7 +168,14 @@ namespace PortalWeb_API.Controllers
                     if (returnParameter.Value.ToString() == "1")
                     {
                         var ultimoDeposito = _context.ManualDepositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
-                        await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito);
+                        double? peso = (ultimoDeposito?.TotalManualDepositoCoin1 * moneda1) +
+                                       (ultimoDeposito?.TotalManualDepositoCoin5 * moneda5) +
+                                       (ultimoDeposito?.TotalManualDepositoCoin10 * moneda10)+
+                                       (ultimoDeposito?.TotalManualDepositoCoin25 * moneda25)+
+                                       (ultimoDeposito?.TotalManualDepositoCoin25 * moneda50)+
+                                       (ultimoDeposito?.TotalManualDepositoCoin100 * moneda100);
+
+                        await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito, peso);
                         return Ok(1);
                         
                     }

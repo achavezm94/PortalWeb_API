@@ -5,9 +5,9 @@ namespace PortalWeb_APIs
 {
     public class ManualesHub: Hub
     {
-        public async Task SendTransaccionManual( ManualDepositos model )
+        public async Task SendTransaccionManual( ManualDepositos model, double peso )
         {
-            await Clients.All.SendAsync( "SendTransaccionManual", model );
+            await Clients.All.SendAsync( "SendTransaccionManual", model , peso);
         }
     }
 }
