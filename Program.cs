@@ -54,6 +54,8 @@ app.MapControllers();
 // TUNELES HUB DE COMUNICACI�N
 #region
 app.MapHub<PingHubEquipos>("/hubs/PingHubEquipos");
+app.MapHub<ManualesHub>("/hubs/manualTransaction");
+app.MapHub<AutomaticoTransaHUb>("/hubs/autoTransaccion");
 #endregion
 
 app.Run();

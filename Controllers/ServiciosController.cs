@@ -6,6 +6,7 @@ using PortalWeb_API.Collection;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using System.Data;
+using System.Data.SqlTypes;
 
 namespace PortalWeb_API.Controllers
 {
@@ -15,10 +16,14 @@ namespace PortalWeb_API.Controllers
     {
         private readonly PortalWebContext _context;
         private readonly IHubContext<PingHubEquipos> _pinghub;
-        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub)
+        private readonly IHubContext<AutomaticoTransaHUb> _autoTranhub;
+        private readonly IHubContext<ManualesHub> _manualesHub;
+        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub)
         {
             _context = context;
             _pinghub = pingHub;
+            _autoTranhub = autoTranhub;
+            _manualesHub = manualesHub;
         }
 
         [HttpGet]
@@ -83,7 +88,7 @@ namespace PortalWeb_API.Controllers
         {
             string Sentencia = "exec SP_Servicios " +
                 "@id_SP = 1" +
-                ",@Usuario = '" +model.Usuario +
+                ",@Usuario = '" + model.Usuario +
                 "',@UserName = '" + model.UserName +
                 "',@IPMachineSolicitud = '" + model.IpMachineSolicitud + "'";
             var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
@@ -105,7 +110,7 @@ namespace PortalWeb_API.Controllers
 
         [HttpPost]
         [Route("ManualIngresar")]
-        public IActionResult IngresarManual([FromBody] OManual model)
+        public async Task<IActionResult> IngresarManualAsync([FromBody] OManual model)
         {
             ManualDepositosCollection manual_depositos = new()
             {
@@ -134,12 +139,17 @@ namespace PortalWeb_API.Controllers
                     return Ok(0);
                 }
             }
+
+            var ultimoIdDeposito = _context.ManualDepositos.Max(d => d.Id);
+            var ultimoDeposito   = _context.ManualDepositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
+            await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito);
             return Ok(1);
+
         }
 
         [HttpPost]
         [Route("DepositoIngresar")]
-        public IActionResult IngresarDeposito([FromBody] ODeposito model)
+        public async Task<IActionResult> IngresarDepositoAsync([FromBody] ODeposito model)
         {
             DepositosCollection depositos = new()
             {
@@ -168,8 +178,34 @@ namespace PortalWeb_API.Controllers
                     return Ok(0);
                 }
             }
+
+            var ultimoIdDeposito = _context.Depositos.Max(d => d.Id);
+            var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
+            await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
             return Ok(1);
         }
+
+
+        [HttpGet]
+        [Route("Automaticos")]
+        public async Task<IActionResult> ObtenerUltimoDeposito()
+        {
+            // Obtiene el último ID de la lista de depósitos
+            var ultimoIdDeposito = _context.Depositos.Max(d => d.Id);
+
+            // Busca el depósito correspondiente al último ID
+            var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.Id == ultimoIdDeposito);
+
+            if (ultimoDeposito != null)
+            {
+                return Ok(ultimoDeposito);
+            }
+            else
+            {
+                return NotFound("No se encontró ningún depósito.");
+            }
+        }
+
 
         [HttpPost]
         [Route("RecoleccionIngresar")]
@@ -201,7 +237,7 @@ namespace PortalWeb_API.Controllers
                 {
                     return Ok(0);
                 }
-            }
+            } 
             return Ok(1);
         }
     }

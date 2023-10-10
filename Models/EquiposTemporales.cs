@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[Keyless]
 public partial class EquiposTemporales
 {
     [Column("id")]
     public int Id { get; set; }
 
+    [Key]
     [Column("serieEquipo")]
     [StringLength(50)]
     [Unicode(false)]

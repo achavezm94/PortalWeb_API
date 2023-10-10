@@ -131,6 +131,8 @@ public partial class PortalWebContext : DbContext
 
         modelBuilder.Entity<EquiposTemporales>(entity =>
         {
+            entity.HasKey(e => e.SerieEquipo).HasName("PK__EquiposT__7A57188BF2A131DD");
+
             entity.Property(e => e.Active).HasDefaultValueSql("('A')");
             entity.Property(e => e.Fecrea).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
