@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using PortalWeb_API.Models;
 
 namespace PortalWeb_APIs
 {
     public class AutomaticoTransaHUb: Hub
     {
-        public async Task SendTransaccionAuto(Depositos model)
+        public async Task SendTransaccionAuto(List<object> list)
         {
-            await Clients.All.SendAsync("SendTransaccionAuto", model);
+            await Clients.All.SendAsync("SendTransaccionAuto", list);
         }
     }
 }
