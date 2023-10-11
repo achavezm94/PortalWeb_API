@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Writers;
 using PortalWeb_API.Collection;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
@@ -176,8 +177,29 @@ namespace PortalWeb_API.Controllers
                                        (ultimoDeposito?.TotalManualDepositoCoin25 * moneda25)+
                                        (ultimoDeposito?.TotalManualDepositoCoin25 * moneda50)+
                                        (ultimoDeposito?.TotalManualDepositoCoin100 * moneda100);
+                        //ManualDepositPeso producto = new ManualDepositPeso();
+                        if (ultimoDeposito is not null && peso is not null)
+                        {
+                            List<object> list = new()
+                            {
+                                ultimoDeposito,
+                                peso
+                            };
+                            await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", list);
+                        }
+                        /*{
+                            Id = ultimoDeposito.Id,
+                            UsuariosIdFk = ultimoDeposito.UsuariosIdFk,
+                            MachineSn = ultimoDeposito.MachineSn,
+                            TransaccionNo = ultimoDeposito.TransaccionNo,
+                            FechaTransaccion = ultimoDeposito.FechaTransaccion,
+                            DivisaTransaccion = ultimoDeposito.DivisaTransaccion,
+                            ManualDepositoBill1 = ultimoDeposito.ManualDepositoBill1,
+                            ManualDepositoBill2 = ultimoDeposito.ManualDepositoBill2,
+                            ManualDepositoBill5 = ultimoDeposito.ManualDepositoBill5,
+                            ManualDepositoBill10 = 
 
-                        await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", ultimoDeposito, peso);
+                        };*/
                         return Ok(1);
                         
                     }
@@ -222,9 +244,9 @@ namespace PortalWeb_API.Controllers
                     {
                         var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
 
-                        var response = _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 3);
+                        //var response = _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 3);
 
-                        await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito, response);
+                        await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
                         
                         return Ok(1);
                     }
