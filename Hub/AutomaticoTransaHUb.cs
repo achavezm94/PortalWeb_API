@@ -5,9 +5,9 @@ namespace PortalWeb_APIs
 {
     public class AutomaticoTransaHUb: Hub
     {
-        public async Task SendTransaccionAuto(Depositos model)
+        public async Task SendTransaccionAuto(Depositos model, SP_TablaTransaccionalPrincipalResult response)
         {
-            await Clients.All.SendAsync("SendTransaccionAuto", model);
+            await Clients.All.SendAsync("SendTransaccionAuto", model, response);
         }
     }
 }

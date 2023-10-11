@@ -7,6 +7,8 @@ using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using PortalWeb_APIs;
 using System.Data;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 
 namespace PortalWeb_API.Controllers
 {
@@ -219,7 +221,10 @@ namespace PortalWeb_API.Controllers
                     if (returnParameter.Value.ToString() == "1")
                     {
                         var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
-                        await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito);
+
+                        var response = _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 3);
+
+                        await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", ultimoDeposito, response);
                         
                         return Ok(1);
                     }

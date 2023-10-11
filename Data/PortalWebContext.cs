@@ -264,6 +264,7 @@ public partial class PortalWebContext : DbContext
             entity.Property(e => e.Fecrea).HasDefaultValueSql("(getdate())");
         });
 
+        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 

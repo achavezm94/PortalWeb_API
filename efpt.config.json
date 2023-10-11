@@ -106,6 +106,10 @@
       {
          "Name": "[dbo].[UsuariosTemporales]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SP_TablaTransaccionalPrincipal]",
+         "ObjectType": 1
       }
    ],
    "UiHint": "servidor-desarrollo\\sqlexpress.PortalWeb.dbo",
