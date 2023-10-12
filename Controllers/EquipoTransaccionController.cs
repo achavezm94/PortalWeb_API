@@ -19,9 +19,9 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet("ObtenerDetalle/{id}")]
-        public IActionResult ObtenerDetalle(int id)
+        public IActionResult ObtenerDetalle(string id)
         {
-            string Sentencia = " exec SP_DatosEquiposFront " + id;
+            string Sentencia = " exec SP_DatosEquiposFront @id_equipo";
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
             {
@@ -29,6 +29,7 @@ namespace PortalWeb_API.Controllers
                 {
                     SqlDataAdapter adapter = new(cmd);
                     adapter.SelectCommand.CommandType = CommandType.Text;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@id_equipo", id));
                     adapter.Fill(dt);
                 }
             }

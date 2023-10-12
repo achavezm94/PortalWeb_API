@@ -2,14 +2,11 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Writers;
 using PortalWeb_API.Collection;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using PortalWeb_APIs;
 using System.Data;
-using System.Reflection.Metadata;
-using System.Reflection.PortableExecutable;
 
 namespace PortalWeb_API.Controllers
 {
@@ -295,7 +292,7 @@ namespace PortalWeb_API.Controllers
                                 ultimoDeposito,
                                 sp_response
                             };
-                            await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", ultimoDeposito);
+                            await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", list);
                         }
                         return Ok(1);
                     }
