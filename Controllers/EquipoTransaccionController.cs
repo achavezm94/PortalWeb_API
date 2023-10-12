@@ -19,8 +19,10 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet("ObtenerDetalle/{id}")]
-        public IActionResult ObtenerDetalle(string id)
+        public async Task<IActionResult> ObtenerDetalleAsync(string id)
         {
+            var response = await _context.GetProcedures().SP_DatosEquiposFrontAsync(id);
+            /*
             string Sentencia = " exec SP_DatosEquiposFront @id_equipo";
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
@@ -33,11 +35,12 @@ namespace PortalWeb_API.Controllers
                     adapter.Fill(dt);
                 }
             }
-            if (dt == null)
+            */
+            if (response == null)
             {
                 return NotFound("No se ha podido crear...");
             }
-            return Ok(dt);
+            return Ok(response);
         }
     }
 }

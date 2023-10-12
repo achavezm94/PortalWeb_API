@@ -258,6 +258,11 @@ public partial class PortalWebContext : DbContext
             entity.Property(e => e.Active).HasDefaultValueSql("('A')");
         });
 
+        modelBuilder.Entity<UsuariosPortal>(entity =>
+        {
+            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+        });
+
         modelBuilder.Entity<UsuariosTemporales>(entity =>
         {
             entity.Property(e => e.Active).HasDefaultValueSql("('A')");

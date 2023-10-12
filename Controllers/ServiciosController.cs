@@ -171,6 +171,8 @@ namespace PortalWeb_API.Controllers
 
                         var sp_response = await _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 4);
 
+                        var sp_responseDatos = await _context.GetProcedures().SP_DatosEquiposFrontAsync(ultimoDeposito?.MachineSn);
+
                         double? peso = ((ultimoDeposito?.TotalManualDepositoCoin1 * moneda1) +
                                        (ultimoDeposito?.TotalManualDepositoCoin5 * moneda5) +
                                        (ultimoDeposito?.TotalManualDepositoCoin10 * moneda10)+
@@ -184,7 +186,8 @@ namespace PortalWeb_API.Controllers
                             {
                                 ultimoDeposito,
                                 peso,
-                                sp_response
+                                sp_response,
+                                sp_responseDatos
                             };
                             await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", list);
                         }
@@ -231,12 +234,14 @@ namespace PortalWeb_API.Controllers
                     {
                         var ultimoDeposito = _context.Depositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
                         var sp_response = await _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 3);
+                        var sp_responseDatos = await _context.GetProcedures().SP_DatosEquiposFrontAsync(ultimoDeposito?.MachineSn);
                         if (ultimoDeposito is not null && sp_response is not null)
                         {
                             List<object> list = new()
                             {
                                 ultimoDeposito,
-                                sp_response
+                                sp_response,
+                                sp_responseDatos
                             };
                             await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", list);
                         }
@@ -284,13 +289,14 @@ namespace PortalWeb_API.Controllers
                         var ultimoDeposito = _context.Recolecciones.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
 
                         var sp_response = await _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 5);
-
+                        var sp_responseDatos = await _context.GetProcedures().SP_DatosEquiposFrontAsync(ultimoDeposito?.MachineSn);
                         if (ultimoDeposito is not null && sp_response is not null)
                         {
                             List<object> list = new()
                             {
                                 ultimoDeposito,
-                                sp_response
+                                sp_response,
+                                sp_responseDatos
                             };
                             await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", list);
                         }
