@@ -77,6 +77,13 @@ public partial class PortalWebContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
+        modelBuilder.Entity<CuentaSignaTienda>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_cuentaSignaTienda1");
+
+            entity.Property(e => e.Idtienda).IsFixedLength();
+        });
+
         modelBuilder.Entity<CuentasBancarias>(entity =>
         {
             entity.Property(e => e.Fecrea).HasDefaultValueSql("(getdate())");

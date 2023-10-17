@@ -35,7 +35,7 @@ namespace PortalWeb_API.Controllers
             _recoleccionHub = recoleccionHub;
             _usuarioHub = usuarioHub;
         }
-
+        /*
         [HttpGet]
         [Route("ObtenerIP")]
         public async Task<IActionResult> ObtenerIP()
@@ -55,44 +55,28 @@ namespace PortalWeb_API.Controllers
                 return BadRequest("ERROR");
             }
         }
-
+        */
         [HttpPut]
         [Route("ActualizarEquipoIp")]
-        public async Task<IActionResult> ActualizarEquipo([FromBody] List<EquiposDto> model)
+        public async Task<IActionResult> ActualizarEquipo([FromBody] string ip)
         {
-            foreach (var equipo in model)
+            var res = _context.Equipos.FirstOrDefault(x => x.IpEquipo == ip);
+            if (res != null)
             {
-                var res = _context.Equipos.FirstOrDefault(x => x.IpEquipo == equipo.IpEquipo);
-                if (res != null)
+                res.EstadoPing = 1;
+                res.TiempoSincronizacion = DateTime.Now;
+                res.Active = "A";
+                _context.Entry(res).State = EntityState.Modified;
+                if (await _context.SaveChangesAsync() > 0) 
                 {
-                    if (equipo.EstadoPing == 0)
-                    {
-                        if (equipo.EstadoPing != res.EstadoPing)
-                        {
-                            res.EstadoPing = equipo.EstadoPing;
-                            res.Active = "A";
-                        }
-                    }
-                    else if (equipo.EstadoPing == 1)
-                    {
-                        res.EstadoPing = equipo.EstadoPing;
-                        res.TiempoSincronizacion = DateTime.Now;
-                        res.Active = "A";
-                    }
-                    else if (equipo.EstadoPing == 2)
-                    {
-                        res.EstadoPing = equipo.EstadoPing;
-                        res.Active = "A";
-                    }
-                    _context.Entry(res).State = EntityState.Modified;
-                    if (await _context.SaveChangesAsync() > 0) 
-                    {
-                        await _pinghub.Clients.All.SendAsync("SendPingEquipo", model);
-                    }
+                    await _pinghub.Clients.All.SendAsync("SendPingEquipo", ip);
+                    return Ok("Actualizado");
                 }
+                return BadRequest("No se guardo");
             }
-            return Ok("Actualizado");
+            return NoContent(); 
         }
+        
 
         [HttpPost]
         [Route("UsuarioTempIngresar")]

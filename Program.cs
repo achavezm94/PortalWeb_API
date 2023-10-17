@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PortalWeb_API;
 using PortalWeb_API.Data;
 using PortalWeb_APIs;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,14 +28,10 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy(name: reglasCors, builder =>
     {
         builder.WithOrigins(
-       "http://localhost:5000",
-       "http://localhost:4200",
-       "https://localhost:7286",
-       "http://localhost:2251",
-       "http://192.168.100.10:2251",
-       "https://autoservicioset.web.app",
-       "http://192.168.100.12:5208" 
-   )
+        "http://192.168.32.4:2251",
+        "http://127.0.0.1:2251",
+        "*"
+    )
    .AllowAnyHeader()
    .AllowAnyMethod()
    .AllowCredentials();

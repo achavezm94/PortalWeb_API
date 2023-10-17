@@ -26,7 +26,6 @@ namespace PortalWeb_API.Controllers
                 await _context.CuentaSignaTienda.AddAsync(model);
                 if (await _context.SaveChangesAsync() > 0)
                 {
-
                     return Ok(model);
                 }
                 else

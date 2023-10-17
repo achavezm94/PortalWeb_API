@@ -21,10 +21,10 @@ namespace PortalWeb_API.Controllers
 
         [HttpGet]
         [Route("ObtenerTiendaCuentas/{id}")]
-        public IActionResult ObtenerTiendaCuentas([FromRoute] int id)
+        public IActionResult ObtenerTiendaCuentas([FromRoute] string id)
         {
 
-            string Sentencia = "EXEC SP_ObtenerTiendasCuentas "+ id;
+            string Sentencia = "EXEC SP_ObtenerTiendasCuentas @Ids";
 
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
@@ -32,6 +32,7 @@ namespace PortalWeb_API.Controllers
                 using SqlCommand cmd = new(Sentencia, connection);
                 SqlDataAdapter adapter = new(cmd);
                 adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.SelectCommand.Parameters.Add(new SqlParameter("@IDS", id));
                 adapter.Fill(dt);
             }
 

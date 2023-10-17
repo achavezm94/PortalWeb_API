@@ -22,20 +22,6 @@ namespace PortalWeb_API.Controllers
         public async Task<IActionResult> ObtenerDetalleAsync(string id)
         {
             var response = await _context.GetProcedures().SP_DatosEquiposFrontAsync(id);
-            /*
-            string Sentencia = " exec SP_DatosEquiposFront @id_equipo";
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using (SqlCommand cmd = new(Sentencia, connection))
-                {
-                    SqlDataAdapter adapter = new(cmd);
-                    adapter.SelectCommand.CommandType = CommandType.Text;
-                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@id_equipo", id));
-                    adapter.Fill(dt);
-                }
-            }
-            */
             if (response == null)
             {
                 return NotFound("No se ha podido crear...");

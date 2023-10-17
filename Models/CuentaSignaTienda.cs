@@ -16,7 +16,8 @@ public partial class CuentaSignaTienda
     public int Id { get; set; }
 
     [Column("idtienda")]
-    public int? Idtienda { get; set; }
+    [StringLength(30)]
+    public string Idtienda { get; set; }
 
     [Column("idcuentabancaria")]
     public int? Idcuentabancaria { get; set; }
