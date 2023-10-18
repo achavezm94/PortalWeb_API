@@ -54,11 +54,6 @@ namespace PortalWeb_API.Controllers
                     var data = (from x in _context.Equipos
                                 where x.Active == "A"
                                 select new { ipEquipo = x.IpEquipo, tiempoSincronizacion = x.TiempoSincronizacion }).ToList();
-
-                    //var data = _context.Equipos
-                    //.Where(x => x.Active == "A")
-                    //.Select(x => new {ipEquipo= x.IpEquipo,tiempoSincronizacion = x.TiempoSincronizacion });
-                    //var data = _context.Equipos.OrderBy(a => a.TiempoSincronizacion);
                     foreach (var item in data)
                     {
                         if (item.tiempoSincronizacion is not null)
@@ -68,7 +63,6 @@ namespace PortalWeb_API.Controllers
                             resultado.Add(new MonitoreoModel()
                             {
                                 ip = item.ipEquipo,
-                                minutos = ts.TotalMinutes,
                                 estadoPing = estadoPingActual
                             });
                         }
