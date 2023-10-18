@@ -35,48 +35,53 @@ namespace PortalWeb_API.Controllers
             _recoleccionHub = recoleccionHub;
             _usuarioHub = usuarioHub;
         }
-        /*
-        [HttpGet]
-        [Route("ObtenerIP")]
-        public async Task<IActionResult> ObtenerIP()
-        {
-            if (ModelState.IsValid)
-            {
-                var ip = await _context.Database.SqlQuery<string>($"select [IpEquipo] From [Equipos] WHERE Active = 'A'").ToListAsync();
 
-                if (ip == null)
-                {
-                    return NotFound();
-                }
-                return Ok(ip);
-            }
-            else
-            {
-                return BadRequest("ERROR");
-            }
-        }
-        */
         [HttpPut]
         [Route("ActualizarEquipoIp")]
         public async Task<IActionResult> ActualizarEquipo([FromBody] string ip)
         {
-            var res = _context.Equipos.FirstOrDefault(x => x.IpEquipo == ip);
+            List<MonitoreoModel> resultado = new List<MonitoreoModel>();
+            int estadoPingActual = 0;
+            var res = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == ip);
             if (res != null)
             {
                 res.EstadoPing = 1;
                 res.TiempoSincronizacion = DateTime.Now;
                 res.Active = "A";
                 _context.Entry(res).State = EntityState.Modified;
-                if (await _context.SaveChangesAsync() > 0) 
+                if (await _context.SaveChangesAsync() > 0)
                 {
-                    await _pinghub.Clients.All.SendAsync("SendPingEquipo", ip);
+                    var data = (from x in _context.Equipos
+                                where x.Active == "A"
+                                select new { ipEquipo = x.IpEquipo, tiempoSincronizacion = x.TiempoSincronizacion }).ToList();
+
+                    //var data = _context.Equipos
+                    //.Where(x => x.Active == "A")
+                    //.Select(x => new {ipEquipo= x.IpEquipo,tiempoSincronizacion = x.TiempoSincronizacion });
+                    //var data = _context.Equipos.OrderBy(a => a.TiempoSincronizacion);
+                    foreach (var item in data)
+                    {
+                        if (item.tiempoSincronizacion is not null)
+                        {
+                            TimeSpan ts = DateTime.Now.Subtract((DateTime)item.tiempoSincronizacion);
+                            if (ts.TotalMinutes < 0.2) estadoPingActual = 1;
+                            resultado.Add(new MonitoreoModel()
+                            {
+                                ip = item.ipEquipo,
+                                minutos = ts.TotalMinutes,
+                                estadoPing = estadoPingActual
+                            });
+                        }
+                        estadoPingActual = 0;
+                    }
+                    await _pinghub.Clients.All.SendAsync("SendPingEquipo", resultado);
                     return Ok("Actualizado");
                 }
-                return BadRequest("No se guardo");
+                return BadRequest("No se guardó");
             }
-            return NoContent(); 
+            return NoContent();
         }
-        
+
 
         [HttpPost]
         [Route("UsuarioTempIngresar")]
