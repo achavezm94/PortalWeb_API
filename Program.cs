@@ -28,8 +28,7 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy(name: reglasCors, builder =>
     {
         builder.WithOrigins(
-        "http://192.168.32.4:2251",
-        "http://127.0.0.1:2251",
+        "https://sfifront.azurewebsites.net",
         "*"
     )
    .AllowAnyHeader()
