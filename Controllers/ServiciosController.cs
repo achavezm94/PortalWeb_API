@@ -7,6 +7,7 @@ using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using PortalWeb_APIs;
 using System.Data;
+using System.Threading;
 
 namespace PortalWeb_API.Controllers
 {
@@ -45,8 +46,11 @@ namespace PortalWeb_API.Controllers
             var res = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == ip);
             if (res != null)
             {
+                TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+                DateTime timeUtc = DateTime.UtcNow;
+                DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
                 res.EstadoPing = 1;
-                res.TiempoSincronizacion = DateTime.Now;
+                res.TiempoSincronizacion = cstTime;
                 res.Active = "A";
                 _context.Entry(res).State = EntityState.Modified;
                 if (await _context.SaveChangesAsync() > 0)
@@ -56,16 +60,15 @@ namespace PortalWeb_API.Controllers
                                 select new { ipEquipo = x.IpEquipo, tiempoSincronizacion = x.TiempoSincronizacion }).ToList();
                     foreach (var item in data)
                     {
-                        if (item.tiempoSincronizacion is not null)
+                        
+                        TimeSpan ts = cstTime.Subtract((DateTime)item.tiempoSincronizacion);
+                        if (ts.TotalMinutes < 1.0) estadoPingActual = 1;
+                        resultado.Add(new MonitoreoModel()
                         {
-                            TimeSpan ts = DateTime.Now.Subtract((DateTime)item.tiempoSincronizacion);
-                            if (ts.TotalMinutes < 0.2) estadoPingActual = 1;
-                            resultado.Add(new MonitoreoModel()
-                            {
-                                ip = item.ipEquipo,
-                                estadoPing = estadoPingActual
-                            });
-                        }
+                            ip = item.ipEquipo,
+                            estadoPing = estadoPingActual
+                        });
+                        
                         estadoPingActual = 0;
                     }
                     await _pinghub.Clients.All.SendAsync("SendPingEquipo", resultado);

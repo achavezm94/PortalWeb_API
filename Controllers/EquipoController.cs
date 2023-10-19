@@ -51,27 +51,31 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var equipo = _context.Equipos.FirstOrDefault(x => x.SerieEquipo == model.SerieEquipo);
-                if (equipo == null) 
+                if (model.CapacidadIni is not null && model.CapacidadIniSobres is not null && model.CapacidadAsegurada is not null && model.CapacidadIni !=0 && model.CapacidadIniSobres != 0 && model.CapacidadAsegurada != 0)
                 {
-                    await _context.Equipos.AddAsync(model);
+                    var equipo = _context.Equipos.FirstOrDefault(x => x.SerieEquipo == model.SerieEquipo);
+                    if (equipo == null)
+                    {
+                        await _context.Equipos.AddAsync(model);
 
-                    if (await _context.SaveChangesAsync() > 0)
-                    {
-                        var res = _context.EquiposTemporales.FirstOrDefault(x => x.IpEquipo == model.IpEquipo);
-                        if (res != null)
+                        if (await _context.SaveChangesAsync() > 0)
                         {
-                            res.Active = "F";
-                            await _context.SaveChangesAsync();
+                            var res = _context.EquiposTemporales.FirstOrDefault(x => x.IpEquipo == model.IpEquipo);
+                            if (res != null)
+                            {
+                                res.Active = "F";
+                                await _context.SaveChangesAsync();
+                            }
+                            return Ok(model);
                         }
-                        return Ok(model);
+                        else
+                        {
+                            return BadRequest("Datos incorrectos");
+                        }
                     }
-                    else
-                    {
-                        return BadRequest("Datos incorrectos");
-                    }
+                    return BadRequest("Ya existe el Equipo");
                 }
-                return BadRequest("Ya existe el Equipo");
+                return BadRequest("Campos NULL");
             }
             else
             {

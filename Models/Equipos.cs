@@ -55,10 +55,10 @@ public partial class Equipos
     public DateTime? FechaInstalacion { get; set; }
 
     [Column("estadoPing")]
-    public int? EstadoPing { get; set; }
+    public int EstadoPing { get; set; }
 
     [Column("tiempoSincronizacion", TypeName = "datetime")]
-    public DateTime? TiempoSincronizacion { get; set; }
+    public DateTime TiempoSincronizacion { get; set; }
 
     [Column("fecrea", TypeName = "datetime")]
     public DateTime? Fecrea { get; set; }

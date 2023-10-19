@@ -130,10 +130,12 @@ public partial class PortalWebContext : DbContext
 
         modelBuilder.Entity<Equipos>(entity =>
         {
-            entity.HasKey(e => new { e.Id, e.SerieEquipo }).HasName("PK_Equipos1_1");
+            entity.HasKey(e => new { e.Id, e.SerieEquipo }).HasName("PK_Equipos1");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+            entity.Property(e => e.FechaInstalacion).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.TiempoSincronizacion).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<EquiposTemporales>(entity =>
