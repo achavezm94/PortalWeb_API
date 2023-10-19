@@ -60,16 +60,26 @@ namespace PortalWeb_API.Controllers
                                 select new { ipEquipo = x.IpEquipo, tiempoSincronizacion = x.TiempoSincronizacion }).ToList();
                     foreach (var item in data)
                     {
-                        
                         TimeSpan ts = cstTime.Subtract((DateTime)item.tiempoSincronizacion);
-                        if (ts.TotalMinutes < 1.0) estadoPingActual = 1;
+                        if (ts.TotalMinutes < 1.0 && ts.TotalMinutes >= 0)
+                        {
+                            estadoPingActual = 1;
+                        }
+                        else 
+                        {
+                            var equipo = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == item.ipEquipo);
+                            equipo.EstadoPing = 0;
+                            equipo.Active = "A";
+                            _context.Entry(equipo).State = EntityState.Modified;
+                            await _context.SaveChangesAsync();
+                        }
                         resultado.Add(new MonitoreoModel()
                         {
                             ip = item.ipEquipo,
                             estadoPing = estadoPingActual
                         });
-                        
                         estadoPingActual = 0;
+                        
                     }
                     await _pinghub.Clients.All.SendAsync("SendPingEquipo", resultado);
                     return Ok("Actualizado");
