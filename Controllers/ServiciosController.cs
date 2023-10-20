@@ -61,7 +61,7 @@ namespace PortalWeb_API.Controllers
                     foreach (var item in data)
                     {
                         TimeSpan ts = cstTime.Subtract((DateTime)item.tiempoSincronizacion);
-                        if (ts.TotalMinutes < 1.0 && ts.TotalMinutes >= 0)
+                        if (ts.TotalMinutes < 1.0)
                         {
                             estadoPingActual = 1;
                         }
