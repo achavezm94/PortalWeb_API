@@ -31,4 +31,8 @@ public partial class Usuarios
     [StringLength(1)]
     [Unicode(false)]
     public string Active { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string IpMachine { get; set; }
 }

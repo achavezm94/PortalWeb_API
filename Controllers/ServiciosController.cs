@@ -7,7 +7,6 @@ using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using PortalWeb_APIs;
 using System.Data;
-using System.Threading;
 
 namespace PortalWeb_API.Controllers
 {
@@ -68,10 +67,13 @@ namespace PortalWeb_API.Controllers
                         else 
                         {
                             var equipo = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == item.ipEquipo);
-                            equipo.EstadoPing = 0;
-                            equipo.Active = "A";
-                            _context.Entry(equipo).State = EntityState.Modified;
-                            await _context.SaveChangesAsync();
+                            if (equipo is not null)
+                            {
+                                equipo.EstadoPing = 0;
+                                equipo.Active = "A";
+                                _context.Entry(equipo).State = EntityState.Modified;
+                                await _context.SaveChangesAsync();
+                            }
                         }
                         resultado.Add(new MonitoreoModel()
                         {
@@ -111,6 +113,30 @@ namespace PortalWeb_API.Controllers
                 return BadRequest("No se registro");
             }
             
+        }
+
+        [HttpDelete]
+        [Route("UsuarioTempEliminar/{usuario}/{ip}")]
+        public async Task<IActionResult> EliminarUsuario([FromRoute] string usuario, [FromRoute] string ip)
+        {
+            string Sentencia = "exec SP_Servicios " +
+                "@id_SP = 3" +
+                ",@Usuario = '" + usuario +
+                "',@IPMachineSolicitud = '" + ip+ "'";
+            var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
+            if (response.Length > 0)
+            {
+                UsuariosTemporales ultimoUsuario = new() { 
+                    Usuario = usuario,
+                    IpMachineSolicitud = ip,
+                };
+                await _usuarioHub.Clients.All.SendAsync("EliminarUsuarioTemporal", ultimoUsuario);
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("No se registro");
+            }
         }
 
         [HttpPost]

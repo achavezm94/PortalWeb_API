@@ -116,7 +116,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "servidor-desarrollo\\sqlexpress.PortalWeb.dbo",
+   "UiHint": "desktop-k7dsnp4\\sqlexpress.app.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

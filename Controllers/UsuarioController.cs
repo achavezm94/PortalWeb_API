@@ -56,6 +56,7 @@ namespace PortalWeb_API.Controllers
                 {
                     Usuario = model.Usuario,
                     Contrasenia = model.Contrasenia,
+                    IpMachine = model.IpMachine,
                     TiendasidFk = model.Rol
                 };
                 await _context.Usuarios.AddAsync(usuarios);
