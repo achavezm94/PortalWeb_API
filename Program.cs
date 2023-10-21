@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using PortalWeb_API;
 using PortalWeb_API.Data;
 using PortalWeb_APIs;
 using System.Security.Claims;
@@ -99,6 +100,7 @@ app.MapHub<ManualesHub>("/hubs/manualTransaction");
 app.MapHub<AutomaticoTransaHUb>("/hubs/autoTransaccion");
 app.MapHub<RecoleccionHub>("/hubs/recoleccionTransaccion");
 app.MapHub<UsuarioHub>("/hubs/usuarioTemporal");
+app.MapHub<EliminarUsuario>("/hubs/eliminarTemporal");
 #endregion
 
 app.Run();

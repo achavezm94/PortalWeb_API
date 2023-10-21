@@ -26,7 +26,8 @@ namespace PortalWeb_API.Controllers
         private readonly IHubContext<ManualesHub> _manualesHub;
         private readonly IHubContext<RecoleccionHub> _recoleccionHub;
         private readonly IHubContext<UsuarioHub> _usuarioHub;
-        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub, IHubContext<UsuarioHub> usuarioHub)
+        private readonly IHubContext<EliminarUsuario> _eliminarHub;
+        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub, IHubContext<UsuarioHub> usuarioHub, IHubContext<EliminarUsuario> eliminarHub)
         {
             _context = context;
             _pinghub = pingHub;
@@ -34,6 +35,7 @@ namespace PortalWeb_API.Controllers
             _manualesHub = manualesHub;
             _recoleccionHub = recoleccionHub;
             _usuarioHub = usuarioHub;
+            _eliminarHub = eliminarHub;
         }
 
         [HttpPut]
@@ -130,7 +132,7 @@ namespace PortalWeb_API.Controllers
                     Usuario = usuario,
                     IpMachineSolicitud = ip,
                 };
-                await _usuarioHub.Clients.All.SendAsync("EliminarUsuarioTemporal", ultimoUsuario);
+                await _eliminarHub.Clients.All.SendAsync("EliminarUsuarioTemporal", ultimoUsuario);
                 return Ok(response);
             }
             else
