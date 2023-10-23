@@ -27,7 +27,8 @@ namespace PortalWeb_API.Controllers
         private readonly IHubContext<RecoleccionHub> _recoleccionHub;
         private readonly IHubContext<UsuarioHub> _usuarioHub;
         private readonly IHubContext<EliminarUsuario> _eliminarHub;
-        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub, IHubContext<UsuarioHub> usuarioHub, IHubContext<EliminarUsuario> eliminarHub)
+        private readonly IHubContext<ActualizarHub> _actualizarHub;
+        public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<AutomaticoTransaHUb> autoTranhub, IHubContext<ManualesHub> manualesHub, IHubContext<RecoleccionHub> recoleccionHub, IHubContext<UsuarioHub> usuarioHub, IHubContext<EliminarUsuario> eliminarHub, IHubContext<ActualizarHub> actualizarHub)
         {
             _context = context;
             _pinghub = pingHub;
@@ -36,6 +37,7 @@ namespace PortalWeb_API.Controllers
             _recoleccionHub = recoleccionHub;
             _usuarioHub = usuarioHub;
             _eliminarHub = eliminarHub;
+            _actualizarHub = actualizarHub;
         }
 
         [HttpPut]
@@ -86,13 +88,12 @@ namespace PortalWeb_API.Controllers
                         
                     }
                     await _pinghub.Clients.All.SendAsync("SendPingEquipo", resultado);
-                    return Ok("Actualizado");
+                    return Ok();
                 }
-                return BadRequest("No se guardó");
+                return BadRequest();
             }
             return NoContent();
         }
-
 
         [HttpPost]
         [Route("UsuarioTempIngresar")]
@@ -115,6 +116,28 @@ namespace PortalWeb_API.Controllers
                 return BadRequest("No se registro");
             }
             
+        }
+
+        [HttpPut]
+        [Route("UsuarioTempActualizar")]
+        public async Task<IActionResult> ActualizarUsuario([FromBody] UsuariosTemporales model)
+        {
+            string Sentencia = "exec SP_Servicios " +
+                "@id_SP = 4" +
+                ",@Usuario = '" + model.Usuario +
+                "',@UserName = '" + model.UserName +
+                "',@IPMachineSolicitud = '" + model.IpMachineSolicitud + "'";
+            var response = await _context.RespuestaSentencia.FromSqlRaw(Sentencia).ToArrayAsync();
+            if (response.Length > 0)
+            {
+                await _actualizarHub.Clients.All.SendAsync("UpdateUsuarioTemporal", model);
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("No se registro");
+            }
+
         }
 
         [HttpDelete]
