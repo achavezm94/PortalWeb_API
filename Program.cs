@@ -69,7 +69,9 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy(name: reglasCors, builder =>
     {
         builder.WithOrigins(
-        "https://sfifront.azurewebsites.net"
+        "https://sfifront.azurewebsites.net",
+        "http://192.168.100.25",
+        "http://192.168.100.10:2251"
     )
    .AllowAnyHeader()
    .AllowAnyMethod()
@@ -83,6 +85,8 @@ var webSocketOptions = new WebSocketOptions
 };
 
 webSocketOptions.AllowedOrigins.Add("https://sfifront.azurewebsites.net");
+webSocketOptions.AllowedOrigins.Add("http://192.168.100.25");
+webSocketOptions.AllowedOrigins.Add("http://192.168.100.10:2251");
 
 var app = builder.Build();
 app.UseCors(reglasCors);
