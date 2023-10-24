@@ -112,6 +112,7 @@ namespace PortalWeb_API.Controllers
             return Ok(model);
         }
 
+        /*
         [HttpDelete]
         [Route("BorrarUsuario/{id:int}")]
         public async Task<IActionResult> BorrarUsuario(int id)
@@ -144,5 +145,6 @@ namespace PortalWeb_API.Controllers
                 return NotFound();
             }
         }
+        */
     }
 }

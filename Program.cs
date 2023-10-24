@@ -61,6 +61,9 @@ builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
     options.MaximumReceiveMessageSize = 1024;
+    options.EnableDetailedErrors = true;
+    options.HandshakeTimeout = TimeSpan.FromSeconds(5);
+    options.KeepAliveInterval = TimeSpan.FromSeconds(10);
 });
 
 //http://192.168.100.10:2251
@@ -70,7 +73,7 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy(name: reglasCors, builder =>
     {
         builder.WithOrigins(
-        "http://192.168.100.10:2251"
+        "http://localhost:2251"
     )
    .AllowAnyHeader()
    .AllowAnyMethod()
@@ -83,7 +86,7 @@ var webSocketOptions = new WebSocketOptions
     KeepAliveInterval = TimeSpan.FromMinutes(2)
 };
 
-webSocketOptions.AllowedOrigins.Add("http://192.168.100.10:2251");
+webSocketOptions.AllowedOrigins.Add("http://localhost:2251");
 
 var app = builder.Build();
 app.UseCors(reglasCors);
@@ -105,11 +108,3 @@ app.MapHub<EliminarUsuario>("/hubs/eliminarTemporal");
 #endregion
 
 app.Run();
-
-
-/*
- app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapHub<PingHubEquipos>("/hubs/PingHubEquipos");
-    });
- */
