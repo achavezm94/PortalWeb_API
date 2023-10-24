@@ -58,6 +58,7 @@ namespace PortalWeb_API.Controllers
                 SqlDataAdapter adapter = new(cmd);
                 adapter.SelectCommand.CommandType = CommandType.Text;
                 adapter.SelectCommand.Parameters.Add(new SqlParameter("@IPMachineSolicitud", ip));
+
                 adapter.Fill(dt);
             }
             if (dt == null)
