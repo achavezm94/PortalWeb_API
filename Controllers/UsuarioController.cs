@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using System.Data;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PortalWeb_API.Controllers
@@ -39,9 +40,30 @@ namespace PortalWeb_API.Controllers
 
             if (dt == null)
             {
-                return NotFound("No se ha podido crear...");
+                return NotFound("No existe busqueda...");
             }
 
+            return Ok(dt);
+        }
+
+        [HttpGet("ObtenerUsuarioIP/{ip}")]
+        public IActionResult ObtenerUsuarioIp([FromRoute] string ip)
+        {
+            string Sentencia = " exec sp_obtenerUsuarios 3, @IPMachineSolicitud";
+
+            DataTable dt = new();
+            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
+            {
+                using SqlCommand cmd = new(Sentencia, connection);
+                SqlDataAdapter adapter = new(cmd);
+                adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.SelectCommand.Parameters.Add(new SqlParameter("@IPMachineSolicitud", ip));
+                adapter.Fill(dt);
+            }
+            if (dt == null)
+            {
+                return NotFound("No existe busqueda...");
+            }
             return Ok(dt);
 
         }
