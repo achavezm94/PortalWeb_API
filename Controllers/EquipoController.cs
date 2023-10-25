@@ -15,7 +15,7 @@ namespace PortalWeb_API.Controllers
     {
         private readonly PortalWebContext _context;
 
-        public EquipoController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub)
+        public EquipoController(PortalWebContext context)
         {
             _context = context;
         }

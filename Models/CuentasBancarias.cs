@@ -34,6 +34,13 @@ public partial class CuentasBancarias
     [Unicode(false)]
     public string Numerocuenta { get; set; }
 
+    [StringLength(50)]
+    [Unicode(false)]
+    public string TipoCuenta { get; set; }
+
+    [Unicode(false)]
+    public string Observacion { get; set; }
+
     [Column("fecrea", TypeName = "datetime")]
     public DateTime? Fecrea { get; set; }
 }

@@ -116,7 +116,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "desktop-k7dsnp4\\sqlexpress.app.dbo",
+   "UiHint": "servidor-desarrollo\\sqlexpress.PortalWeb.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
@@ -129,6 +129,7 @@
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
