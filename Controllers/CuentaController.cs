@@ -72,6 +72,8 @@ namespace PortalWeb_API.Controllers
                     result.CodigoCliente = model.CodigoCliente;
                     result.Nombanco = model.Nombanco;
                     result.Numerocuenta = model.Numerocuenta;
+                    result.Observacion = model.Observacion;
+                    result.TipoCuenta = model.TipoCuenta;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
