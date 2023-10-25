@@ -5,6 +5,8 @@
         public int Id { get; set; }
         public string? Usuario { get; set; }
         public string? IpMachine { get; set; }
+        public int? CuentasidFk { get; set; }
+        public string? Observacion { get; set; }
         public string? Contrasenia { get; set; }
         public string? Rol { get; set; }
         public string? Nombres { get; set; }

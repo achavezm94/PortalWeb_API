@@ -35,4 +35,10 @@ public partial class Usuarios
     [StringLength(50)]
     [Unicode(false)]
     public string IpMachine { get; set; }
+
+    public int? CuentasidFk { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Observacion { get; set; }
 }

@@ -80,7 +80,9 @@ namespace PortalWeb_API.Controllers
                     Usuario = model.Usuario,
                     Contrasenia = model.Contrasenia,
                     IpMachine = model.IpMachine,
-                    TiendasidFk = model.Rol
+                    TiendasidFk = model.Rol,
+                    CuentasidFk = model.CuentasidFk,
+                    Observacion = model.Observacion
                 };
                 await _context.Usuarios.AddAsync(usuarios);
                 DatosPersonales datosPersonales = new()

@@ -48,6 +48,7 @@ namespace PortalWeb_API.Controllers
         [Route("ObtenerCuentaCliente/{id:int}")]
         public async Task<IActionResult> ObtenerCuentaCliente(int id)
         {
+            List<CuentasBancariasIDCliente> _cuentasBancariasIDcliente = new List<CuentasBancariasIDCliente>();
             if (ModelState.IsValid)
             {
                 var result = await _context.Clientes.FirstOrDefaultAsync(e => e.Id == id);
@@ -59,13 +60,27 @@ namespace PortalWeb_API.Controllers
                 else
                 {
                     var cuentasBancarias = _context.CuentasBancarias.Where(x => x.CodigoCliente == result.CodigoCliente).ToList();
+                    foreach (var cuenta in cuentasBancarias)
+                    {
+                        _cuentasBancariasIDcliente.Add(new CuentasBancariasIDCliente{
+                            Id = cuenta.Id,
+                            TipoCuenta = cuenta.TipoCuenta,
+                            ClienteID = id,
+                            Numerocuenta = cuenta.Numerocuenta,
+                            Codcuentacontable = cuenta.Codcuentacontable,
+                            CodigoCliente = cuenta.CodigoCliente,
+                            Nombanco = cuenta.Nombanco,
+                            Observacion = cuenta.Observacion,
+                            Fecrea = cuenta.Fecrea
+                        });
+                    }
                     if (cuentasBancarias == null)
                     {
                         return NotFound("No existe cuenta bancaria");
                     }
                     else
                     {
-                        return Ok(cuentasBancarias);
+                        return Ok(_cuentasBancariasIDcliente);
                     }
                     
                 };    
