@@ -201,7 +201,7 @@ namespace PortalWeb_API.Controllers
                         {
                             var ultimoDeposito = _context.ManualDepositos.FirstOrDefault(d => d.MachineSn == model.Machine_Sn && d.TransaccionNo == model.Transaction_no && d.UsuariosIdFk == model.User_id);
 
-                            var sp_response = await _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(ultimoDeposito?.MachineSn, 4);
+                            var sp_response = await _context.GetProcedures().SP_TablaTransaccionalPrincipalAsync(model.Machine_Sn, 4);
 
                             var sp_responseDatos = await _context.GetProcedures().SP_DatosEquiposFrontAsync(ultimoDeposito?.MachineSn);
 

@@ -50,7 +50,6 @@ builder.Services.AddAuthorization(policies =>
 });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 var reglasCors = "ReglasCors";
 
@@ -61,9 +60,8 @@ builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
     options.MaximumReceiveMessageSize = 1024;
-    options.EnableDetailedErrors = true;
-    options.HandshakeTimeout = TimeSpan.FromSeconds(5);
-    options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+    //options.HandshakeTimeout = TimeSpan.FromSeconds(5);
+    //options.KeepAliveInterval = TimeSpan.FromSeconds(10);
 });
 
 //http://192.168.100.10:2251
@@ -80,10 +78,10 @@ builder.Services.AddCors(opt =>
    .AllowCredentials();
     });
 });
-/**/
+
 var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromMinutes(2)
+{    
+    KeepAliveInterval = TimeSpan.FromSeconds(120)
 };
 
 webSocketOptions.AllowedOrigins.Add("http://192.168.100.10:2251");
