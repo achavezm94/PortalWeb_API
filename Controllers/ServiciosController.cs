@@ -275,11 +275,11 @@ namespace PortalWeb_API.Controllers
                             if (ultimoDeposito is not null && sp_response is not null)
                             {
                                 List<object> list = new()
-                            {
-                                ultimoDeposito,
-                                sp_response,
-                                sp_responseDatos
-                            };
+                                {
+                                    ultimoDeposito,
+                                    sp_response,
+                                    sp_responseDatos
+                                };
                                 await _autoTranhub.Clients.All.SendAsync("SendTransaccionAuto", list);
                             }
                             return Ok(1);

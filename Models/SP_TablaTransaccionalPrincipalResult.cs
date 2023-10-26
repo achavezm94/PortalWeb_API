@@ -14,6 +14,10 @@ namespace PortalWeb_API.Models
         public string Machine_Sn { get; set; }
         public string Usuarios_idFk { get; set; }
         public string NombreUsuario { get; set; }
+        public string nombanco { get; set; }
+        public string TipoCuenta { get; set; }
+        public string numerocuenta { get; set; }
+        public string Observacion { get; set; }
         public int? Deposito_Bill_1 { get; set; }
         public int? Deposito_Bill_2 { get; set; }
         public int? Deposito_Bill_5 { get; set; }
