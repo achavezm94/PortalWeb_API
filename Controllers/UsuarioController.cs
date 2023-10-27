@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using System.Data;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PortalWeb_API.Controllers
 {
@@ -84,7 +79,6 @@ namespace PortalWeb_API.Controllers
                     CuentasidFk = model.CuentasidFk,
                     Observacion = model.Observacion
                 };
-                await _context.Usuarios.AddAsync(usuarios);
                 DatosPersonales datosPersonales = new()
                 {
                     Nombres = model.Nombres,
@@ -94,6 +88,7 @@ namespace PortalWeb_API.Controllers
                     UsuarioPortaidFk = "NULL",
                     UsuarioidFk = model.Usuario,
                 };
+                await _context.Usuarios.AddAsync(usuarios);
                 await _context.DatosPersonales.AddAsync(datosPersonales);
                 if (await _context.SaveChangesAsync() > 0)
                 {
