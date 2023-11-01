@@ -80,7 +80,9 @@ namespace PortalWeb_API.Controllers
                         resultado.Add(new MonitoreoModel()
                         {
                             ip = item.ipEquipo,
+                            tiempoSincronizacion = item.tiempoSincronizacion,
                             estadoPing = estadoPingActual
+
                         });
                         estadoPingActual = 0;
                         
