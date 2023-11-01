@@ -23,22 +23,18 @@ public partial class DatosPersonales
     [Unicode(false)]
     public string UsuarioidFk { get; set; }
 
-    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Nombres { get; set; }
 
-    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Apellidos { get; set; }
 
-    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Cedula { get; set; }
 
-    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Telefono { get; set; }

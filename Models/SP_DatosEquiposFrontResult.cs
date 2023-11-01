@@ -7,6 +7,8 @@ namespace PortalWeb_API.Models
 {
     public partial class SP_DatosEquiposFrontResult
     {
+        public string Machine_Sn { get; set; }
+        public string IpMachine { get; set; }
         public string Tipo { get; set; }
         public int? DepositoCant100 { get; set; }
         public int? DepositoCant50 { get; set; }

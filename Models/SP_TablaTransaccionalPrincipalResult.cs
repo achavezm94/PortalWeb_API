@@ -13,7 +13,8 @@ namespace PortalWeb_API.Models
         public int? Transaccion_No { get; set; }
         public string Machine_Sn { get; set; }
         public string Usuarios_idFk { get; set; }
-        public string NombreUsuario { get; set; }
+        public string Establecimiento { get; set; }
+        public string CodigoEstablecimiento { get; set; }
         public string nombanco { get; set; }
         public string TipoCuenta { get; set; }
         public string numerocuenta { get; set; }
