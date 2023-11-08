@@ -89,7 +89,11 @@ namespace PortalWeb_API.Controllers
                     UsuarioidFk = model.Usuario,
                 };
                 await _context.Usuarios.AddAsync(usuarios);
-                await _context.DatosPersonales.AddAsync(datosPersonales);
+                int total = _context.DatosPersonales.Count(t => t.UsuarioidFk == datosPersonales.UsuarioidFk && t.Nombres == datosPersonales.Nombres && t.Cedula == datosPersonales.Cedula);
+                if (total == 0)
+                {
+                    await _context.DatosPersonales.AddAsync(datosPersonales);
+                }
                 if (await _context.SaveChangesAsync() > 0)
                 {
                     return Ok(model);
