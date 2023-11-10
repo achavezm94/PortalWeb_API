@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PortalWeb_API.Data;
-using PortalWeb_API.Hub;
+using PortalWeb_APIs;
 using System.Security.Claims;
 using System.Text;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using PortalWeb_API.Models;
 
-namespace PortalWeb_API.Hub
+namespace PortalWeb_APIs
 {
     public class UsuarioHub : Hub
     {

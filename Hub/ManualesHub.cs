@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace PortalWeb_API.Hub
+namespace PortalWeb_APIs
 {
     public class ManualesHub : Hub
     {
