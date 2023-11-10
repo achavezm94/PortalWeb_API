@@ -42,7 +42,7 @@ namespace PortalWeb_API.Controllers
         [Route("ActualizarEquipoIp")]
         public async Task<IActionResult> ActualizarEquipo([FromBody] string ip)
         {
-            List<MonitoreoModel> resultado = new List<MonitoreoModel>();
+            List<MonitoreoModel> resultado = new();
             int estadoPingActual = 0;
             var res = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == ip);
             if (res != null)
@@ -62,7 +62,7 @@ namespace PortalWeb_API.Controllers
                     foreach (var item in data)
                     {
                         TimeSpan ts = cstTime.Subtract((DateTime)item.tiempoSincronizacion);
-                        if (ts.TotalMinutes < 1.0)
+                        if (ts.TotalMinutes < 15.0)
                         {
                             estadoPingActual = 1;
                         }

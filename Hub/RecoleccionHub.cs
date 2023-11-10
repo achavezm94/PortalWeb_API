@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace PortalWeb_APIs
+namespace PortalWeb_API.Hub
 {
     public class RecoleccionHub : Hub
     {

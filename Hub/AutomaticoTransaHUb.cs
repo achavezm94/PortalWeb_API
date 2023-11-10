@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace PortalWeb_APIs
+namespace PortalWeb_API.Hub
 {
-    public class AutomaticoTransaHUb: Hub
+    public class AutomaticoTransaHUb : Hub
     {
         public async Task SendTransaccionAuto(List<object> list)
         {

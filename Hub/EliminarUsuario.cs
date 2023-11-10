@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using PortalWeb_API.Models;
 
-namespace PortalWeb_API
+namespace PortalWeb_API.Hub
 {
     public class EliminarUsuario : Hub
     {
