@@ -8,8 +8,6 @@ namespace PortalWeb_API.Models
     public partial class SP_TablaTransaccionalPrincipalResult
     {
         public DateTime? FechaTransaccion { get; set; }
-        public string Fecha { get; set; }
-        public string Hora { get; set; }
         public string NombreCliente { get; set; }
         public string NombreTienda { get; set; }
         public int? Transaccion_No { get; set; }

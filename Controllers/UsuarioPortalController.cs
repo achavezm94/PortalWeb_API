@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PortalWeb_API.Controllers
 {
     [Route("api/UsuarioPortal")]
-    //[Authorize]
     [ApiController]
     public class UsuarioPortalController : ControllerBase
     {
@@ -49,37 +50,13 @@ namespace PortalWeb_API.Controllers
         [Route("ActualizarUsuario/{id}")]
         public async Task<IActionResult> ActualizarUsuario([FromRoute] int id, [FromBody] UsuariosPortal model)
         {
-            /*if (id != model.Id)
+            if (id != model.Id)
             {
                 return BadRequest("No existe el usuario portal");
             }
             _context.Entry(model).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return Ok(model);*/
-
-            var result = await _context.UsuariosPortal.FindAsync(model.Id);
-            if (result != null)
-            {
-                try
-                {
-                    result.Usuario = model.Usuario;
-                    result.Contrasenia = model.Contrasenia;
-                    result.Rol = model.Rol;
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    return BadRequest();
-                }
-                finally
-                {
-                    await _context.SaveChangesAsync();
-                }
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
+            return Ok(model);
         }
 
         [HttpPost]

@@ -48,7 +48,7 @@ namespace PortalWeb_API.Controllers
         [Route("ObtenerCuentaCliente/{id:int}")]
         public async Task<IActionResult> ObtenerCuentaCliente(int id)
         {
-            List<CuentasBancariasIDCliente> _cuentasBancariasIDcliente = new List<CuentasBancariasIDCliente>();
+            List<CuentasBancariasIDCliente> _cuentasBancariasIDcliente = new();
             if (ModelState.IsValid)
             {
                 var result = await _context.Clientes.FirstOrDefaultAsync(e => e.Id == id);

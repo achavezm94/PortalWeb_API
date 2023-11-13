@@ -11,10 +11,11 @@ namespace PortalWeb_API.Models;
 [Table("Usuarios_Portal")]
 public partial class UsuariosPortal
 {
+    [Key]
     [Column("id")]
     public int Id { get; set; }
 
-    [Key]
+    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Usuario { get; set; }
