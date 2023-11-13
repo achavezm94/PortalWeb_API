@@ -49,13 +49,37 @@ namespace PortalWeb_API.Controllers
         [Route("ActualizarUsuario/{id}")]
         public async Task<IActionResult> ActualizarUsuario([FromRoute] int id, [FromBody] UsuariosPortal model)
         {
-            if (id != model.Id)
+            /*if (id != model.Id)
             {
                 return BadRequest("No existe el usuario portal");
             }
             _context.Entry(model).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return Ok(model);
+            return Ok(model);*/
+
+            var result = await _context.UsuariosPortal.FindAsync(model.Id);
+            if (result != null)
+            {
+                try
+                {
+                    result.Usuario = model.Usuario;
+                    result.Contrasenia = model.Contrasenia;
+                    result.Rol = model.Rol;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return BadRequest();
+                }
+                finally
+                {
+                    await _context.SaveChangesAsync();
+                }
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]

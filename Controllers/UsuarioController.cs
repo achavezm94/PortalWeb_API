@@ -135,40 +135,5 @@ namespace PortalWeb_API.Controllers
             await _context.SaveChangesAsync();
             return Ok(model);
         }
-
-        /*
-        [HttpDelete]
-        [Route("BorrarUsuario/{id:int}")]
-        public async Task<IActionResult> BorrarUsuario(int id)
-        {
-            var result = await _context.Usuarios.FirstOrDefaultAsync(e => e.Id == id);
-            if (result != null)
-            {
-                var resultDatos = await _context.DatosPersonales.FirstOrDefaultAsync(e => e.UsuarioidFk == result.Usuario);
-                _context.Usuarios.Remove(result);
-                if (resultDatos != null)
-                {
-                    _context.DatosPersonales.Remove(resultDatos);
-                }
-                else
-                {
-                    return NotFound();
-                }
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    return NoContent();
-                }
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-        */
     }
 }

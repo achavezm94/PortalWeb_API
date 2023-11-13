@@ -96,7 +96,7 @@ namespace PortalWeb_API.Controllers
                     result.TelfAdmin = model.TelfAdmin;
                     result.EmailAdmin = model.EmailAdmin;
                     result.CodProv = model.CodProv;
-                    result.IdCentroProceso = model.IdCentroProceso; ;
+                    result.IdCentroProceso = model.IdCentroProceso;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
