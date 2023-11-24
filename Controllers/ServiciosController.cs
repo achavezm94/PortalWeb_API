@@ -217,12 +217,12 @@ namespace PortalWeb_API.Controllers
                             if (ultimoDeposito is not null && peso is not null && sp_response is not null)
                             {
                                 List<object> list = new()
-                            {
-                                ultimoDeposito,
-                                peso,
-                                sp_response,
-                                sp_responseDatos
-                            };
+                                {
+                                    ultimoDeposito,
+                                    peso,
+                                    sp_response,
+                                    sp_responseDatos
+                                };
                                 await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", list);
                             }
                             return Ok(1);
