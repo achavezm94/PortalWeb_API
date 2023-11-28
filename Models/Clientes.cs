@@ -8,9 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-/// <summary>
-/// Tabla que tiene los clientes que tienen los servicios
-/// </summary>
 public partial class Clientes
 {
     [Column("id")]

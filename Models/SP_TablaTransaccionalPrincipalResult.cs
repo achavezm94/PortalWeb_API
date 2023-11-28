@@ -34,7 +34,10 @@ namespace PortalWeb_API.Models
         public int? Manual_Deposito_Coin_25 { get; set; }
         public int? Manual_Deposito_Coin_50 { get; set; }
         public int? Manual_Deposito_Coin_100 { get; set; }
+        [Column("Total", TypeName = "decimal(38,2)")]
         public decimal? Total { get; set; }
+        public int? Repetido { get; set; }
+        [Column("TotalRecoleccion", TypeName = "decimal(38,2)")]
         public decimal? TotalRecoleccion { get; set; }
         public string TipoTransaccion { get; set; }
         public DateTime? FechaRecoleccion { get; set; }

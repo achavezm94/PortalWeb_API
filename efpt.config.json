@@ -116,12 +116,13 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "servidor-desarrollo\\sqlexpress.PortalWeb.dbo",
+   "UiHint": "desktop-k7dsnp4\\sqlexpress.PortalWeb.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
    "UseFluentApiOnly": false,
    "UseHandleBars": false,
    "UseHierarchyId": false,

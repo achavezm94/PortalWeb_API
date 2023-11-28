@@ -24,17 +24,29 @@ namespace PortalWeb_API.Models
         public int? DepositoMont5 { get; set; }
         public int? DepositoMont2 { get; set; }
         public int? DepositoMont1 { get; set; }
+        [Column("DepositoCantCoin100", TypeName = "decimal(10,2)")]
         public decimal? DepositoCantCoin100 { get; set; }
+        [Column("DepositoCantCoin50", TypeName = "decimal(10,2)")]
         public decimal? DepositoCantCoin50 { get; set; }
+        [Column("DepositoCantCoin25", TypeName = "decimal(10,2)")]
         public decimal? DepositoCantCoin25 { get; set; }
+        [Column("DepositoCantCoin10", TypeName = "decimal(10,2)")]
         public decimal? DepositoCantCoin10 { get; set; }
+        [Column("DepositoCantCoin5", TypeName = "decimal(10,2)")]
         public decimal? DepositoCantCoin5 { get; set; }
+        [Column("DepositoCantCoin1", TypeName = "decimal(10,2)")]
         public decimal? DepositoCantCoin1 { get; set; }
+        [Column("DepositoMontCoin100", TypeName = "decimal(10,2)")]
         public decimal? DepositoMontCoin100 { get; set; }
+        [Column("DepositoMontCoin50", TypeName = "decimal(10,2)")]
         public decimal? DepositoMontCoin50 { get; set; }
+        [Column("DepositoMontCoin25", TypeName = "decimal(10,2)")]
         public decimal? DepositoMontCoin25 { get; set; }
+        [Column("DepositoMontCoin10", TypeName = "decimal(10,2)")]
         public decimal? DepositoMontCoin10 { get; set; }
+        [Column("DepositoMontCoin5", TypeName = "decimal(10,2)")]
         public decimal? DepositoMontCoin5 { get; set; }
+        [Column("DepositoMontCoin1", TypeName = "decimal(10,2)")]
         public decimal? DepositoMontCoin1 { get; set; }
     }
 }
