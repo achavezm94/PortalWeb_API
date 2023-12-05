@@ -82,7 +82,6 @@ namespace PortalWeb_API.Controllers
                     {
                         return Ok(_cuentasBancariasIDcliente);
                     }
-                    
                 };    
             }
             else
@@ -90,8 +89,7 @@ namespace PortalWeb_API.Controllers
                 return BadRequest("ERROR");
             }
         }
-            
-        
+                    
         [HttpPost]
         [Route("GuardarCliente")]
         public async Task<IActionResult> GuardarCliente([FromBody] Clientes model)

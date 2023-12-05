@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PortalWeb_API.Data;
+﻿using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Methods_Token
@@ -18,7 +17,6 @@ namespace PortalWeb_API.Methods_Token
             if (usuario != null)
             {
                 return usuario;
-
             }
             else
             {

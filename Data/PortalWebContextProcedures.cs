@@ -2,11 +2,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PortalWeb_API.Data
 {
@@ -35,6 +30,7 @@ namespace PortalWeb_API.Data
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SP_DatosEquiposFrontResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<SP_FiltroPorFechaTransaccionesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_TablaTransaccionalPrincipalResult>().HasNoKey().ToView(null);
         }
     }
@@ -69,6 +65,45 @@ namespace PortalWeb_API.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<SP_DatosEquiposFrontResult>("EXEC @returnValue = [dbo].[SP_DatosEquiposFront] @id_equipo", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<SP_FiltroPorFechaTransaccionesResult>> SP_FiltroPorFechaTransaccionesAsync(string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "id_tienda",
+                    Size = 100,
+                    Value = id_tienda ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "fechaInicial",
+                    Value = fechaInicial ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "fechaFinal",
+                    Value = fechaFinal ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<SP_FiltroPorFechaTransaccionesResult>("EXEC @returnValue = [dbo].[SP_FiltroPorFechaTransacciones] @id_tienda, @fechaInicial, @fechaFinal", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
