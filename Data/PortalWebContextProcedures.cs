@@ -2,6 +2,11 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PortalWeb_API.Data
 {
@@ -71,7 +76,7 @@ namespace PortalWeb_API.Data
             return _;
         }
 
-        public virtual async Task<List<SP_FiltroPorFechaTransaccionesResult>> SP_FiltroPorFechaTransaccionesAsync(string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<SP_FiltroPorFechaTransaccionesResult>> SP_FiltroPorFechaTransaccionesAsync(int? tipo, string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -82,6 +87,12 @@ namespace PortalWeb_API.Data
 
             var sqlParameters = new []
             {
+                new SqlParameter
+                {
+                    ParameterName = "tipo",
+                    Value = tipo ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
                 new SqlParameter
                 {
                     ParameterName = "id_tienda",
@@ -103,7 +114,7 @@ namespace PortalWeb_API.Data
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<SP_FiltroPorFechaTransaccionesResult>("EXEC @returnValue = [dbo].[SP_FiltroPorFechaTransacciones] @id_tienda, @fechaInicial, @fechaFinal", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<SP_FiltroPorFechaTransaccionesResult>("EXEC @returnValue = [dbo].[SP_FiltroPorFechaTransacciones] @tipo, @id_tienda, @fechaInicial, @fechaFinal", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

@@ -28,13 +28,14 @@ namespace PortalWeb_API.Models
         public int? Deposito_Bill_20 { get; set; }
         public int? Deposito_Bill_50 { get; set; }
         public int? Deposito_Bill_100 { get; set; }
-        public int Manual_Deposito_Coin_1 { get; set; }
-        public int Manual_Deposito_Coin_5 { get; set; }
-        public int Manual_Deposito_Coin_10 { get; set; }
-        public int Manual_Deposito_Coin_25 { get; set; }
-        public int Manual_Deposito_Coin_50 { get; set; }
-        public int Manual_Deposito_Coin_100 { get; set; }
-        public int? Total { get; set; }
+        public int? Manual_Deposito_Coin_1 { get; set; }
+        public int? Manual_Deposito_Coin_5 { get; set; }
+        public int? Manual_Deposito_Coin_10 { get; set; }
+        public int? Manual_Deposito_Coin_25 { get; set; }
+        public int? Manual_Deposito_Coin_50 { get; set; }
+        public int? Manual_Deposito_Coin_100 { get; set; }
+        [Column("Total", TypeName = "decimal(38,2)")]
+        public decimal? Total { get; set; }
         public int? Repetido { get; set; }
         [Column("TotalRecoleccion", TypeName = "decimal(38,2)")]
         public decimal? TotalRecoleccion { get; set; }
