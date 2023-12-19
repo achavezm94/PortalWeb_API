@@ -62,12 +62,8 @@ namespace PortalWeb_API.Controllers
                     foreach (var item in data)
                     {
                         TimeSpan ts = cstTime.Subtract((DateTime)item.tiempoSincronizacion);
-                        if (ts.TotalMinutes < 15.0)
-                        {
-                            estadoPingActual = 1;
-                        }
-                        else 
-                        {
+                        if (ts.TotalMinutes >= 5.0)
+                        {                            
                             var equipo = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == item.ipEquipo);
                             if (equipo is not null)
                             {
@@ -77,15 +73,17 @@ namespace PortalWeb_API.Controllers
                                 await _context.SaveChangesAsync();
                             }
                         }
+                        else if (ts.TotalMinutes < 5.0)
+                        {
+                            estadoPingActual = 1;
+                        }
                         resultado.Add(new MonitoreoModel()
                         {
                             ip = item.ipEquipo,
                             tiempoSincronizacion = item.tiempoSincronizacion,
                             estadoPing = estadoPingActual
-
                         });
-                        estadoPingActual = 0;
-                        
+                        estadoPingActual = 0;                        
                     }
                     await _pinghub.Clients.All.SendAsync("SendPingEquipo", resultado);
                     return Ok();
