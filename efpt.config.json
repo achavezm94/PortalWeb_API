@@ -96,6 +96,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[TransaccionesAcreditadas]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Usuarios]",
          "ObjectType": 0
       },

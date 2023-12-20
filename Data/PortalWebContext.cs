@@ -54,6 +54,8 @@ public partial class PortalWebContext : DbContext
 
     public virtual DbSet<Tiendas> Tiendas { get; set; }
 
+    public virtual DbSet<TransaccionesAcreditadas> TransaccionesAcreditadas { get; set; }
+
     public virtual DbSet<Usuarios> Usuarios { get; set; }
 
     public virtual DbSet<UsuariosPortal> UsuariosPortal { get; set; }
@@ -259,6 +261,12 @@ public partial class PortalWebContext : DbContext
             entity.Property(e => e.CodProv).IsFixedLength();
             entity.Property(e => e.Fecreate).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<TransaccionesAcreditadas>(entity =>
+        {
+            entity.Property(e => e.Acreditada).HasDefaultValueSql("('E')");
+            entity.Property(e => e.FechaRegistro).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<Usuarios>(entity =>
