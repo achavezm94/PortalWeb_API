@@ -26,12 +26,23 @@ public partial class TransaccionesAcreditadas
     public DateTime FechaTransaction { get; set; }
 
     [Column(TypeName = "datetime")]
+    public DateTime FechaIni { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime FechaFin { get; set; }
+
+    [Column(TypeName = "datetime")]
     public DateTime? FechaRegistro { get; set; }
 
     [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string NombreArchivo { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string UsuarioRegistro { get; set; }
 
     [StringLength(1)]
     [Unicode(false)]

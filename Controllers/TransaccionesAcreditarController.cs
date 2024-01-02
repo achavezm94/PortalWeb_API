@@ -4,7 +4,7 @@ using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Controllers
 {
-    [Route("api/[TransAcreditada]")]
+    [Route("api/TransAcreditada")]
     [ApiController]
     public class TransaccionesAcreditarController : ControllerBase
     {

@@ -34,6 +34,7 @@ namespace PortalWeb_API.Data
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<SP_CalculoTotalResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_DatosEquiposFrontResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaTransaccionesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_TablaTransaccionalPrincipalResult>().HasNoKey().ToView(null);
@@ -47,6 +48,33 @@ namespace PortalWeb_API.Data
         public PortalWebContextProcedures(PortalWebContext context)
         {
             _context = context;
+        }
+
+        public virtual async Task<List<SP_CalculoTotalResult>> SP_CalculoTotalAsync(string machine_sn, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "machine_sn",
+                    Size = 100,
+                    Value = machine_sn ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<SP_CalculoTotalResult>("EXEC @returnValue = [dbo].[SP_CalculoTotal] @machine_sn", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
         }
 
         public virtual async Task<List<SP_DatosEquiposFrontResult>> SP_DatosEquiposFrontAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)

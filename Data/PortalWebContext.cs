@@ -266,7 +266,7 @@ public partial class PortalWebContext : DbContext
         modelBuilder.Entity<TransaccionesAcreditadas>(entity =>
         {
             entity.Property(e => e.Acreditada).HasDefaultValueSql("('E')");
-            entity.Property(e => e.FechaRegistro).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.FechaRegistro).HasDefaultValueSql("(format(getdate(),'yyyyMMdd hh:mm'))");
         });
 
         modelBuilder.Entity<Usuarios>(entity =>

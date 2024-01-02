@@ -12,6 +12,7 @@ namespace PortalWeb_API.Data
 {
     public partial interface IPortalWebContextProcedures
     {
+        Task<List<SP_CalculoTotalResult>> SP_CalculoTotalAsync(string machine_sn, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_DatosEquiposFrontResult>> SP_DatosEquiposFrontAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_FiltroPorFechaTransaccionesResult>> SP_FiltroPorFechaTransaccionesAsync(int? tipo, string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_TablaTransaccionalPrincipalResult>> SP_TablaTransaccionalPrincipalAsync(string id_tienda, int? type, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
