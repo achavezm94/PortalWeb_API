@@ -20,14 +20,10 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-            var marcas = from c in _context.Marca
+                var marcas = from c in _context.Marca
                             where c.Codigotipomaq == codigotipomaq
                             select c;
-            if (marcas == null)
-                {
-                    return NotFound();
-                }
-                return Ok(marcas);
+                return (marcas != null) ? Ok(marcas) : NotFound("No se encontro");
             }
             else
             {
@@ -44,11 +40,7 @@ namespace PortalWeb_API.Controllers
                 var modelos = from c in _context.Modelo
                               where c.Codigotipomaq == codigotipomaq && c.Codmarca == codmodelo
                               select c;
-                if (modelos == null)
-                {
-                    return NotFound();
-                }
-                return Ok(modelos);
+                return (modelos != null) ? Ok(modelos) : NotFound("No se encontro");
             }
             else
             {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -24,18 +23,11 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 await _context.CuentaSignaTienda.AddAsync(model);
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest("Datos incorrectos");
-                }
+                return (await _context.SaveChangesAsync() > 0) ? Ok("Se guardo") : BadRequest("Datos incorrectos");
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest("Error");
             }
         }
     }

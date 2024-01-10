@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
-using System;
 
 namespace PortalWeb_API.Controllers
 {
@@ -19,21 +18,18 @@ namespace PortalWeb_API.Controllers
 
         [HttpGet]
         [Route("ObtenerCuenta")]
-        public async Task<IActionResult> ObtenerCuenta()
+        public IActionResult ObtenerCuenta()
         {
-            if (ModelState.IsValid)
+            var Datos = from cb in _context.CuentasBancarias select cb;
+            return (Datos != null) ? Ok(Datos) : NotFound("No existe cuenta bancaria");
+            /*
+            var cuentasBancarias = await _context.CuentasBancarias.ToListAsync();
+            if (cuentasBancarias == null)
             {
-                var cuentasBancarias = await _context.CuentasBancarias.ToListAsync();
-                if (cuentasBancarias == null)
-                {
-                    return NotFound();
-                }
-                return Ok(cuentasBancarias);
+                return NotFound();
             }
-            else
-            {
-                return BadRequest("ERROR");
-            }
+            return Ok(cuentasBancarias);
+            */
         }
 
         [HttpPost]
@@ -43,26 +39,30 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 await _context.CuentasBancarias.AddAsync(model);
-
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest("Datos incorrectos");
-                }
+                return (await _context.SaveChangesAsync() > 0) ? Ok("Se guardo") : BadRequest("Datos incorrectos");
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest("Error");
             }
         }
 
         [HttpPut]
         [Route("ActualizarCuenta")]
-        public async Task<IActionResult> ActualizarCuenta([FromBody] CuentasBancarias model)
+        public IActionResult ActualizarCuenta([FromBody] CuentasBancarias model)
         {
+
+            var update = _context.CuentasBancarias
+                           .Where(u => u.Codcuentacontable.Equals(model.Codcuentacontable))
+                           .ExecuteUpdate(u => u
+                           .SetProperty(u => u.CodigoCliente, model.CodigoCliente)
+                           .SetProperty(u => u.Nombanco, model.Nombanco)
+                           .SetProperty(u => u.Numerocuenta, model.Numerocuenta)
+                           .SetProperty(u => u.Observacion, model.Observacion)
+                           .SetProperty(u => u.TipoCuenta, model.TipoCuenta));
+            return (update != 0) ? Ok("Se actualizo") : BadRequest("No se pudo actualizar");
+
+            /*
             var result = await _context.CuentasBancarias.FindAsync(model.Codcuentacontable);
 
             if (result != null)
@@ -88,13 +88,19 @@ namespace PortalWeb_API.Controllers
             else
             {
                 return NotFound();
-            }
+            }*/
         }
 
         [HttpDelete]
         [Route("BorrarCuenta/{id:int}")]
-        public async Task<IActionResult> BorrarCuenta(int id)
+        public IActionResult BorrarCuenta(int id)
         {
+            var delete = _context.CuentasBancarias
+                           .Where(b => b.Id.Equals(id))
+                           .ExecuteDelete();
+            return (delete != 0) ? Ok("Se borro") : BadRequest("No se pudo eliminar");
+
+            /*
             var result = await _context.CuentasBancarias
                  .FirstOrDefaultAsync(e => e.Id == id);
             if (result != null)
@@ -113,7 +119,7 @@ namespace PortalWeb_API.Controllers
             else
             {
                 return NotFound();
-            }
+            }*/
         }
     }
 }

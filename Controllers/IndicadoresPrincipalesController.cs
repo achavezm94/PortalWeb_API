@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
+using PortalWeb_API.Models;
 using System.Data;
 
 namespace PortalWeb_API.Controllers
@@ -17,24 +18,20 @@ namespace PortalWeb_API.Controllers
         {
             _context = context;
         }
-        [HttpGet("ObtenerIndicadores/{id}/{tp}")]
-        public IActionResult ObtenerIndicadores([FromRoute] string id, [FromRoute] int tp)
+        /*
+        [HttpGet]
+        [Route("ObtenerEquipo/{serieEquipo}")]
+        public async Task<IEnumerable<SP_GraficoTotalesAñoResult>> ObtenerEquipoAsync([FromRoute] string serieEquipo)
         {
-            string Sentencia = " EXEC SP_IndicadoresLlenado @ids, " + tp;
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.SelectCommand.Parameters.Add(new SqlParameter("@ids", id));
-                adapter.Fill(dt);
-            }
-            if (dt == null)
-            {
-                return NotFound("No se ha podido crear...");
-            }
-            return Ok(dt);
+            return await _context.GetProcedures().SP_GraficoTotalesAñoAsync(serieEquipo);
+        }
+         */
+
+
+        [HttpGet("ObtenerIndicadores/{id}/{tp}")]
+        public async Task<IEnumerable<SP_IndicadoresLlenadoResult>> ObtenerIndicadores([FromRoute] string id, [FromRoute] int tp)
+        {
+            return await _context.GetProcedures().SP_IndicadoresLlenadoAsync(id, tp);
         }
     }
 }
