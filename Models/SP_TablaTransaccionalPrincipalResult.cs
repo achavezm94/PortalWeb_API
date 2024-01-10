@@ -7,12 +7,12 @@ namespace PortalWeb_API.Models
 {
     public partial class SP_TablaTransaccionalPrincipalResult
     {
-        public DateTime FechaTransaccion { get; set; }
+        public DateTime? FechaTransaccion { get; set; }
         public string Fecha { get; set; }
         public string Hora { get; set; }
         public string NombreCliente { get; set; }
         public string NombreTienda { get; set; }
-        public int Transaccion_No { get; set; }
+        public int? Transaccion_No { get; set; }
         public string Machine_Sn { get; set; }
         public string Usuarios_idFk { get; set; }
         public string Establecimiento { get; set; }
@@ -40,6 +40,6 @@ namespace PortalWeb_API.Models
         [Column("TotalRecoleccion", TypeName = "decimal(38,2)")]
         public decimal? TotalRecoleccion { get; set; }
         public string TipoTransaccion { get; set; }
-        public int? FechaRecoleccion { get; set; }
+        public DateTime? FechaRecoleccion { get; set; }
     }
 }

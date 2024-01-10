@@ -19,6 +19,7 @@ namespace PortalWeb_API.Controllers
         public async Task<IEnumerable<SP_FiltroPorFechaTransaccionesResult>> ResultadoFiltroFechasTransacciones([FromBody] ModeloFiltroFechasTransacciones filtroFechas)
         {
             return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
-        }        
+        }
+        
     }
 }

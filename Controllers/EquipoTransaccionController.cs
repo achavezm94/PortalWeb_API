@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
-using PortalWeb_API.Models;
+using System.Data;
+
 namespace PortalWeb_API.Controllers
 {
     [Route("api/EquipoDetalle")]
@@ -15,9 +19,14 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet("ObtenerDetalle/{id}")]
-        public async Task<IEnumerable<SP_DatosEquiposFrontResult>> ObtenerDetalleAsync(string id)
+        public async Task<IActionResult> ObtenerDetalleAsync(string id)
         {
-            return await _context.GetProcedures().SP_DatosEquiposFrontAsync(id);
+            var response = await _context.GetProcedures().SP_DatosEquiposFrontAsync(id);
+            if (response == null)
+            {
+                return NotFound("No se ha podido crear...");
+            }
+            return Ok(response);
         }
     }
 }

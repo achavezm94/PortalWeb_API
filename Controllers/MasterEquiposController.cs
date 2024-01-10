@@ -23,11 +23,16 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 var equipos = await _context.MasterEquipos.ToListAsync();
-                return (equipos != null) ? Ok(equipos) : NotFound();
+
+                if (equipos == null)
+                {
+                    return NotFound();
+                }
+                return Ok(equipos);
             }
             else
             {
-                return BadRequest("Error");
+                return BadRequest("ERROR");
             }
         }
 
@@ -38,33 +43,26 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 await _context.MasterEquipos.AddAsync(model);
-                return (await _context.SaveChangesAsync() > 0) ? Ok("Se guardo") : BadRequest("Datos incorrectos");
+
+                if (await _context.SaveChangesAsync() > 0)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest("Datos incorrectos");
+                }
             }
             else
             {
-                return BadRequest("Error");
+                return BadRequest("ERROR");
             }
         }
 
         [HttpPut]
         [Route("ActualizarEquipo")]
-        public IActionResult ActualizarEquipo([FromBody] MasterEquipos model)
+        public async Task<IActionResult> ActualizarEquipo([FromBody] MasterEquipos model)
         {
-            if (ModelState.IsValid)
-            {
-                var update = _context.MasterEquipos
-                            .Where(u => u.CodigoEquipo.Equals(model.CodigoEquipo))
-                            .ExecuteUpdate(u => u
-                            .SetProperty(u => u.NombreEquipo, model.NombreEquipo)
-                            .SetProperty(u => u.CapacidadBolsillo, model.CapacidadBolsillo)
-                            .SetProperty(u => u.VelocidadConteo, model.VelocidadConteo));
-                return (update != 0) ? Ok("Se actualizo") : BadRequest("No se pudo actualizar");
-            }
-            else
-            {
-                return BadRequest("Error");
-            }
-            /*
             var result = await _context.MasterEquipos.FindAsync(model.CodigoEquipo);
             if (result != null)
             {
@@ -87,19 +85,13 @@ namespace PortalWeb_API.Controllers
             else
             {
                 return NotFound();
-            }*/
+            }
         }
 
         [HttpDelete]
         [Route("BorrarEquipo/{id:int}")]
-        public IActionResult BorrarEquipo(int id)
+        public async Task<IActionResult> BorrarEquipo(int id)
         {
-            var delete = _context.MasterEquipos
-                            .Where(b => b.Id.Equals(id))
-                            .ExecuteDelete();
-            return (delete != 0) ? Ok("Se borro") : BadRequest("No se pudo eliminar");
-
-            /*
             var result = await _context.MasterEquipos.FirstOrDefaultAsync(e => e.Id == id);
             if (result != null)
             {
@@ -118,7 +110,6 @@ namespace PortalWeb_API.Controllers
             {
                 return NotFound();
             }
-            */
         }
     }
 }

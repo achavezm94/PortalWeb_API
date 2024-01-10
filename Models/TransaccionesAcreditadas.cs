@@ -32,7 +32,7 @@ public partial class TransaccionesAcreditadas
     public DateTime FechaFin { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime FechaRegistro { get; set; }
+    public DateTime? FechaRegistro { get; set; }
 
     [Required]
     [StringLength(50)]

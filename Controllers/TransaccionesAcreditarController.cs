@@ -17,21 +17,23 @@ namespace PortalWeb_API.Controllers
 
         [HttpPost]
         [Route("GuardarTransacciones")]
-        public async Task<IActionResult> GuardarTransacciones([FromBody] List<TransaccionesAcreditadas> model)
+        public async Task<IActionResult> GuardarTransacciones([FromBody] TransaccionesAcreditadas model)
         {
-            DateTime _date = DateTime.Now;
             if (ModelState.IsValid)
-            {
-                foreach (var item in model)
+            {                
+                await _context.TransaccionesAcreditadas.AddAsync(model);                
+                if (await _context.SaveChangesAsync() > 0)
                 {
-                    item.FechaRegistro = _date;
-                    await _context.TransaccionesAcreditadas.AddAsync(item);
+                    return Ok(model);
                 }
-                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                else
+                {
+                    return BadRequest("Datos incorrectos");
+                }
             }
             else
             {
-                return BadRequest();
+                return BadRequest("ERROR");
             }
         }
     }

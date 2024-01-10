@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
-using PortalWeb_API.Models;
+using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
@@ -17,9 +19,25 @@ namespace PortalWeb_API.Controllers
 
         [HttpGet]
         [Route("ObtenerEquipo/{serieEquipo}")]
-        public async Task<IEnumerable<SP_GraficoTotalesAñoResult>> ObtenerEquipoAsync([FromRoute] string serieEquipo)
+        public IActionResult ObtenerEquipo([FromRoute] string serieEquipo)
         {
-            return await _context.GetProcedures().SP_GraficoTotalesAñoAsync(serieEquipo);
+            string Sentencia = "exec SP_GraficoTotalesAño @serieEquipo";
+
+            DataTable dt = new();
+            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
+            {
+                using SqlCommand cmd = new(Sentencia, connection);
+                SqlDataAdapter adapter = new(cmd);
+                adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.SelectCommand.Parameters.Add(new SqlParameter("@serieEquipo", serieEquipo));
+                adapter.Fill(dt);
+            }
+
+            if (dt == null)
+            {
+                return NotFound("No se ha podido crear...");
+            }
+            return Ok(dt);
         }
     }
 }

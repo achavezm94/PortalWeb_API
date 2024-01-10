@@ -112,10 +112,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ObtenerClientes]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[SP_CalculoTotal]",
          "ObjectType": 1
       },
@@ -125,22 +121,6 @@
       },
       {
          "Name": "[dbo].[SP_FiltroPorFechaTransacciones]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_GraficoTotalesAño]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_IndicadoresLlenado]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[sp_obtener_maquinaria]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_ObtenerEquipoTemp]",
          "ObjectType": 1
       },
       {

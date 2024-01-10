@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
+using System;
 using System.Data;
 
 namespace PortalWeb_API.Controllers
@@ -19,32 +21,33 @@ namespace PortalWeb_API.Controllers
 
         [HttpGet]
         [Route("ObtenerCliente")]
-        public async Task<IEnumerable<ObtenerClientesResult>> ObtenerCliente()
+        public IActionResult ObtenerCliente()
         {
-            return await _context.GetProcedures().ObtenerClientesAsync();
+
+            string Sentencia = "exec [ObtenerClientes]";
+
+            DataTable dt = new();
+            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
+            {
+                using SqlCommand cmd = new(Sentencia, connection);
+                SqlDataAdapter adapter = new(cmd);
+                adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.Fill(dt);
+            }
+
+            if (dt == null)
+            {
+                return NotFound("No se ha podido crear...");
+            }
+
+            return Ok(dt);
+
         }
 
         [HttpGet]
         [Route("ObtenerCuentaCliente/{id:int}")]
-        public IActionResult ObtenerCuentaCliente(int id)
+        public async Task<IActionResult> ObtenerCuentaCliente(int id)
         {
-            var Datos = from cli in _context.Clientes
-                        join cb in _context.CuentasBancarias on cli.CodigoCliente equals cb.CodigoCliente
-                        where cli.Id == id
-                        select new
-                        {
-                            id = cb.Id,
-                            clienteID = cli.Id,
-                            codigoCliente = cb.CodigoCliente,
-                            codcuentacontable = cb.Codcuentacontable,
-                            nombanco = cb.Nombanco,
-                            numerocuenta = cb.Numerocuenta,
-                            tipoCuenta = cb.TipoCuenta,
-                            observacion = cb.Observacion,
-                            fecrea = cb.Fecrea
-                        };
-            return (Datos != null) ? Ok(Datos) : NotFound("No existe cuenta bancaria");
-            /*
             List<CuentasBancariasIDCliente> _cuentasBancariasIDcliente = new();
             if (ModelState.IsValid)
             {
@@ -85,9 +88,8 @@ namespace PortalWeb_API.Controllers
             {
                 return BadRequest("ERROR");
             }
-            */
         }
-
+                    
         [HttpPost]
         [Route("GuardarCliente")]
         public async Task<IActionResult> GuardarCliente([FromBody] Clientes model)
@@ -95,38 +97,26 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 await _context.Clientes.AddAsync(model);
-                return (await _context.SaveChangesAsync() > 0) ?  Ok("Se guardo") : BadRequest("Datos incorrectos");
-                /*
                 if (await _context.SaveChangesAsync() > 0)
-                {                    
+                {
+                    
                     return Ok(model);
                 }
                 else
                 {
                     return BadRequest("Datos incorrectos");
-                }*/
+                }
             }
             else
             {
-                return BadRequest("Error");
+                return BadRequest("ERROR");
             }
         }
 
         [HttpPut]
         [Route("ActualizarCliente")]
-        public IActionResult ActualizarCliente([FromBody] Clientes model)
+        public async Task<IActionResult> ActualizarCliente([FromBody] Clientes model)
         {
-            var update = _context.Clientes
-                            .Where(u => u.NombreCliente.Equals(model.NombreCliente))
-                            .ExecuteUpdate(u => u
-                            .SetProperty(u => u.NombreCliente, model.NombreCliente)
-                            .SetProperty(u => u.Ruc, model.Ruc)
-                            .SetProperty(u => u.Direccion, model.Direccion)
-                            .SetProperty(u => u.Telefcontacto, model.Telefcontacto)
-                            .SetProperty(u => u.Emailcontacto, model.Emailcontacto)
-                            .SetProperty(u => u.Nombrecontacto, model.Nombrecontacto));
-            return (update != 0) ? Ok("Se actualizo") : BadRequest("No se pudo actualizar");
-            /*
             var result = await _context.Clientes.FindAsync(model.CodigoCliente);
 
             if (result != null)
@@ -153,18 +143,13 @@ namespace PortalWeb_API.Controllers
             else 
             {
                 return NotFound();
-            }*/
+            }
         }
 
         [HttpDelete]
         [Route("BorrarCliente/{id:int}")]
-        public IActionResult BorrarCliente(int id)
+        public async Task<IActionResult> BorrarCliente(int id)
         {
-            var delete = _context.Clientes
-                            .Where(b => b.Id.Equals(id))
-                            .ExecuteDelete();
-            return (delete != 0) ? Ok("Se borro") : BadRequest("No se pudo eliminar");
-            /*
             var result = await _context.Clientes.FirstOrDefaultAsync(e => e.Id == id);
             if (result != null)
             {
@@ -182,7 +167,7 @@ namespace PortalWeb_API.Controllers
             else
             {
                 return NotFound();
-            }*/
+            }
         }
     }
 }
