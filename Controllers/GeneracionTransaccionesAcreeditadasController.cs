@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
-using PortalWeb_API.Models;
 using System.Data;
 
 namespace PortalWeb_API.Controllers
@@ -25,7 +22,7 @@ namespace PortalWeb_API.Controllers
         {
             var Datos = from t in _context.TransaccionesAcreditadas
                         where t.Acreditada.Equals(opcion)
-                        group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro, t.NoTransaction } into g
+                        group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro } into g
                         select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.UsuarioRegistro, Total = g.Count() };
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
         }
@@ -35,9 +32,10 @@ namespace PortalWeb_API.Controllers
         public IActionResult GenerarTransaccionesAcreeditadas([FromRoute] string nombreArchivo)
         {
             var Datos = from t in _context.TransaccionesAcreditadas
+                        join m in _context.Equipos on t.MachineSn equals m.SerieEquipo
                         where t.NombreArchivo.Equals(nombreArchivo)
-                        group t by new { t.MachineSn } into g
-                        select new { g.Key.MachineSn, Total = g.Count() };
+                        group t by new { t.MachineSn, m.IpEquipo } into g
+                        select new { g.Key.MachineSn, g.Key.IpEquipo, Total = g.Count() };
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
         }
 
