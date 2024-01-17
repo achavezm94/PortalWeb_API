@@ -20,6 +20,5 @@ namespace PortalWeb_API.Controllers
         {
             return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
         }
-        
     }
 }

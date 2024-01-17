@@ -15,7 +15,7 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpGet("Calculo")]
+        [HttpGet("Calculo/{machine_Sn}")]
         public async Task<IEnumerable<SP_CalculoTotalResult>> ResultadoCalculoTotal([FromRoute] string machine_Sn )
         {
             return await _context.GetProcedures().SP_CalculoTotalAsync(machine_Sn);

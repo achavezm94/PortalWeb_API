@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
+using PortalWeb_API.Models;
 using System.Data;
 
 namespace PortalWeb_API.Controllers
@@ -17,11 +18,21 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet]
-        [Route("GenerarCard/{Opcion}")]
-        public IActionResult GenerarCard([FromRoute] string opcion)
+        [Route("GenerarCard")]
+        public IActionResult GenerarCard()
         {
             var Datos = from t in _context.TransaccionesAcreditadas
-                        where t.Acreditada.Equals(opcion)
+                        where t.Acreditada.Equals("E")
+                        group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro } into g
+                        select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.UsuarioRegistro, Total = g.Count() };
+            return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
+        }
+
+        [HttpPost("GenerarCardAcreeditadasFiltro")]
+        public IActionResult GenerarCardFiltro([FromBody] FechasIniFin model)
+        {
+            var Datos = from t in _context.TransaccionesAcreditadas
+                        where t.FechaRegistro >= model.fechaIni && t.FechaRegistro <= model.fechaFin && t.Acreditada.Equals("A")
                         group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro } into g
                         select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.UsuarioRegistro, Total = g.Count() };
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
@@ -46,7 +57,7 @@ namespace PortalWeb_API.Controllers
             var update = _context.TransaccionesAcreditadas
                             .Where(u => u.NombreArchivo.Equals(nombreArchivo))
                             .ExecuteUpdate(u => u.SetProperty(u => u.Acreditada, "A"));
-            return (update != 0) ? Ok("Se actualizo") : BadRequest("No se pudo actualizar");
+            return (update != 0) ? Ok() : BadRequest();
         }
 
 
@@ -57,7 +68,7 @@ namespace PortalWeb_API.Controllers
             var delete = _context.TransaccionesAcreditadas
                             .Where(b => b.NombreArchivo.Equals(nombreArchivo))
                             .ExecuteDelete();
-            return (delete != 0) ? Ok("Se borro") : BadRequest("No se pudo eliminar");
+            return (delete != 0) ? Ok() : BadRequest();
         }
     }
 }
