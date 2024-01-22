@@ -105,7 +105,7 @@ namespace PortalWeb_API.Data
             return _;
         }
 
-        public virtual async Task<List<SP_EquiposNoTransaccionesResult>> SP_EquiposNoTransaccionesAsync(DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<SP_EquiposNoTransaccionesResult>> SP_EquiposNoTransaccionesAsync(DateTime? fechaInicial, DateTime? fechaFinal, int? opcion, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -128,9 +128,15 @@ namespace PortalWeb_API.Data
                     Value = fechaFinal ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
+                new SqlParameter
+                {
+                    ParameterName = "opcion",
+                    Value = opcion ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<SP_EquiposNoTransaccionesResult>("EXEC @returnValue = [dbo].[SP_EquiposNoTransacciones] @fechaInicial, @fechaFinal", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<SP_EquiposNoTransaccionesResult>("EXEC @returnValue = [dbo].[SP_EquiposNoTransacciones] @fechaInicial, @fechaFinal, @opcion", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

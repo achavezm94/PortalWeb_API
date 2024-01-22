@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -15,10 +14,10 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpPost("Conteo")]
-        public async Task<IEnumerable<SP_EquiposNoTransaccionesResult>> ResultadoConteoTransacciones([FromBody] FechasIniFin filtroFechas)
+        [HttpPost("Conteo/{opcion}")]
+        public async Task<IEnumerable<SP_EquiposNoTransaccionesResult>> ResultadoConteoTransacciones([FromBody] FechasIniFin filtroFechas, [FromRoute] int opcion)
         {
-            return await _context.GetProcedures().SP_EquiposNoTransaccionesAsync(filtroFechas.fechaIni, filtroFechas.fechaFin);
+            return await _context.GetProcedures().SP_EquiposNoTransaccionesAsync(filtroFechas.FechaIni, filtroFechas.FechaFin, opcion);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace PortalWeb_API.Controllers
         public IActionResult GenerarCardFiltro([FromBody] FechasIniFin model)
         {
             var Datos = from t in _context.TransaccionesAcreditadas
-                        where t.FechaRegistro >= model.fechaIni && t.FechaRegistro <= model.fechaFin && t.Acreditada.Equals("A")
+                        where t.FechaRegistro >= model.FechaIni && t.FechaRegistro <= model.FechaFin && t.Acreditada.Equals("A")
                         group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro } into g
                         select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.UsuarioRegistro, Total = g.Count() };
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");

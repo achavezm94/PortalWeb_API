@@ -2,7 +2,7 @@
 {
     public class FechasIniFin
     {
-        public DateTime fechaIni { get; set; }
-        public DateTime fechaFin { get; set; }
+        public DateTime FechaIni { get; set; }
+        public DateTime FechaFin { get; set; }
     }
 }

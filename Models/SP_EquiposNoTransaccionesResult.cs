@@ -8,6 +8,10 @@ namespace PortalWeb_API.Models
     public partial class SP_EquiposNoTransaccionesResult
     {
         public string Machine_Sn { get; set; }
-        public int? NoTransaccion { get; set; }
+        public string IpEquipo { get; set; }
+        public string NombreTienda { get; set; }
+        public int? Conteo_M { get; set; }
+        public int? Conteo_A { get; set; }
+        public int? Conteo_R { get; set; }
     }
 }
