@@ -22,9 +22,7 @@ namespace PortalWeb_API.Controllers
         [Route("ObtenerEquipo/{tp}/{codTienda}")]
         public IActionResult ObtenerEquipo([FromRoute] int tp, [FromRoute] string codTienda )
         {
-
             string Sentencia = "exec sp_obtener_maquinaria @type, @ctienda";
-
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
             {
@@ -35,7 +33,6 @@ namespace PortalWeb_API.Controllers
                 adapter.SelectCommand.Parameters.Add(new SqlParameter("@ctienda", codTienda));
                 adapter.Fill(dt);
             }
-
             if (dt == null)
             {
                 return NotFound("No se ha podido crear...");
@@ -84,8 +81,7 @@ namespace PortalWeb_API.Controllers
         [HttpPut]
         [Route("ActualizarEquipo/{id}")]
         public async Task<IActionResult> ActualizarEquipo([FromRoute] int id, [FromBody] Equipos model)
-        {
-            
+        {            
             if (id != model.Id)
             {
                 return BadRequest("No existe el equipo");
@@ -93,7 +89,6 @@ namespace PortalWeb_API.Controllers
             _context.Entry(model).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok(model);
-
         }
 
         [HttpDelete]
@@ -125,18 +120,14 @@ namespace PortalWeb_API.Controllers
         [Route("EquipoNuevo")]
         public IActionResult ObtenerEquipoTemporal()
         {
-
             string Sentencia = "exec SP_ObtenerEquipoTemp";
-
             DataTable dt = new();
             using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
             {
-                using (SqlCommand cmd = new(Sentencia, connection))
-                {
-                    SqlDataAdapter adapter = new(cmd);
-                    adapter.SelectCommand.CommandType = CommandType.Text;
-                    adapter.Fill(dt);
-                }
+                using SqlCommand cmd = new(Sentencia, connection);
+                SqlDataAdapter adapter = new(cmd);
+                adapter.SelectCommand.CommandType = CommandType.Text;
+                adapter.Fill(dt);
             }
             if (dt == null)
             {
@@ -144,7 +135,6 @@ namespace PortalWeb_API.Controllers
             }
 
             return Ok(dt);
-
         }
     }
 }

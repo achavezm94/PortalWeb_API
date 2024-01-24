@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
-using System;
 
 namespace PortalWeb_API.Controllers
 {
@@ -34,6 +33,20 @@ namespace PortalWeb_API.Controllers
             {
                 return BadRequest("ERROR");
             }
+        }
+
+        [HttpGet]
+        [Route("NTransacciones/{id}")]
+        public IActionResult GenerarTransaccionesAcreeditadas([FromRoute] int id)
+        {
+            var Datos = (from cb in _context.CuentasBancarias
+                        join cs in _context.CuentaSignaTienda on cb.Id equals cs.Idcuentabancaria
+                        join t in _context.Tiendas on cs.Idtienda equals t.CodigoTienda
+                        join e in _context.Equipos on t.Id equals e.CodigoTiendaidFk
+                        join d in _context.Depositos on e.SerieEquipo equals d.MachineSn
+                        where cb.Id.Equals(id)
+                        select d.TransaccionNo).FirstOrDefault().ToString();
+            return (Datos is not null) ? Ok(Datos) : NotFound("No se pudo encontrar");
         }
 
         [HttpPost]
