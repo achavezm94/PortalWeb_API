@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
@@ -36,7 +35,7 @@ namespace PortalWeb_API.Controllers
 
             if (dt == null)
             {
-                return NotFound("No se ha podido crear...");
+                return NotFound("No se ha podido crear");
             }
 
             return Ok(dt);

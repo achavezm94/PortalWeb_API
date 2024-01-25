@@ -128,6 +128,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[SP_ObtenerTotalesMachin]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[SP_TablaTransaccionalPrincipal]",
          "ObjectType": 1
       }

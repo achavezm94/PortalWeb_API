@@ -38,6 +38,7 @@ namespace PortalWeb_API.Data
             modelBuilder.Entity<SP_DatosEquiposFrontResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_EquiposNoTransaccionesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaTransaccionesResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<SP_ObtenerTotalesMachinResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_TablaTransaccionalPrincipalResult>().HasNoKey().ToView(null);
         }
     }
@@ -182,6 +183,33 @@ namespace PortalWeb_API.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<SP_FiltroPorFechaTransaccionesResult>("EXEC @returnValue = [dbo].[SP_FiltroPorFechaTransacciones] @tipo, @id_tienda, @fechaInicial, @fechaFinal", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<SP_ObtenerTotalesMachinResult>> SP_ObtenerTotalesMachinAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "id_equipo",
+                    Size = 50,
+                    Value = id_equipo ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<SP_ObtenerTotalesMachinResult>("EXEC @returnValue = [dbo].[SP_ObtenerTotalesMachin] @id_equipo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

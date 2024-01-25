@@ -16,6 +16,7 @@ namespace PortalWeb_API.Data
         Task<List<SP_DatosEquiposFrontResult>> SP_DatosEquiposFrontAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_EquiposNoTransaccionesResult>> SP_EquiposNoTransaccionesAsync(DateTime? fechaInicial, DateTime? fechaFinal, int? opcion, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_FiltroPorFechaTransaccionesResult>> SP_FiltroPorFechaTransaccionesAsync(int? tipo, string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<SP_ObtenerTotalesMachinResult>> SP_ObtenerTotalesMachinAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_TablaTransaccionalPrincipalResult>> SP_TablaTransaccionalPrincipalAsync(string id_tienda, int? type, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 }
