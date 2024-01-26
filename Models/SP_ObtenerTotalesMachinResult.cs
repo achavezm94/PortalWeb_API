@@ -10,6 +10,6 @@ namespace PortalWeb_API.Models
         public DateTime? FechaTransaccion { get; set; }
         [Column("TotalRecoleccion", TypeName = "decimal(38,2)")]
         public decimal? TotalRecoleccion { get; set; }
-        public string TipoTransaccion { get; set; }
+        public string MachineSn { get; set; }
     }
 }

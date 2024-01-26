@@ -41,5 +41,6 @@ namespace PortalWeb_API.Models
         public decimal? TotalRecoleccion { get; set; }
         public string TipoTransaccion { get; set; }
         public int? FechaRecoleccion { get; set; }
+        public string Acreditada { get; set; }
     }
 }
