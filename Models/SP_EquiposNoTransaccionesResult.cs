@@ -10,7 +10,8 @@ namespace PortalWeb_API.Models
         public string Machine_Sn { get; set; }
         public string IpEquipo { get; set; }
         public string NombreTienda { get; set; }
-        public int? idCliente { get; set; }
+        public int? codigoTiendaidFk { get; set; }
+        public string idCliente { get; set; }
         public int Conteo_M { get; set; }
         public int Conteo_A { get; set; }
         public int Conteo_R { get; set; }
