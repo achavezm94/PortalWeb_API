@@ -19,12 +19,14 @@ namespace PortalWeb_API.Controllers
         [Route("GuardarTransacciones")]
         public async Task<IActionResult> GuardarTransacciones([FromBody] List<TransaccionesAcreditadas> model)
         {
-            DateTime _date = DateTime.Now;
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            DateTime timeUtc = DateTime.UtcNow;
+            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
             if (ModelState.IsValid)
             {
                 foreach (var item in model)
                 {
-                    item.FechaRegistro = _date;
+                    item.FechaRegistro = cstTime;
                     await _context.TransaccionesAcreditadas.AddAsync(item);
                 }
                 return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
