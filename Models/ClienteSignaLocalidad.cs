@@ -11,6 +11,9 @@ namespace PortalWeb_API.Models;
 [Keyless]
 public partial class ClienteSignaLocalidad
 {
+    [Column("id")]
+    public int Id { get; set; }
+
     [Required]
     [Column("codigoCiente")]
     [StringLength(50)]
@@ -28,4 +31,7 @@ public partial class ClienteSignaLocalidad
     [StringLength(20)]
     [Unicode(false)]
     public string Codigo { get; set; }
+
+    [Column("fecrea", TypeName = "datetime")]
+    public DateTime Fecrea { get; set; }
 }

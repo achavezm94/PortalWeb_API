@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -28,6 +29,26 @@ namespace PortalWeb_API.Controllers
                 });
             }
             return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();            
+        }
+
+        [HttpGet("ObtenerLocalidades/{cliente}")]
+        public IActionResult ObtenerDatamasterLocalidades([FromRoute] string cliente)
+        {
+            var Datos = from t in _context.ClienteSignaLocalidad
+                        join l in _context.MasterTable on new { t.Codigo, t.Master } equals new { l.Codigo, l.Master }
+                        where t.CodigoCiente == cliente
+                        select new {t.Id, t.Master, t.Codigo, l.Nombre};
+            return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
+        }
+
+        [HttpDelete]
+        [Route("BorrarLocalidad/{id}")]
+        public IActionResult EliminarTransaccionesAcreeditadasAsync([FromRoute] int id)
+        {
+            var delete = _context.ClienteSignaLocalidad
+                            .Where(b => b.Id.Equals(id))
+                            .ExecuteDelete();
+            return (delete != 0) ? Ok() : BadRequest();
         }
     }
 }

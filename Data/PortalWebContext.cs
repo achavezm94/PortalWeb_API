@@ -74,6 +74,8 @@ public partial class PortalWebContext : DbContext
         modelBuilder.Entity<ClienteSignaLocalidad>(entity =>
         {
             entity.Property(e => e.Codigo).IsFixedLength();
+            entity.Property(e => e.Fecrea).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Master).IsFixedLength();
         });
 
