@@ -16,13 +16,13 @@ namespace PortalWeb_API.Controllers
 
         [HttpPost]
         [Route("GuardarClienteSignaTienda")]
-        public async Task<IActionResult> GuardarCliente([FromBody] string cliente, string[] model)
+        public async Task<IActionResult> GuardarCliente([FromBody] ObjClienteLocalidad model)
         {
-            foreach (var item in model)
+            foreach (var item in model.Localidades)
             {
                 await _context.ClienteSignaLocalidad.AddAsync(new ClienteSignaLocalidad
                 {
-                    CodigoCiente = cliente,
+                    CodigoCiente = model.Cliente,
                     Master = "CCAN",
                     Codigo = item
                 });
