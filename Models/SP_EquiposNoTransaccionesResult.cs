@@ -15,5 +15,7 @@ namespace PortalWeb_API.Models
         public int Conteo_M { get; set; }
         public int Conteo_A { get; set; }
         public int Conteo_R { get; set; }
+        public int Conteo_MR { get; set; }
+        public int Conteo_AR { get; set; }
     }
 }

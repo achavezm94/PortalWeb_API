@@ -89,5 +89,14 @@ namespace PortalWeb_API.Controllers
             }
             return Ok(dt);
         }
+
+        [HttpGet("ObtenerDatamasterLocalidades")]
+        public  IActionResult ObtenerDatamasterLocalidades()
+        {
+            var Datos = from t in _context.MasterTable
+                        where t.Master.Equals("CCAN")                       
+                        select new { t.Master, t.Codigo, t.Nombre };
+            return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
+        }
     }
 }

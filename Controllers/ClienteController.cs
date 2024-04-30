@@ -96,10 +96,9 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.Clientes.AddAsync(model);
+                await _context.Clientes.AddAsync(model);                
                 if (await _context.SaveChangesAsync() > 0)
-                {
-                    
+                {                    
                     return Ok(model);
                 }
                 else
@@ -112,6 +111,8 @@ namespace PortalWeb_API.Controllers
                 return BadRequest("ERROR");
             }
         }
+
+
 
         [HttpPut]
         [Route("ActualizarCliente")]

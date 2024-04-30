@@ -20,6 +20,8 @@ public partial class PortalWebContext : DbContext
 
     public virtual DbSet<CentroProceso> CentroProceso { get; set; }
 
+    public virtual DbSet<ClienteSignaLocalidad> ClienteSignaLocalidad { get; set; }
+
     public virtual DbSet<Clientes> Clientes { get; set; }
 
     public virtual DbSet<CuentaSignaTienda> CuentaSignaTienda { get; set; }
@@ -67,6 +69,12 @@ public partial class PortalWebContext : DbContext
         modelBuilder.Entity<CentroProceso>(entity =>
         {
             entity.Property(e => e.Fecrea).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<ClienteSignaLocalidad>(entity =>
+        {
+            entity.Property(e => e.Codigo).IsFixedLength();
+            entity.Property(e => e.Master).IsFixedLength();
         });
 
         modelBuilder.Entity<Clientes>(entity =>

@@ -32,6 +32,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ClienteSignaLocalidad]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[cuentas_bancarias]",
          "ObjectType": 0
       },
@@ -154,6 +158,7 @@
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
    "UseSchemaFolders": false,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
