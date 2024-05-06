@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using System.Data;
+using System.Linq;
 
 namespace PortalWeb_API.Controllers
 {
@@ -90,11 +91,13 @@ namespace PortalWeb_API.Controllers
             return Ok(dt);
         }
 
-        [HttpGet("ObtenerDatamasterLocalidades")]
-        public  IActionResult ObtenerDatamasterLocalidades()
+        [HttpGet("ObtenerDatamasterLocalidades/{codCliente}")]
+        public  IActionResult ObtenerDatamasterLocalidades([FromRoute] string codCliente)
         {
             var Datos = from t in _context.MasterTable
-                        where t.Master.Equals("CCAN")                       
+                        join l in _context.ClienteSignaLocalidad on codCliente equals l.CodigoCiente
+                        //where t.Codigo.Equals(l.Codigo) && t.Master.Equals("CCAN")
+                        where t.Master.Equals("CCAN") && t.Nombre.Intersect(l.Codigo).Any()        
                         select new { t.Master, t.Codigo, t.Nombre };
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
         }
