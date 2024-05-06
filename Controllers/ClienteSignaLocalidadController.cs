@@ -36,8 +36,9 @@ namespace PortalWeb_API.Controllers
         {
             var Datos = from t in _context.ClienteSignaLocalidad
                         join l in _context.MasterTable on new { t.Codigo, t.Master } equals new { l.Codigo, l.Master }
+                        join c in _context.Clientes on cliente equals c.CodigoCliente
                         where t.CodigoCiente == cliente
-                        select new {t.Id, t.Master, t.Codigo, l.Nombre};
+                        select new {id = t.Id, idCliente = c.Id, t.Master, t.Codigo, l.Nombre};
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
         }
 

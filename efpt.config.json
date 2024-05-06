@@ -2,7 +2,6 @@
    "CodeGenerationMode": 3,
    "ContextClassName": "PortalWebContext",
    "ContextNamespace": null,
-   "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
@@ -140,7 +139,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "desktop-k7dsnp4\\sqlexpress.PortalWeb.dbo",
+   "UiHint": null,
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

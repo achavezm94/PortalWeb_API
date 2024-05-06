@@ -33,4 +33,8 @@
     <Folder Include="wwwroot\imgEquipos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="efpt.config.json.user" />
+  </ItemGroup>
+
 </Project>
