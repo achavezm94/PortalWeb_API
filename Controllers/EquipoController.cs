@@ -93,27 +93,12 @@ namespace PortalWeb_API.Controllers
 
         [HttpDelete]
         [Route("BorrarEquipo/{id}")]
-        public async Task<IActionResult> BorrarEquipo(int id)
+        public IActionResult BorrarEquipo(int id)
         {
-            var result = await _context.Equipos
-                 .FirstOrDefaultAsync(e => e.Id == id);
-            if (result != null)
-            {
-                _context.Equipos.Remove(result);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    return NoContent();
-                }
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            var update = _context.Equipos
+                           .Where(u => u.Id.Equals(id))
+                           .ExecuteUpdate(u => u.SetProperty(u => u.Active, "F"));
+            return (update != 0) ? Ok() : BadRequest();
         }
 
         [HttpGet]
