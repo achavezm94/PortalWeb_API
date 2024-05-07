@@ -51,15 +51,7 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 await _context.Tiendas.AddAsync(model);
-
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest("Datos incorrectos");
-                }
+                return (await _context.SaveChangesAsync() > 0) ? Ok(model) : BadRequest("No se guardo");
             }
             else
             {
