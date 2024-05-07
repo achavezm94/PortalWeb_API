@@ -15,7 +15,7 @@ namespace PortalWeb_API.Models
         public string NombreAdmin { get; set; }
         public string TelfAdmin { get; set; }
         public string Direccion { get; set; }
-        public string nombreProvincia { get; set; }
+        public string nombreLocalidad { get; set; }
         public int id { get; set; }
         public string CodigoTienda { get; set; }
         public string CodigoClienteidFk { get; set; }

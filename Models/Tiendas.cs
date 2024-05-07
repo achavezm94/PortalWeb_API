@@ -48,7 +48,7 @@ public partial class Tiendas
     [Unicode(false)]
     public string EmailAdmin { get; set; }
 
-    [StringLength(3)]
+    [StringLength(4)]
     [Unicode(false)]
     public string CodProv { get; set; }
 
