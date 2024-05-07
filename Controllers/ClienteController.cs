@@ -45,9 +45,26 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet]
-        [Route("ObtenerCuentaCliente/{id:int}")]
-        public async Task<IActionResult> ObtenerCuentaCliente(int id)
+        [Route("ObtenerCuentaCliente/{CodCliente}")]
+        public IActionResult ObtenerCuentaCliente(string CodCliente)
         {
+            var Datos = from cli in _context.Clientes
+                        join cb in _context.CuentasBancarias on cli.CodigoCliente equals cb.CodigoCliente
+                        where cli.CodigoCliente == CodCliente
+                        select new
+                        {
+                            cb.Id,
+                            ClienteID = cli.Id,
+                            cb.CodigoCliente,
+                            cb.Codcuentacontable,
+                            cb.Nombanco,
+                            cb.Numerocuenta,
+                            cb.TipoCuenta,
+                            cb.Observacion,
+                            cb.Fecrea
+                        };
+            return (Datos != null) ? Ok(Datos) : NotFound("No existe cuenta bancaria");
+            /*
             List<CuentasBancariasIDCliente> _cuentasBancariasIDcliente = new();
             if (ModelState.IsValid)
             {
@@ -88,8 +105,9 @@ namespace PortalWeb_API.Controllers
             {
                 return BadRequest("ERROR");
             }
+            */
         }
-                    
+
         [HttpPost]
         [Route("GuardarCliente")]
         public async Task<IActionResult> GuardarCliente([FromBody] Clientes model)
