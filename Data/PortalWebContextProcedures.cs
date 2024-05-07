@@ -34,6 +34,7 @@ namespace PortalWeb_API.Data
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ObtenerTiendasResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_CalculoTotalResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_DatosEquiposFrontResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_EquiposNoTransaccionesResult>().HasNoKey().ToView(null);
@@ -50,6 +51,26 @@ namespace PortalWeb_API.Data
         public PortalWebContextProcedures(PortalWebContext context)
         {
             _context = context;
+        }
+
+        public virtual async Task<List<ObtenerTiendasResult>> ObtenerTiendasAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<ObtenerTiendasResult>("EXEC @returnValue = [dbo].[ObtenerTiendas]", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
         }
 
         public virtual async Task<List<SP_CalculoTotalResult>> SP_CalculoTotalAsync(string machine_sn, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)

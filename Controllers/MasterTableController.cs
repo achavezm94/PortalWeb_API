@@ -95,10 +95,12 @@ namespace PortalWeb_API.Controllers
         public  IActionResult ObtenerDatamasterLocalidades([FromRoute] string codCliente)
         {
             var Datos = from t in _context.MasterTable
-                        join l in _context.ClienteSignaLocalidad on codCliente equals l.CodigoCiente
-                        //where t.Codigo.Equals(l.Codigo) && t.Master.Equals("CCAN")
-                        where t.Master.Equals("CCAN") && t.Nombre.Intersect(l.Codigo).Any()        
-                        select new { t.Master, t.Codigo, t.Nombre };
+                        where t.Master.Equals("CCAN") && !(
+                                                            from l in _context.ClienteSignaLocalidad
+                                                            where l.CodigoCiente == codCliente
+                                                            select l.Codigo
+                                                           ).Contains(t.Codigo)
+                        select new {Master =  t.Master.Trim(), Codigo = t.Codigo.Trim(), Nombre =  t.Nombre.Trim() };
             return (Datos != null) ? Ok(Datos) : NotFound("No se pudo encontrar");
         }
     }

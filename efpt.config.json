@@ -115,6 +115,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ObtenerTiendas]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[SP_CalculoTotal]",
          "ObjectType": 1
       },

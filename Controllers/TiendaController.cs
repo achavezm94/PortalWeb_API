@@ -39,22 +39,9 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpGet("ObtenerTiendasCompletas")]
-        public IActionResult ObtenerTiendas()
+        public async Task<IEnumerable<ObtenerTiendasResult>> ObtenerTiendasAsync()
         {
-            string Sentencia = " exec ObtenerTiendas ";
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.Fill(dt);
-            }
-            if (dt == null)
-            {
-                return NotFound("No se ha podido crear...");
-            }
-            return Ok(dt);
+            return await _context.GetProcedures().ObtenerTiendasAsync();            
         }
 
         [HttpPost]
