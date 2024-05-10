@@ -20,5 +20,11 @@ namespace PortalWeb_API.Controllers
         {
             return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
         }
+
+        [HttpPost("Consolidado")]
+        public async Task<IEnumerable<SP_ConsolidadoLocalidadResult>> ResultadoConsolidado([FromBody] ModeloFiltroFechasTransacciones filtroFechas)
+        {
+            return await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
+        }
     }
 }
