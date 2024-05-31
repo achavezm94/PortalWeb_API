@@ -176,9 +176,9 @@ namespace PortalWeb_API.Controllers
                 try
                 {
                     ManualDepositosCollection manual_depositos = new()
-                {
-                    model
-                };
+                    {
+                        model
+                    };
 
                     SqlParameter param = new()
                     {
@@ -245,9 +245,9 @@ namespace PortalWeb_API.Controllers
                 try
                 {
                     DepositosCollection depositos = new()
-                {
-                    model
-                };
+                    {
+                        model
+                    };
 
                     SqlParameter param = new()
                     {
@@ -304,9 +304,9 @@ namespace PortalWeb_API.Controllers
                 try
                 {
                     RecoleccionCollection recolecciones = new()
-                {
-                    model
-                };
+                    {
+                        model
+                    };
 
                     SqlParameter param = new()
                     {

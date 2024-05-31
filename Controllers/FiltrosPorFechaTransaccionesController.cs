@@ -22,9 +22,24 @@ namespace PortalWeb_API.Controllers
         }
 
         [HttpPost("Consolidado")]
-        public async Task<IEnumerable<SP_ConsolidadoLocalidadResult>> ResultadoConsolidado([FromBody] ModeloFiltroFechasTransacciones filtroFechas)
+        public async Task<List<SP_ConsolidadoLocalidadResult>> ResultadoConsolidado([FromBody] ModeloConsolidado modelo)
         {
-            return await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
+            List<SP_ConsolidadoLocalidadResult> resultados = new();
+            if (modelo.equipos is not null)
+            {
+                foreach (var equipo in modelo.equipos)
+                {
+                    var resultado = await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(1, equipo, modelo.FechaIni, modelo.FechaFin);
+                    resultados.AddRange(resultado);
+                }
+                resultados = resultados.OrderBy(x => x.NombreTienda).ToList();
+                return resultados;
+
+            }
+            else
+            {
+                return resultados;
+            }
         }
     }
 }
