@@ -13,6 +13,7 @@ namespace PortalWeb_API.Models
         public string Localidad { get; set; }
         public int? codigoTiendaidFk { get; set; }
         public string idCliente { get; set; }
+        public int? idCliente2 { get; set; }
         public int Conteo_M { get; set; }
         public int Conteo_A { get; set; }
         public int Conteo_R { get; set; }
