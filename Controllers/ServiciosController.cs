@@ -68,7 +68,7 @@ namespace PortalWeb_API.Controllers
                             if (equipo is not null)
                             {
                                 equipo.EstadoPing = 0;
-                                equipo.Active = "A";
+                                equipo.Active = equipo.Active;
                                 _context.Entry(equipo).State = EntityState.Modified;
                                 await _context.SaveChangesAsync();
                             }
