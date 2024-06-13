@@ -52,7 +52,7 @@ namespace PortalWeb_API.Controllers
                 DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
                 res.EstadoPing = 1;
                 res.TiempoSincronizacion = cstTime;
-                res.Active = "A";
+                res.Active = res.Active;
                 _context.Entry(res).State = EntityState.Modified;
                 if (await _context.SaveChangesAsync() > 0)
                 {
@@ -68,7 +68,7 @@ namespace PortalWeb_API.Controllers
                             if (equipo is not null)
                             {
                                 equipo.EstadoPing = 0;
-                                equipo.Active = equipo.Active;
+                                equipo.Active = "A";
                                 _context.Entry(equipo).State = EntityState.Modified;
                                 await _context.SaveChangesAsync();
                             }
@@ -334,11 +334,11 @@ namespace PortalWeb_API.Controllers
                             if (ultimoDeposito is not null && sp_response is not null)
                             {
                                 List<object> list = new()
-                            {
-                                ultimoDeposito,
-                                sp_response,
-                                sp_responseDatos
-                            };
+                                {
+                                    ultimoDeposito,
+                                    sp_response,
+                                    sp_responseDatos
+                                };
                                 await _recoleccionHub.Clients.All.SendAsync("SendTransaccionRecoleccion", list);
                             }
                             return Ok(1);
