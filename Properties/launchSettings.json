@@ -5,8 +5,9 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       //"applicationUrl": "http://20.110.204.50:9095",
-      "applicationUrl": "http://192.168.55.173:9095",
+      //"applicationUrl": "http://192.168.55.173:9095",
       //"applicationUrl": "http://localhost:9095",
+      "applicationUrl": "http://localhost:5000",
       "sslPort": 44359
     }
   },
@@ -17,10 +18,11 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       //"applicationUrl": "http://20.110.204.50:9095",
-      "applicationUrl": "http://192.168.55.173:9095",
+      //"applicationUrl": "http://192.168.55.173:9095",
       //"applicationUrl": "http://localhost:9095",
+      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "https": {
@@ -29,8 +31,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       //"applicationUrl": "http://20.110.204.50:9095",
-      "applicationUrl": "http://192.168.55.173:9095",
+      //"applicationUrl": "http://192.168.55.173:9095",
       //"applicationUrl": "http://localhost:9095",
+      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
