@@ -91,6 +91,16 @@ namespace PortalWeb_API.Controllers
             return Ok(model);
         }
 
+        [HttpPut]
+        [Route("ActivarEquipo/{id}")]
+        public IActionResult ActivarEquipo([FromRoute] int id)
+        {
+            var update = _context.Equipos
+                          .Where(u => u.Id.Equals(id))
+                          .ExecuteUpdate(u => u.SetProperty(u => u.Active, "A"));
+            return Ok();
+        }
+
         [HttpDelete]
         [Route("BorrarEquipo/{id}")]
         public IActionResult BorrarEquipo(int id)
