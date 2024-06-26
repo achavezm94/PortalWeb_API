@@ -29,12 +29,11 @@ namespace PortalWeb_API.Controllers
             {
                 foreach (var equipo in modelo.equipos)
                 {
-                    var resultado = await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(1, equipo, modelo.FechaIni, modelo.FechaFin);
+                    var resultado = await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(modelo.Tipo, equipo, modelo.FechaIni, modelo.FechaFin);
                     resultados.AddRange(resultado);
                 }
                 resultados = resultados.OrderBy(x => x.NombreTienda).ToList();
                 return resultados;
-
             }
             else
             {
