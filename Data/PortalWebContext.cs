@@ -82,6 +82,8 @@ public partial class PortalWebContext : DbContext
         {
             entity.HasKey(e => e.CodigoCliente).HasName("PK_Cliente");
 
+            entity.ToTable(tb => tb.HasComment("Tabla que tiene los clientes que tienen los servicios"));
+
             entity.Property(e => e.Active).HasDefaultValueSql("('A')");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });

@@ -36,17 +36,13 @@ builder.Services.AddAuthentication(option =>
 
 builder.Services.AddAuthorization(policies =>
 {
-    policies.AddPolicy("User", p =>
+    policies.AddPolicy("Comi", p =>
     {
-        p.RequireClaim(ClaimTypes.Role, "user");
+        p.RequireClaim(ClaimTypes.Role, "R004");
     });
-    policies.AddPolicy("Admin", p =>
+    policies.AddPolicy("Fortius", p =>
     {
-        p.RequireClaim(ClaimTypes.Role, "admin");
-    });
-    policies.AddPolicy("All", p =>
-    {
-        p.RequireClaim(ClaimTypes.Role, "admin", "user");
+        p.RequireClaim(ClaimTypes.Role, "R001", "R002", "R003");
     });
 });
 
@@ -73,7 +69,10 @@ builder.Services.AddCors(opt =>
         //"https://sfifront.azurewebsites.net"
         "http://192.168.55.66:2251",
         "http://192.168.55.195:2251",
-        "http://192.168.55.19:2253"
+        "http://192.168.55.19:2253",
+        "http://127.0.0.1:5500",
+        "http://192.168.55.96:5500"
+
     )
    .AllowAnyHeader()
    .AllowAnyMethod()
@@ -90,6 +89,7 @@ var webSocketOptions = new WebSocketOptions
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.66:2251");
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.195:2251");
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.19:2253");
+webSocketOptions.AllowedOrigins.Add("http://127.0.0.1:3000");
 
 var app = builder.Build();
 app.UseCors(reglasCors);

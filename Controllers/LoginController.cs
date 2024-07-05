@@ -21,20 +21,31 @@ namespace PortalWeb_API.Controllers
         }
         
         public IActionResult Login(UserRequest userRequest) 
-        {
-            Authenticator authenticator = new(_context);
-            GenerateToken generateToken = new(_configuration);
-            var user = authenticator.Authenticator_User(userRequest);
-            if (user != null) 
+        {            
+            if (userRequest == null || string.IsNullOrWhiteSpace(userRequest.Usuario) || string.IsNullOrWhiteSpace(userRequest.Password))
             {
-                var token = generateToken.Generate(user);
-                return Ok(token);
+                return BadRequest("Solicitud inválida. Por favor, proporciona un nombre de usuario y una contraseña.");
             }
-            else
+            try
             {
-                return NotFound("Usuario no registrado");
-            }
+                Authenticator authenticator = new(_context);
+                GenerateToken generateToken = new(_configuration);
 
+                var user = authenticator.Authenticator_User(userRequest);
+                if (user != null)
+                {
+                    var token = generateToken.Generate(user);
+                    return Ok(new { Token = token });
+                }
+                else
+                {
+                    return NotFound(new { Message = "Usuario no registrado" });
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "Ocurrió un error al procesar la solicitud." });
+            }
         }
     }
 }

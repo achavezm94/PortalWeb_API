@@ -135,6 +135,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[SP_FiltroPorFechaComisariato]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[SP_FiltroPorFechaTransacciones]",
          "ObjectType": 1
       },

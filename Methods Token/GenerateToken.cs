@@ -20,7 +20,6 @@ namespace PortalWeb_API.Methods_Token
             var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var claims = new[] {
                 new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject),
-                new Claim(ClaimTypes.NameIdentifier, usuariosPortal.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuariosPortal.Usuario),
                 new Claim(ClaimTypes.Role, usuariosPortal.Rol),
                 new Claim(ClaimTypes.AuthorizationDecision, usuariosPortal.Active),
@@ -30,7 +29,7 @@ namespace PortalWeb_API.Methods_Token
                 jwt.Issuer,
                 jwt.Audience,
                 claims,
-                expires: DateTime.Now.AddHours(8),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: singIn);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

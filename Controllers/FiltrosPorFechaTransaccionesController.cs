@@ -14,7 +14,7 @@ namespace PortalWeb_API.Controllers
         {
             _context = context;
         }
-        
+
         [HttpPost("Filtrar")]
         public async Task<IEnumerable<SP_FiltroPorFechaTransaccionesResult>> ResultadoFiltroFechasTransacciones([FromBody] ModeloFiltroFechasTransacciones filtroFechas)
         {
@@ -25,9 +25,9 @@ namespace PortalWeb_API.Controllers
         public async Task<List<SP_ConsolidadoLocalidadResult>> ResultadoConsolidado([FromBody] ModeloConsolidado modelo)
         {
             List<SP_ConsolidadoLocalidadResult> resultados = new();
-            if (modelo.equipos is not null)
+            if (modelo.Equipos is not null)
             {
-                foreach (var equipo in modelo.equipos)
+                foreach (var equipo in modelo.Equipos)
                 {
                     var resultado = await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(modelo.Tipo, equipo, modelo.FechaIni, modelo.FechaFin);
                     resultados.AddRange(resultado);
@@ -39,6 +39,6 @@ namespace PortalWeb_API.Controllers
             {
                 return resultados;
             }
-        }
+        }       
     }
 }
