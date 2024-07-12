@@ -35,11 +35,12 @@ namespace PortalWeb_API.Controllers
                 if (user != null)
                 {
                     var token = generateToken.Generate(user);
-                    return Ok(new { Token = token });
+                    //return Ok(new { Token =token });
+                    return Ok(token );
                 }
                 else
                 {
-                    return NotFound(new { Message = "Usuario no registrado" });
+                    return NotFound(new { Message = "Usuario no registrado o desactivado" });
                 }
             }
             catch (Exception)

@@ -7,7 +7,6 @@
       //"applicationUrl": "http://20.110.204.50:9095",
       //"applicationUrl": "http://192.168.55.173:9095",
       "applicationUrl": "http://192.168.55.96:9095",
-      //"applicationUrl": "http://localhost:5000",
       "sslPort": 44359
     }
   },
@@ -20,7 +19,6 @@
       //"applicationUrl": "http://20.110.204.50:9095",
       //"applicationUrl": "http://192.168.55.173:9095",
       "applicationUrl": "http://192.168.55.96:9095",
-      //"applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -33,7 +31,6 @@
       //"applicationUrl": "http://20.110.204.50:9095",
       //"applicationUrl": "http://192.168.55.173:9095",
       "applicationUrl": "http://192.168.55.96:9095",
-      //"applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

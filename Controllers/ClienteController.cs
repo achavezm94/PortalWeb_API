@@ -64,48 +64,6 @@ namespace PortalWeb_API.Controllers
                             cb.Fecrea
                         };
             return (Datos != null) ? Ok(Datos) : NotFound("No existe cuenta bancaria");
-            /*
-            List<CuentasBancariasIDCliente> _cuentasBancariasIDcliente = new();
-            if (ModelState.IsValid)
-            {
-                var result = await _context.Clientes.FirstOrDefaultAsync(e => e.Id == id);
-
-                if (result == null)
-                {
-                    return NotFound("No existe cliente");
-                }
-                else
-                {
-                    var cuentasBancarias = _context.CuentasBancarias.Where(x => x.CodigoCliente == result.CodigoCliente).ToList();
-                    foreach (var cuenta in cuentasBancarias)
-                    {
-                        _cuentasBancariasIDcliente.Add(new CuentasBancariasIDCliente{
-                            Id = cuenta.Id,
-                            TipoCuenta = cuenta.TipoCuenta,
-                            ClienteID = id,
-                            Numerocuenta = cuenta.Numerocuenta,
-                            Codcuentacontable = cuenta.Codcuentacontable,
-                            CodigoCliente = cuenta.CodigoCliente,
-                            Nombanco = cuenta.Nombanco,
-                            Observacion = cuenta.Observacion,
-                            Fecrea = cuenta.Fecrea
-                        });
-                    }
-                    if (cuentasBancarias == null)
-                    {
-                        return NotFound("No existe cuenta bancaria");
-                    }
-                    else
-                    {
-                        return Ok(_cuentasBancariasIDcliente);
-                    }
-                };    
-            }
-            else
-            {
-                return BadRequest("ERROR");
-            }
-            */
         }
 
         [HttpPost]
