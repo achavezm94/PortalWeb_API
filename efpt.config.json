@@ -15,18 +15,6 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[asignacion_equipos]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[asignModUser]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[centro_proceso]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Clientes]",
          "ObjectType": 0
       },
@@ -59,19 +47,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[errorAlerts]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[ManualDepositos]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[marca]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[MasterEquipos]",
          "ObjectType": 0
       },
       {
@@ -83,15 +63,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ModulosApp]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Recolecciones]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[RespuestaSentencia]",
          "ObjectType": 0
       },
       {
@@ -99,7 +71,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[TotalesEquipos]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[TransaccionesAcreditadas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TransaccionesExcel]",
          "ObjectType": 0
       },
       {
@@ -115,19 +95,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ObtenerTiendas]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_CalculoTotal]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[SP_ConsolidadoLocalidad]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_DatosEquiposFront]",
          "ObjectType": 1
       },
       {
@@ -141,21 +109,13 @@
       {
          "Name": "[dbo].[SP_FiltroPorFechaTransacciones]",
          "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_ObtenerTotalesMachin]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[SP_TablaTransaccionalPrincipal]",
-         "ObjectType": 1
       }
    ],
    "UiHint": null,
    "UncountableWords": null,
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
-   "UseDatabaseNames": false,
+   "UseDatabaseNames": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,

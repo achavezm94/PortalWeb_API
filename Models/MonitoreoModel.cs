@@ -2,8 +2,8 @@
 {
     public class MonitoreoModel
     {
-        public string? ip { get; set; }
-        public DateTime? tiempoSincronizacion { get; set; }
-        public int estadoPing { get; set; }
+        public string? Ip { get; set; }
+        public DateTime? TiempoSincronizacion { get; set; }
+        public int EstadoPing { get; set; }
     }
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using System.Data;
@@ -19,54 +18,25 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("ObtenerTiendaCuentas/{id}")]
+        [Authorize(Policy = "Nivel2")]
+        [HttpGet("ObtenerTiendaCuentas/{id}")]
         public IActionResult ObtenerTiendaCuentas([FromRoute] string id)
         {
-
-            string Sentencia = "EXEC SP_ObtenerTiendasCuentas @Ids";
-
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.SelectCommand.Parameters.Add(new SqlParameter("@IDS", id));
-                adapter.Fill(dt);
-            }
-
-            if (dt == null)
-            {
-                return NotFound("No se ha podido obtener...");
-            }
-
-            return Ok(dt);
-
+            var Datos = from otc in _context.cuentaSignaTienda
+                        join ct in _context.cuentas_bancarias on otc.idcuentabancaria equals ct.id
+                        where otc.idtienda == id
+                        select new { otc.idcuentabancaria, ct.nombanco, ct.numerocuenta, otc.id, ct.TipoCuenta, ct.Observacion };
+            return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
-        [HttpDelete]
-        [Route("BorrarCuentaTienda/{id}")]
-        public async Task<IActionResult> BorrarCuentaTienda([FromRoute] int id)
+        [Authorize(Policy = "Nivel2")]
+        [HttpDelete("BorrarCuentaTienda/{id}")]
+        public IActionResult BorrarCuentaTienda([FromRoute] int id)
         {
-            var result = await _context.CuentaSignaTienda.FirstOrDefaultAsync(e => e.Id == id);
-            if (result != null)
-            {
-                _context.CuentaSignaTienda.Remove(result);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    return NoContent();
-                }
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            var delete = _context.cuentaSignaTienda
+                          .Where(b => b.id.Equals(id))
+                          .ExecuteDelete();
+            return (delete != 0) ? Ok() : BadRequest();
         }
     }
 }

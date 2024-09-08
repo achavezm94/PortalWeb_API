@@ -11,27 +11,23 @@ namespace PortalWeb_API.Models;
 public partial class ClienteSignaLocalidad
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [Required]
-    [Column("codigoCiente")]
     [StringLength(50)]
     [Unicode(false)]
-    public string CodigoCiente { get; set; }
+    public string codigoCiente { get; set; }
 
     [Required]
-    [Column("master")]
     [StringLength(5)]
     [Unicode(false)]
-    public string Master { get; set; }
+    public string master { get; set; }
 
     [Required]
-    [Column("codigo")]
     [StringLength(20)]
     [Unicode(false)]
-    public string Codigo { get; set; }
+    public string codigo { get; set; }
 
-    [Column("fecrea", TypeName = "datetime")]
-    public DateTime Fecrea { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime fecrea { get; set; }
 }

@@ -13,8 +13,7 @@ namespace PortalWeb_API.Models;
 /// </summary>
 public partial class Clientes
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [Key]
     [StringLength(50)]
@@ -27,10 +26,9 @@ public partial class Clientes
     public string NombreCliente { get; set; }
 
     [Required]
-    [Column("RUC")]
     [StringLength(50)]
     [Unicode(false)]
-    public string Ruc { get; set; }
+    public string RUC { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
@@ -40,18 +38,15 @@ public partial class Clientes
     [Unicode(false)]
     public string Active { get; set; }
 
-    [Column("telefcontacto")]
     [StringLength(20)]
     [Unicode(false)]
-    public string Telefcontacto { get; set; }
+    public string telefcontacto { get; set; }
 
-    [Column("emailcontacto")]
     [StringLength(150)]
     [Unicode(false)]
-    public string Emailcontacto { get; set; }
+    public string emailcontacto { get; set; }
 
-    [Column("nombrecontacto")]
     [StringLength(150)]
     [Unicode(false)]
-    public string Nombrecontacto { get; set; }
+    public string nombrecontacto { get; set; }
 }

@@ -11,59 +11,49 @@ namespace PortalWeb_API.Models;
 [Keyless]
 public partial class MasterTable
 {
-    [Column("master")]
     [StringLength(5)]
     [Unicode(false)]
-    public string Master { get; set; }
+    public string master { get; set; }
 
     [Required]
-    [Column("codigo")]
     [StringLength(20)]
     [Unicode(false)]
-    public string Codigo { get; set; }
+    public string codigo { get; set; }
 
-    [Column("nombre")]
     [StringLength(200)]
-    public string Nombre { get; set; }
+    public string nombre { get; set; }
 
-    [Column("valor", TypeName = "decimal(15, 2)")]
-    public decimal? Valor { get; set; }
+    [Column(TypeName = "decimal(15, 2)")]
+    public decimal? valor { get; set; }
 
-    [Column("nomtag")]
     [StringLength(10)]
     [Unicode(false)]
-    public string Nomtag { get; set; }
+    public string nomtag { get; set; }
 
-    [Column("gestion")]
     [StringLength(3)]
     [Unicode(false)]
-    public string Gestion { get; set; }
+    public string gestion { get; set; }
 
-    [Column("pideval")]
-    public bool Pideval { get; set; }
+    public bool pideval { get; set; }
 
-    [Column("campo1")]
     [StringLength(30)]
     [Unicode(false)]
-    public string Campo1 { get; set; }
+    public string campo1 { get; set; }
 
-    [Column("grupo")]
     [StringLength(70)]
-    public string Grupo { get; set; }
+    public string grupo { get; set; }
 
-    [Column("sgrupo")]
     [StringLength(70)]
     [Unicode(false)]
-    public string Sgrupo { get; set; }
+    public string sgrupo { get; set; }
 
-    [Column("campo2")]
     [StringLength(30)]
     [Unicode(false)]
-    public string Campo2 { get; set; }
+    public string campo2 { get; set; }
 
-    [Column("lencod", TypeName = "decimal(2, 0)")]
-    public decimal Lencod { get; set; }
+    [Column(TypeName = "decimal(2, 0)")]
+    public decimal lencod { get; set; }
 
-    [Column("VALOR2", TypeName = "decimal(16, 2)")]
-    public decimal? Valor2 { get; set; }
+    [Column(TypeName = "decimal(16, 2)")]
+    public decimal? VALOR2 { get; set; }
 }

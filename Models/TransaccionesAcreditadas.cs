@@ -11,16 +11,14 @@ namespace PortalWeb_API.Models;
 public partial class TransaccionesAcreditadas
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     public int NoTransaction { get; set; }
 
     [Required]
-    [Column("Machine_Sn")]
     [StringLength(50)]
     [Unicode(false)]
-    public string MachineSn { get; set; }
+    public string Machine_Sn { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime FechaTransaction { get; set; }

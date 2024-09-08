@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Cuenta")]
     [ApiController]
     public class CuentaController : ControllerBase
     {
@@ -16,117 +18,53 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("ObtenerCuenta")]
-        public async Task<IActionResult> ObtenerCuenta()
+        [Authorize(Policy = "Nivel1")]
+        [HttpGet("NTransacciones/{id}")]
+        public IActionResult GenerarTransaccionesAcreeditadas(int id)
+        {
+            var Datos = (from cb in _context.cuentas_bancarias
+                        join cs in _context.cuentaSignaTienda on cb.id equals cs.idcuentabancaria
+                        join t in _context.Tiendas on cs.idtienda equals t.CodigoTienda
+                        join e in _context.Equipos on t.id equals e.codigoTiendaidFk
+                        join d in _context.Depositos on e.serieEquipo equals d.Machine_Sn
+                        where cb.id.Equals(id)
+                        select d.Transaccion_No).IsNullOrEmpty();
+            return Ok(!Datos);
+        }
+
+        [Authorize(Policy = "Nivel1")]
+        [HttpPost("GuardarCuenta")]
+        public async Task<IActionResult> GuardarCuenta([FromBody] cuentas_bancarias model)
         {
             if (ModelState.IsValid)
             {
-                var cuentasBancarias = await _context.CuentasBancarias.ToListAsync();
-                if (cuentasBancarias == null)
-                {
-                    return NotFound();
-                }
-                return Ok(cuentasBancarias);
+                await _context.cuentas_bancarias.AddAsync(model);
+                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest();
             }
         }
 
-        [HttpGet]
-        [Route("NTransacciones/{id}")]
-        public IActionResult GenerarTransaccionesAcreeditadas([FromRoute] int id)
+        [Authorize(Policy = "Nivel1")]
+        [HttpPut("ActualizarCuenta")]
+        public async Task<IActionResult> ActualizarCuentaAsync([FromBody] cuentas_bancarias model)
         {
-            var Datos = (from cb in _context.CuentasBancarias
-                        join cs in _context.CuentaSignaTienda on cb.Id equals cs.Idcuentabancaria
-                        join t in _context.Tiendas on cs.Idtienda equals t.CodigoTienda
-                        join e in _context.Equipos on t.Id equals e.CodigoTiendaidFk
-                        join d in _context.Depositos on e.SerieEquipo equals d.MachineSn
-                        where cb.Id.Equals(id)
-                        select d.TransaccionNo).FirstOrDefault().ToString();
-            return (Datos is not null) ? Ok(Datos) : NotFound("No se pudo encontrar");
+            _context.Attach(model);
+            _context.Entry(model).State = EntityState.Modified;
+            _context.Entry(model).Property(nameof(model.id)).IsModified = false;
+            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
         }
 
-        [HttpPost]
-        [Route("GuardarCuenta")]
-        public async Task<IActionResult> GuardarCuenta([FromBody] CuentasBancarias model)
+        [Authorize(Policy = "Nivel1")]
+        [HttpDelete("BorrarCuenta/{id}")]
+        public IActionResult BorrarCuenta(int id)
         {
-            if (ModelState.IsValid)
-            {
-                await _context.CuentasBancarias.AddAsync(model);
-
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest("Datos incorrectos");
-                }
-            }
-            else
-            {
-                return BadRequest("ERROR");
-            }
-        }
-
-        [HttpPut]
-        [Route("ActualizarCuenta")]
-        public async Task<IActionResult> ActualizarCuenta([FromBody] CuentasBancarias model)
-        {
-            var result = await _context.CuentasBancarias.FindAsync(model.Codcuentacontable);
-
-            if (result != null)
-            {
-                try
-                {
-                    result.CodigoCliente = model.CodigoCliente;
-                    result.Nombanco = model.Nombanco;
-                    result.Numerocuenta = model.Numerocuenta;
-                    result.Observacion = model.Observacion;
-                    result.TipoCuenta = model.TipoCuenta;
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    return BadRequest();
-                }
-                finally
-                {
-                    await _context.SaveChangesAsync();
-                }
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpDelete]
-        [Route("BorrarCuenta/{id:int}")]
-        public async Task<IActionResult> BorrarCuenta(int id)
-        {
-            var result = await _context.CuentasBancarias
-                 .FirstOrDefaultAsync(e => e.Id == id);
-            if (result != null)
-            {
-                _context.CuentasBancarias.Remove(result);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    return NoContent();
-                }
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            var delete = _context.cuentas_bancarias
+                           .Where(b => b.id.Equals(id))
+                           .ExecuteDelete();
+            return (delete != 0) ? Ok() : BadRequest();
         }
     }
 }

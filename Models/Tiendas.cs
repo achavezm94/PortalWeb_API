@@ -10,8 +10,7 @@ namespace PortalWeb_API.Models;
 
 public partial class Tiendas
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [Key]
     [StringLength(50)]
@@ -52,11 +51,10 @@ public partial class Tiendas
     [Unicode(false)]
     public string CodProv { get; set; }
 
-    [Column("idCentroProceso")]
-    public int? IdCentroProceso { get; set; }
+    public int? idCentroProceso { get; set; }
 
-    [Column("fecreate", TypeName = "datetime")]
-    public DateTime? Fecreate { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fecreate { get; set; }
 
     [Required]
     [StringLength(1)]

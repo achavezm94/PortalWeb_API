@@ -6,7 +6,7 @@ using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Login")]
     [ApiController]
 
     public class LoginController : ControllerBase
@@ -21,27 +21,27 @@ namespace PortalWeb_API.Controllers
         }
         
         public IActionResult Login(UserRequest userRequest) 
-        {            
-            if (userRequest == null || string.IsNullOrWhiteSpace(userRequest.Usuario) || string.IsNullOrWhiteSpace(userRequest.Password))
-            {
-                return BadRequest("Solicitud inválida. Por favor, proporciona un nombre de usuario y una contraseña.");
-            }
+        {
             try
             {
-                Authenticator authenticator = new(_context);
                 GenerateToken generateToken = new(_configuration);
 
-                var user = authenticator.Authenticator_User(userRequest);
-                if (user != null)
+                var usuario = _context?.Usuarios_Portal.SingleOrDefault(x => x.Usuario == userRequest.Usuario);
+                if (usuario == null)
                 {
-                    var token = generateToken.Generate(user);
-                    //return Ok(new { Token =token });
-                    return Ok(token );
+                    return NotFound(new { Message = "Usuario incorrecto" });
                 }
-                else
+                else if (usuario.Contrasenia != userRequest.Password)
                 {
-                    return NotFound(new { Message = "Usuario no registrado o desactivado" });
+                    return NotFound(new { Message = "Contraseña incorrecta" });
                 }
+                else if (usuario.Active != "A")
+                {
+                    return NotFound(new { Message = "El usuario no está activo." });
+                }
+                var token = generateToken.Generate(usuario);
+                return Ok(new { Token = token});
+
             }
             catch (Exception)
             {

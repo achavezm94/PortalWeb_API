@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -15,30 +16,44 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
+        [Authorize(Policy = "Transaccional")]
         [HttpPost("Filtrar")]
-        public async Task<IEnumerable<SP_FiltroPorFechaTransaccionesResult>> ResultadoFiltroFechasTransacciones([FromBody] ModeloFiltroFechasTransacciones filtroFechas)
+        public async Task<IEnumerable<object>> ResultadoFiltroFechasTransacciones([FromBody] ModeloFiltroFechasTransacciones filtroFechas) 
         {
-            return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
+            if (filtroFechas.Tipo == 2)
+            {                
+                var fechaAtras = (filtroFechas.FechaInicio.AddDays(-5));            
+                var resultado = _context.TransaccionesExcel
+                                       .Where(te => te.Machine_Sn == filtroFechas.Machine_Sn
+                                                    && te.FechaTransaccion >= fechaAtras
+                                                    && te.FechaTransaccion <= filtroFechas.FechaFin)
+                                       .OrderByDescending(te => te.FechaTransaccion)
+                                       .ToList();
+                return resultado;
+            }
+            else
+            {
+                return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
+
+            }
         }
 
+        [Authorize(Policy = "Nivel1")]
         [HttpPost("Consolidado")]
-        public async Task<List<SP_ConsolidadoLocalidadResult>> ResultadoConsolidado([FromBody] ModeloConsolidado modelo)
+        public List<SP_ConsolidadoLocalidadResult> ResultadoConsolidado([FromBody] ModeloConsolidado modelo)
         {
-            List<SP_ConsolidadoLocalidadResult> resultados = new();
-            if (modelo.Equipos is not null)
+            if (modelo.Equipos is not null && modelo.Equipos.Any())
             {
-                foreach (var equipo in modelo.Equipos)
-                {
-                    var resultado = await _context.GetProcedures().SP_ConsolidadoLocalidadAsync(modelo.Tipo, equipo, modelo.FechaIni, modelo.FechaFin);
-                    resultados.AddRange(resultado);
-                }
-                resultados = resultados.OrderBy(x => x.NombreTienda).ToList();
+                var resultados = modelo.Equipos.SelectMany(equipo =>
+                    _context.GetProcedures().SP_ConsolidadoLocalidadAsync(modelo.Tipo, equipo, modelo.FechaIni, modelo.FechaFin).Result
+                ).OrderBy(x => x.NombreTienda).ToList();
+
                 return resultados;
             }
             else
             {
-                return resultados;
+                return new List<SP_ConsolidadoLocalidadResult>();
             }
-        }       
+        }
     }
 }

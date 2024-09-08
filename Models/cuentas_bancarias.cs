@@ -8,31 +8,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[Table("cuentas_bancarias")]
-public partial class CuentasBancarias
+public partial class cuentas_bancarias
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
     public string CodigoCliente { get; set; }
 
     [Key]
-    [Column("codcuentacontable")]
     [StringLength(50)]
     [Unicode(false)]
-    public string Codcuentacontable { get; set; }
+    public string codcuentacontable { get; set; }
 
-    [Column("nombanco")]
     [StringLength(250)]
     [Unicode(false)]
-    public string Nombanco { get; set; }
+    public string nombanco { get; set; }
 
-    [Column("numerocuenta")]
     [StringLength(50)]
     [Unicode(false)]
-    public string Numerocuenta { get; set; }
+    public string numerocuenta { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
@@ -41,6 +36,6 @@ public partial class CuentasBancarias
     [Unicode(false)]
     public string Observacion { get; set; }
 
-    [Column("fecrea", TypeName = "datetime")]
-    public DateTime? Fecrea { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fecrea { get; set; }
 }

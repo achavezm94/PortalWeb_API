@@ -8,30 +8,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[PrimaryKey("Codigotipomaq", "Codmodelo", "Codmarca")]
-[Table("modelo")]
-public partial class Modelo
+[PrimaryKey("codigotipomaq", "codmodelo", "codmarca")]
+public partial class modelo
 {
     [Key]
-    [Column("codigotipomaq")]
     [StringLength(35)]
     [Unicode(false)]
-    public string Codigotipomaq { get; set; }
+    public string codigotipomaq { get; set; }
 
     [Key]
-    [Column("codmodelo")]
     [StringLength(5)]
     [Unicode(false)]
-    public string Codmodelo { get; set; }
+    public string codmodelo { get; set; }
 
     [Key]
-    [Column("codmarca")]
     [StringLength(5)]
     [Unicode(false)]
-    public string Codmarca { get; set; }
+    public string codmarca { get; set; }
 
-    [Column("nombremodelo")]
     [StringLength(250)]
     [Unicode(false)]
-    public string Nombremodelo { get; set; }
+    public string nombremodelo { get; set; }
 }

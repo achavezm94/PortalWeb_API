@@ -8,26 +8,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[Table("Usuarios_Portal")]
-public partial class UsuariosPortal
+public partial class Datos_Personales
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Usuario { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Contrasenia { get; set; }
+    public int id { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
-    public string Rol { get; set; }
+    public string UsuarioPortaidFk { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string UsuarioidFk { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Nombres { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Apellidos { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Cedula { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Telefono { get; set; }
 
     [StringLength(1)]
     [Unicode(false)]

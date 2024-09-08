@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
+using PortalWeb_API.Methods;
 using PortalWeb_API.Models;
 using System.Data;
 
@@ -18,118 +19,226 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("ObtenerEquipo/{tp}/{codTienda}")]
-        public IActionResult ObtenerEquipo([FromRoute] int tp, [FromRoute] string codTienda )
+        [Authorize(Policy = "Monitor")]
+        [HttpGet("ObtenerTotalesMoneq/{Machine_Sn}")]
+        public IActionResult ObtenerTotalesMoneq(string Machine_Sn)
         {
-            string Sentencia = "exec sp_obtener_maquinaria @type, @ctienda";
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.SelectCommand.Parameters.Add(new SqlParameter("@type", tp));
-                adapter.SelectCommand.Parameters.Add(new SqlParameter("@ctienda", codTienda));
-                adapter.Fill(dt);
-            }
-            if (dt == null)
-            {
-                return NotFound("No se ha podido crear...");
-            }
-            return Ok(dt);
+            MetodosTotales metodosTotales = new(_context);
+            var resultado = metodosTotales.TotalesUltimaTransaccion(Machine_Sn);
+            return Ok(resultado);
         }
 
-        [HttpPost]
-        [Route("GuardarEquipo")]
+        [Authorize(Policy = "Monitor")]
+        [HttpGet("ObtenerEquipoMoneq/{opcion}/{codigoCliente}")]
+        public IActionResult ObtenerEquipoMoneq(int opcion, string codigoCliente)
+        {
+            var query = from ep in _context.Equipos
+                        join mt1 in _context.MasterTable
+                            on ep.tipo equals mt1.codigo into mt1Join
+                        from mt1 in mt1Join.DefaultIfEmpty()
+                        where mt1.master == "MQT"
+                        join mc in _context.marca
+                            on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca } into mcJoin
+                        from mc in mcJoin.DefaultIfEmpty()
+                        join md in _context.modelo
+                            on new { ep.marca, ep.tipo, ep.modelo } equals new { marca = md.codmarca, tipo = md.codigotipomaq, modelo = md.codmodelo } into mdJoin
+                        from md in mdJoin.DefaultIfEmpty()
+                        join td in _context.Tiendas
+                            on ep.codigoTiendaidFk equals td.id into tdJoin
+                        from td in tdJoin.DefaultIfEmpty()
+                        join mt2 in _context.MasterTable
+                            on td.CodProv equals mt2.codigo into mt2Join
+                        from mt2 in mt2Join.DefaultIfEmpty()
+                        join t in _context.TotalesEquipos
+                            on ep.serieEquipo equals t.Equipo into tJoin
+                        from t in tJoin.DefaultIfEmpty()
+                        where ep.active == "A"
+                        select new
+                        {
+                            idCliente = td.CodigoClienteidFk ?? "",
+                            NombreTienda = td.NombreTienda ?? "",
+                            tipoMaquinaria = mt1.nombre ?? "",
+                            mc.nombremarca,
+                            md.nombremodelo,
+                            indicadorTotalMaxAsegurado = ep.capacidadAsegurada,
+                            serieEquipo = ep.serieEquipo ?? "",
+                            indicadorCapacidadBilletesMax = ep.capacidadIni ?? 0,
+                            indicadorCapacidadMaxMonedas = ep.capacidadIniSobres ?? 0,
+                            ep.estadoPing,
+                            ep.tiempoSincronizacion,
+                            ep.ultimaRecoleccion,
+                            provincia = mt2.nombre ?? "",
+                            ep.IpEquipo,
+                            UltimaNoTrans = t.UltimaTransaccion,
+                            FechaUltimaTrans = t.FechaUltimaTransaccion,
+                            TipoTrans = t.Tipo
+                        };
+            if (@opcion == 2)
+            {
+                query = query.Where(x => x.idCliente == @codigoCliente);
+            }
+            query = query.OrderBy(x => x.serieEquipo);
+            var result = query.ToList();
+            return Ok(result);
+        }
+
+
+        [Authorize(Policy = "Nivel2")]
+        [HttpGet("ObtenerEquipo")]
+        public IActionResult ObtenerEquipo()
+        {
+            var query = from ep in _context.Equipos
+                        join td in _context.Tiendas on ep.codigoTiendaidFk equals td.id into tiendaGroup
+                        from td in tiendaGroup.DefaultIfEmpty()
+                        join cli in _context.Clientes on td.CodigoClienteidFk equals cli.CodigoCliente into clienteGroup
+                        from cli in clienteGroup.DefaultIfEmpty()
+                        join mt1 in _context.MasterTable on ep.tipo equals mt1.codigo into tipoGroup
+                        from mt1 in tipoGroup.DefaultIfEmpty()
+                        where mt1.master == "MQT"
+                        join mc in _context.marca on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca} into marcaGroup
+                        from mc in marcaGroup.DefaultIfEmpty()
+                        join md in _context.modelo on new { ep.marca, ep.tipo, ep.modelo } equals new { marca = md.codmarca, tipo = md.codigotipomaq, modelo = md.codmodelo } into modeloGroup
+                        from md in modeloGroup.DefaultIfEmpty()
+                        join u in _context.Usuarios on ep.IpEquipo equals u.IpMachine into usuarioGroup
+                        from u in usuarioGroup.DefaultIfEmpty()
+                        group new { ep, td, cli, mt1, mc, md, u } by new
+                        {
+                            td.CodigoClienteidFk,
+                            cli.NombreCliente,
+                            td.NombreTienda,
+                            td.CodigoTienda,
+                            mt1.nombre,
+                            mc.nombremarca,
+                            md.nombremodelo,
+                            ep.id,
+                            ep.codigoTiendaidFk,
+                            ep.capacidadAsegurada,
+                            ep.tipo,
+                            ep.marca,
+                            ep.modelo,
+                            ep.serieEquipo,
+                            ep.active,
+                            ep.capacidadIni,
+                            ep.capacidadIniSobres,
+                            ep.fechaInstalacion,
+                            ep.IpEquipo
+                        } into g
+                        select new
+                        {
+                            g.Key.CodigoClienteidFk,
+                            g.Key.NombreCliente,
+                            NombreTienda = g.Key.NombreTienda ?? "",
+                            TipoMaquinaria = g.Key.nombre ?? "",
+                            g.Key.nombremarca,
+                            g.Key.nombremodelo,
+                            g.Key.id,
+                            g.Key.codigoTiendaidFk,
+                            g.Key.CodigoTienda,
+                            g.Key.capacidadAsegurada,
+                            g.Key.tipo,
+                            Marca = g.Key.marca ?? "",
+                            Modelo = g.Key.modelo ?? "",
+                            SerieEquipo = g.Key.serieEquipo ?? "",
+                            g.Key.active,
+                            g.Key.capacidadIni,
+                            g.Key.capacidadIniSobres,
+                            g.Key.fechaInstalacion,
+                            CapacidadUsuariosTemporales = _context.UsuariosTemporales.Count(ut => ut.IpMachineSolicitud == g.Key.IpEquipo && ut.Active == "A"),
+                            CapacidadUsuarios = g.Count(x => x.u != null),
+                            g.Key.IpEquipo
+                        };
+            return Ok(query.OrderBy(x => x.SerieEquipo).ToList());
+        }
+
+        [Authorize(Policy = "Transaccional")]
+        [HttpGet("EquipoLista/{codCliente}")]
+        public IActionResult EquipoLista([FromRoute] string codCliente)
+        {
+            var Datos = from eq in _context.Equipos
+                        join ti in _context.Tiendas on eq.codigoTiendaidFk equals ti.id into tiGroup
+                        from ti in tiGroup.DefaultIfEmpty()
+                        join cli in _context.Clientes on ti.CodigoClienteidFk equals cli.CodigoCliente
+                        where cli.CodigoCliente == codCliente
+                        orderby eq.serieEquipo ascending
+                        select new
+                        {
+                            eq.serieEquipo,
+                            ti.NombreTienda
+                        };
+            return Ok(Datos);
+        }
+
+        [Authorize(Policy = "Nivel2")]
+        [HttpGet("EquipoNuevo")]
+        public IActionResult ObtenerEquipoTemporal()
+        {
+           var Datos = from eqt in _context.EquiposTemporales 
+                       where eqt.Active.Equals("A") 
+                       select new{ eqt.serieEquipo, eqt.IpEquipo};
+            return (Datos != null) ? Ok(Datos) : NotFound();
+        }
+
+        [Authorize(Policy = "Nivel1")]
+        [HttpPost("GuardarEquipo")]
         public async Task<IActionResult> GuardarEquipo([FromBody] Equipos model)
         {
             if (ModelState.IsValid)
-            {
-                if (model.CapacidadIni is not null && model.CapacidadIniSobres is not null && model.CapacidadAsegurada is not null && model.CapacidadIni !=0 && model.CapacidadIniSobres != 0 && model.CapacidadAsegurada != 0)
+            {                
+                await _context.Equipos.AddAsync(model);
+                
+                var nuevoEquipo = new TotalesEquipos
                 {
-                    var equipo = _context.Equipos.FirstOrDefault(x => x.SerieEquipo == model.SerieEquipo);
-                    if (equipo == null)
-                    {
-                        await _context.Equipos.AddAsync(model);
+                    Equipo = model.serieEquipo,
+                    TotalCuadreEquipo = 0
+                };
 
-                        if (await _context.SaveChangesAsync() > 0)
-                        {
-                            var res = _context.EquiposTemporales.FirstOrDefault(x => x.IpEquipo == model.IpEquipo);
-                            if (res != null)
-                            {
-                                res.Active = "F";
-                                await _context.SaveChangesAsync();
-                            }
-                            return Ok(model);
-                        }
-                        else
-                        {
-                            return BadRequest("Datos incorrectos");
-                        }
-                    }
-                    return BadRequest("Ya existe el Equipo");
+                await _context.TotalesEquipos.AddAsync(nuevoEquipo);
+                
+                if (await _context.SaveChangesAsync() > 0)
+                {
+                    var update = _context.EquiposTemporales
+                                .Where(u => u.IpEquipo.Equals(model.IpEquipo))
+                                .ExecuteUpdate(u => u.SetProperty(u => u.Active, "F"));
+                    return Ok();
                 }
-                return BadRequest("Campos NULL");
+                else
+                {
+                    return BadRequest();
+                }  
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest();
             }
         }
 
-        [HttpPut]
-        [Route("ActualizarEquipo/{id}")]
+        [Authorize(Policy = "Nivel1")]
+        [HttpPut("ActualizarEquipo/{id}")]
         public async Task<IActionResult> ActualizarEquipo([FromRoute] int id, [FromBody] Equipos model)
         {            
-            if (id != model.Id)
-            {
-                return BadRequest("No existe el equipo");
-            }
             _context.Entry(model).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return Ok(model);
-        }
-
-        [HttpPut]
-        [Route("ActivarEquipo/{id}")]
-        public IActionResult ActivarEquipo([FromRoute] int id)
-        {
-            var update = _context.Equipos
-                          .Where(u => u.Id.Equals(id))
-                          .ExecuteUpdate(u => u.SetProperty(u => u.Active, "A"));
             return Ok();
         }
 
-        [HttpDelete]
-        [Route("BorrarEquipo/{id}")]
+        [Authorize(Policy = "Nivel1")]
+        [HttpPut("ActivarEquipo/{id}")]
+        public IActionResult ActivarEquipo(int id)
+        {
+            var update = _context.Equipos
+                          .Where(u => u.id.Equals(id))
+                          .ExecuteUpdate(u => u.SetProperty(u => u.active, "A"));
+            return Ok();
+        }
+
+        [Authorize(Policy = "Nivel1")]
+        [HttpDelete("BorrarEquipo/{id}")]
         public IActionResult BorrarEquipo(int id)
         {
             var update = _context.Equipos
-                           .Where(u => u.Id.Equals(id))
-                           .ExecuteUpdate(u => u.SetProperty(u => u.Active, "F"));
+                           .Where(u => u.id.Equals(id))
+                           .ExecuteUpdate(u => u.SetProperty(u => u.active, "F"));
             return (update != 0) ? Ok() : BadRequest();
-        }
-
-        [HttpGet]
-        [Route("EquipoNuevo")]
-        public IActionResult ObtenerEquipoTemporal()
-        {
-            string Sentencia = "exec SP_ObtenerEquipoTemp";
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.Fill(dt);
-            }
-            if (dt == null)
-            {
-                return NotFound("No se ha podido crear...");
-            }
-
-            return Ok(dt);
         }
     }
 }

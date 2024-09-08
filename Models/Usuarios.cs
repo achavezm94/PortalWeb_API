@@ -11,8 +11,7 @@ namespace PortalWeb_API.Models;
 public partial class Usuarios
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [Required]
     [StringLength(50)]

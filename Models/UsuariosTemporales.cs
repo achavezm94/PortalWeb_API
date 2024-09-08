@@ -11,8 +11,7 @@ namespace PortalWeb_API.Models;
 public partial class UsuariosTemporales
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
@@ -25,8 +24,8 @@ public partial class UsuariosTemporales
     [Unicode(false)]
     public string IpMachineSolicitud { get; set; }
 
-    [Column("fecrea", TypeName = "datetime")]
-    public DateTime? Fecrea { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fecrea { get; set; }
 
     [StringLength(1)]
     [Unicode(false)]

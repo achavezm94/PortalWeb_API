@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
-using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
@@ -16,24 +14,30 @@ namespace PortalWeb_API.Controllers
         {
             _context = context;
         }
-        [HttpGet("ObtenerIndicadores/{id}/{tp}")]
-        public IActionResult ObtenerIndicadores([FromRoute] string id, [FromRoute] int tp)
+
+        [Authorize(Policy = "Monitor")]
+        [HttpGet("ObtenerIndicadoresHome/{opcion}")]
+        public IActionResult ObtenerHome(int opcion)
         {
-            string Sentencia = " EXEC SP_IndicadoresLlenado @ids, " + tp;
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
+            if (opcion == 1)
             {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.SelectCommand.Parameters.Add(new SqlParameter("@ids", id));
-                adapter.Fill(dt);
+                var NoClientes = _context.Clientes.Count(e => e.Active != "F");
+                var NoTiendas = _context.Tiendas.Count(e => e.Active != "F");
+                var NoEquipos = _context.Equipos.Count(e => e.active != "F");
+                var NoUsuarios = _context.Usuarios_Portal.Count(e => e.Active != "F");
+                var Datos = new List<object>
+                {
+                    new { tipo = "clientes", Cantidad = NoClientes },
+                    new { tipo = "tiendas", Cantidad = NoTiendas },
+                    new { tipo = "equipos", Cantidad = NoEquipos },
+                    new { tipo = "usuarios", Cantidad = NoUsuarios }
+                };
+                return Ok(Datos);
             }
-            if (dt == null)
+            else
             {
-                return NotFound("No se ha podido crear...");
+                return Ok(null);
             }
-            return Ok(dt);
         }
     }
 }

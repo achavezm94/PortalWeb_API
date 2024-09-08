@@ -13,8 +13,9 @@ namespace PortalWeb_API.Methods_Token
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
-        public string Generate(UsuariosPortal usuariosPortal)
+        public string Generate(Usuarios_Portal usuariosPortal)
         {
+            var tokenExpiration = (usuariosPortal.Rol == "R004") ? DateTime.Now.AddHours(1) : DateTime.Now.AddHours(8);
             var jwt = _configuration.GetSection("Jwt").Get<Jwt>() ?? throw new InvalidOperationException("Jwt configuration is missing or invalid.");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
             var singIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -29,7 +30,7 @@ namespace PortalWeb_API.Methods_Token
                 jwt.Issuer,
                 jwt.Audience,
                 claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: tokenExpiration,
                 signingCredentials: singIn);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

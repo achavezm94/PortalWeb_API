@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -15,8 +16,8 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        [Route("GuardarTransacciones")]
+        [Authorize(Policy = "Nivel1")]
+        [HttpPost("GuardarTransacciones")]
         public async Task<IActionResult> GuardarTransacciones([FromBody] List<TransaccionesAcreditadas> model)
         {
             TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
@@ -27,8 +28,8 @@ namespace PortalWeb_API.Controllers
                 foreach (var item in model)
                 {
                     item.FechaRegistro = cstTime;
-                    await _context.TransaccionesAcreditadas.AddAsync(item);
                 }
+                await _context.TransaccionesAcreditadas.AddRangeAsync(model);               
                 return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
             }
             else

@@ -8,20 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[Table("cuentaSignaTienda")]
-public partial class CuentaSignaTienda
+public partial class cuentaSignaTienda
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
-    [Column("idtienda")]
     [StringLength(30)]
-    public string Idtienda { get; set; }
+    public string idtienda { get; set; }
 
-    [Column("idcuentabancaria")]
-    public int? Idcuentabancaria { get; set; }
+    public int? idcuentabancaria { get; set; }
 
-    [Column("fcrea", TypeName = "datetime")]
-    public DateTime? Fcrea { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fcrea { get; set; }
 }

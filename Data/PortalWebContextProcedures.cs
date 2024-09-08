@@ -35,15 +35,10 @@ namespace PortalWeb_API.Data
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ObtenerTiendasResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SP_CalculoTotalResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_ConsolidadoLocalidadResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SP_DatosEquiposFrontResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_EquiposNoTransaccionesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaComisariatoResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaTransaccionesResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SP_ObtenerTotalesMachinResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<SP_TablaTransaccionalPrincipalResult>().HasNoKey().ToView(null);
         }
     }
 
@@ -54,53 +49,6 @@ namespace PortalWeb_API.Data
         public PortalWebContextProcedures(PortalWebContext context)
         {
             _context = context;
-        }
-
-        public virtual async Task<List<ObtenerTiendasResult>> ObtenerTiendasAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<ObtenerTiendasResult>("EXEC @returnValue = [dbo].[ObtenerTiendas]", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SP_CalculoTotalResult>> SP_CalculoTotalAsync(string machine_sn, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "machine_sn",
-                    Size = 100,
-                    Value = machine_sn ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SP_CalculoTotalResult>("EXEC @returnValue = [dbo].[SP_CalculoTotal] @machine_sn = @machine_sn", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
         }
 
         public virtual async Task<List<SP_ConsolidadoLocalidadResult>> SP_ConsolidadoLocalidadAsync(int? tipo, string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
@@ -142,33 +90,6 @@ namespace PortalWeb_API.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<SP_ConsolidadoLocalidadResult>("EXEC @returnValue = [dbo].[SP_ConsolidadoLocalidad] @tipo = @tipo, @id_tienda = @id_tienda, @fechaInicial = @fechaInicial, @fechaFinal = @fechaFinal", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SP_DatosEquiposFrontResult>> SP_DatosEquiposFrontAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "id_equipo",
-                    Size = 50,
-                    Value = id_equipo ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SP_DatosEquiposFrontResult>("EXEC @returnValue = [dbo].[SP_DatosEquiposFront] @id_equipo = @id_equipo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -291,66 +212,6 @@ namespace PortalWeb_API.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<SP_FiltroPorFechaTransaccionesResult>("EXEC @returnValue = [dbo].[SP_FiltroPorFechaTransacciones] @tipo = @tipo, @id_tienda = @id_tienda, @fechaInicial = @fechaInicial, @fechaFinal = @fechaFinal", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SP_ObtenerTotalesMachinResult>> SP_ObtenerTotalesMachinAsync(string id_equipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "id_equipo",
-                    Size = 50,
-                    Value = id_equipo ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SP_ObtenerTotalesMachinResult>("EXEC @returnValue = [dbo].[SP_ObtenerTotalesMachin] @id_equipo = @id_equipo", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<SP_TablaTransaccionalPrincipalResult>> SP_TablaTransaccionalPrincipalAsync(string id_tienda, int? type, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "id_tienda",
-                    Size = 100,
-                    Value = id_tienda ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NChar,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "type",
-                    Value = type ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SP_TablaTransaccionalPrincipalResult>("EXEC @returnValue = [dbo].[SP_TablaTransaccionalPrincipal] @id_tienda = @id_tienda, @type = @type", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

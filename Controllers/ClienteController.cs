@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
-using System;
 using System.Data;
 
 namespace PortalWeb_API.Controllers
@@ -19,132 +18,114 @@ namespace PortalWeb_API.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("ObtenerCliente")]
+        [Authorize(Policy = "Nivel2")]
+        [HttpGet("ObtenerCliente")]
         public IActionResult ObtenerCliente()
         {
-
-            string Sentencia = "exec [ObtenerClientes]";
-
-            DataTable dt = new();
-            using (SqlConnection connection = new(_context.Database.GetDbConnection().ConnectionString))
-            {
-                using SqlCommand cmd = new(Sentencia, connection);
-                SqlDataAdapter adapter = new(cmd);
-                adapter.SelectCommand.CommandType = CommandType.Text;
-                adapter.Fill(dt);
-            }
-
-            if (dt == null)
-            {
-                return NotFound("No se ha podido crear...");
-            }
-
-            return Ok(dt);
-
+            var query = from cl in _context.Clientes
+                        join cb in _context.cuentas_bancarias on cl.CodigoCliente equals cb.CodigoCliente into cbGroup
+                        from cbg in cbGroup.DefaultIfEmpty()
+                        join csl in _context.ClienteSignaLocalidad on cl.CodigoCliente equals csl.codigoCiente into cslGroup
+                        from cslg in cslGroup.DefaultIfEmpty()
+                        group new { cl, cbg, cslg } by new
+                        {
+                            cl.id,
+                            cl.CodigoCliente,
+                            cl.NombreCliente,
+                            cl.RUC,
+                            cl.Direccion,
+                            cl.Active,
+                            cl.telefcontacto,
+                            cl.emailcontacto,
+                            cl.nombrecontacto
+                        } into g
+                        select new
+                        {
+                            g.Key.id,
+                            g.Key.CodigoCliente,
+                            g.Key.NombreCliente,
+                            g.Key.RUC,
+                            g.Key.Direccion,
+                            g.Key.Active,
+                            g.Key.telefcontacto,
+                            g.Key.emailcontacto,
+                            g.Key.nombrecontacto,
+                            cantidadCuentasBancarias = g.Select(x => x.cbg.id).Distinct().Count(),
+                            cantidadLocalidades = g.Select(x => x.cslg.id).Distinct().Count()
+                        };
+            var Datos = query.ToList();
+            return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
-        [HttpGet]
-        [Route("ObtenerCuentaCliente/{CodCliente}")]
+        [Authorize(Policy = "Monitor")]
+        [HttpGet("ObtenerClienteSelect")]
+        public IActionResult ObtenerClienteSelect()
+        {
+            var Datos = from cl in _context.Clientes
+                        select new
+                        {
+                            cl.id,
+                            cl.CodigoCliente,
+                            cl.NombreCliente
+                        };
+            return (Datos != null) ? Ok(Datos) : NotFound();
+        }
+
+        [Authorize(Policy = "Nivel2")]
+        [HttpGet("ObtenerCuentaCliente/{CodCliente}")]
         public IActionResult ObtenerCuentaCliente(string CodCliente)
         {
             var Datos = from cli in _context.Clientes
-                        join cb in _context.CuentasBancarias on cli.CodigoCliente equals cb.CodigoCliente
+                        join cb in _context.cuentas_bancarias on cli.CodigoCliente equals cb.CodigoCliente
                         where cli.CodigoCliente == CodCliente
                         select new
                         {
-                            cb.Id,
-                            ClienteID = cli.Id,
+                            cb.id,
+                            ClienteID = cli.id,
                             cb.CodigoCliente,
-                            cb.Codcuentacontable,
-                            cb.Nombanco,
-                            cb.Numerocuenta,
+                            cb.codcuentacontable,
+                            cb.nombanco,
+                            cb.numerocuenta,
                             cb.TipoCuenta,
                             cb.Observacion,
-                            cb.Fecrea
+                            cb.fecrea
                         };
-            return (Datos != null) ? Ok(Datos) : NotFound("No existe cuenta bancaria");
+            return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
-        [HttpPost]
-        [Route("GuardarCliente")]
+        [Authorize(Policy = "Nivel1")]
+        [HttpPost("GuardarCliente")]
         public async Task<IActionResult> GuardarCliente([FromBody] Clientes model)
         {
             if (ModelState.IsValid)
             {
-                await _context.Clientes.AddAsync(model);                
-                if (await _context.SaveChangesAsync() > 0)
-                {                    
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest("Datos incorrectos");
-                }
+                await _context.Clientes.AddAsync(model);
+                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest();
             }
         }
 
-
-
-        [HttpPut]
-        [Route("ActualizarCliente")]
-        public async Task<IActionResult> ActualizarCliente([FromBody] Clientes model)
+        [Authorize(Policy = "Nivel1")]
+        [HttpPut("ActualizarCliente")]
+        public async Task<IActionResult> ActualizarClienteAsync([FromBody] Clientes model)
         {
-            var result = await _context.Clientes.FindAsync(model.CodigoCliente);
-
-            if (result != null)
-            {
-                try
-                {
-                    result.NombreCliente = model.NombreCliente;
-                    result.Ruc = model.Ruc;
-                    result.Direccion = model.Direccion;
-                    result.Telefcontacto = model.Telefcontacto;
-                    result.Emailcontacto = model.Emailcontacto;
-                    result.Nombrecontacto = model.Nombrecontacto;
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    return BadRequest();
-                }
-                finally 
-                {
-                    await _context.SaveChangesAsync();
-                }
-                return Ok(result);
-            }
-            else 
-            {
-                return NotFound();
-            }
+            _context.Attach(model);
+            _context.Entry(model).State = EntityState.Modified;
+            _context.Entry(model).Property(nameof(model.id)).IsModified = false;
+            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
         }
 
-        [HttpDelete]
-        [Route("BorrarCliente/{id:int}")]
-        public async Task<IActionResult> BorrarCliente(int id)
+        [Authorize(Policy = "Nivel1")]
+        [HttpDelete("BorrarCliente/{id}")]
+        public IActionResult BorrarCliente(int id)
         {
-            var result = await _context.Clientes.FirstOrDefaultAsync(e => e.Id == id);
-            if (result != null)
-            {
-                _context.Clientes.Remove(result);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    return NoContent();
-                }
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            var delete = _context.Clientes
+                           .Where(b => b.id.Equals(id))
+                           .ExecuteDelete();
+            return (delete != 0) ? Ok() : BadRequest();
         }
     }
 }

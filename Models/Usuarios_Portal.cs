@@ -8,23 +8,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[Table("asignacion_equipos")]
-public partial class AsignacionEquipos
+public partial class Usuarios_Portal
 {
-    [Column("codequipo")]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Codequipo { get; set; }
-
-    [Column("coduser")]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Coduser { get; set; }
-
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
-    [Column("fecrea", TypeName = "datetime")]
-    public DateTime? Fecrea { get; set; }
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Usuario { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Contrasenia { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Rol { get; set; }
+
+    [StringLength(1)]
+    [Unicode(false)]
+    public string Active { get; set; }
 }

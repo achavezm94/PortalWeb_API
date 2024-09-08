@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 
 namespace PortalWeb_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/MarcaModeloEquipo")]
     [ApiController]
     public class MarcaModeloEquipoController : ControllerBase
     {
@@ -13,46 +14,34 @@ namespace PortalWeb_API.Controllers
         {
             _context = context;
         }
-        
-        [HttpGet]
-        [Route("ObtenerMarca/{codigotipomaq}")]
+
+        [Authorize(Policy = "Nivel1")]
+        [HttpGet("ObtenerMarca/{codigotipomaq}")]
         public IActionResult ObtenerMarca(string codigotipomaq)
         {
             if (ModelState.IsValid)
             {
-            var marcas = from c in _context.Marca
-                            where c.Codigotipomaq == codigotipomaq
-                            select c;
-            if (marcas == null)
-                {
-                    return NotFound();
-                }
-                return Ok(marcas);
+                var marcas = from m in _context.marca where m.codigotipomaq.Equals(codigotipomaq) select m;
+                return (marcas != null) ? Ok(marcas) : NotFound();
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest();
             }
         }
 
-        [HttpGet]
-        [Route("ObtenerModelo/{codigotipomaq}/{codmodelo}")]
+        [Authorize(Policy = "Nivel1")]
+        [HttpGet("ObtenerModelo/{codigotipomaq}/{codmodelo}")]
         public IActionResult ObtenerMarca(string codigotipomaq, string codmodelo)
         {
             if (ModelState.IsValid)
             {
-                var modelos = from c in _context.Modelo
-                              where c.Codigotipomaq == codigotipomaq && c.Codmarca == codmodelo
-                              select c;
-                if (modelos == null)
-                {
-                    return NotFound();
-                }
-                return Ok(modelos);
+                var modelos = from mo in _context.modelo where mo.codigotipomaq.Equals(codigotipomaq) && mo.codmarca.Equals(codmodelo) select mo;
+                return (modelos != null) ? Ok(modelos) : NotFound();
             }
             else
             {
-                return BadRequest("ERROR");
+                return BadRequest();
             }
         }
     }

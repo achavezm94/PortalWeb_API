@@ -8,74 +8,61 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models;
 
-[PrimaryKey("Id", "SerieEquipo")]
+[PrimaryKey("id", "serieEquipo")]
 public partial class Equipos
 {
     [Key]
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
-    [Column("codigoTiendaidFk")]
-    public int CodigoTiendaidFk { get; set; }
+    public int codigoTiendaidFk { get; set; }
 
-    [Column("tipo")]
     [StringLength(80)]
     [Unicode(false)]
-    public string Tipo { get; set; }
+    public string tipo { get; set; }
 
-    [Column("marca")]
     [StringLength(80)]
     [Unicode(false)]
-    public string Marca { get; set; }
+    public string marca { get; set; }
 
-    [Column("modelo")]
     [StringLength(50)]
     [Unicode(false)]
-    public string Modelo { get; set; }
+    public string modelo { get; set; }
 
     [Key]
-    [Column("serieEquipo")]
     [StringLength(50)]
     [Unicode(false)]
-    public string SerieEquipo { get; set; }
+    public string serieEquipo { get; set; }
 
     [Required]
-    [Column("active")]
     [StringLength(1)]
     [Unicode(false)]
-    public string Active { get; set; }
+    public string active { get; set; }
 
-    [Column("capacidadIni")]
-    public int? CapacidadIni { get; set; }
+    public int? capacidadIni { get; set; }
 
-    [Column("capacidadFin")]
-    public int? CapacidadFin { get; set; }
+    public int? capacidadFin { get; set; }
 
-    [Column("fechaInstalacion", TypeName = "datetime")]
-    public DateTime? FechaInstalacion { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaInstalacion { get; set; }
 
-    [Column("estadoPing")]
-    public int EstadoPing { get; set; }
+    public int estadoPing { get; set; }
 
-    [Column("tiempoSincronizacion", TypeName = "datetime")]
-    public DateTime TiempoSincronizacion { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime tiempoSincronizacion { get; set; }
 
-    [Column("fecrea", TypeName = "datetime")]
-    public DateTime? Fecrea { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fecrea { get; set; }
 
-    [Column("ultimaRecoleccion", TypeName = "datetime")]
-    public DateTime? UltimaRecoleccion { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? ultimaRecoleccion { get; set; }
 
-    [Column("capacidadIniSobres")]
-    public int? CapacidadIniSobres { get; set; }
+    public int? capacidadIniSobres { get; set; }
 
-    [Column("capacidadFinSobres")]
-    public int? CapacidadFinSobres { get; set; }
+    public int? capacidadFinSobres { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]
     public string IpEquipo { get; set; }
 
-    [Column("capacidadAsegurada")]
-    public int? CapacidadAsegurada { get; set; }
+    public int? capacidadAsegurada { get; set; }
 }

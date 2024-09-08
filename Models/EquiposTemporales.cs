@@ -10,21 +10,19 @@ namespace PortalWeb_API.Models;
 
 public partial class EquiposTemporales
 {
-    [Column("id")]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     [Key]
-    [Column("serieEquipo")]
     [StringLength(50)]
     [Unicode(false)]
-    public string SerieEquipo { get; set; }
+    public string serieEquipo { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]
     public string IpEquipo { get; set; }
 
-    [Column("fecrea", TypeName = "datetime")]
-    public DateTime? Fecrea { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? fecrea { get; set; }
 
     [StringLength(1)]
     [Unicode(false)]

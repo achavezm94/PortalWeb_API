@@ -37,10 +37,7 @@ namespace PortalWeb_API.Models
         [Column("Total", TypeName = "decimal(38,2)")]
         public decimal? Total { get; set; }
         public int? Repetido { get; set; }
-        [Column("TotalRecoleccion", TypeName = "decimal(38,2)")]
-        public decimal? TotalRecoleccion { get; set; }
         public string TipoTransaccion { get; set; }
-        public DateTime? FechaRecoleccion { get; set; }
         public string Acreditada { get; set; }
     }
 }
