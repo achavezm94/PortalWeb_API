@@ -20,13 +20,15 @@ namespace PortalWeb_API.Controllers
         [HttpPost("Filtrar")]
         public async Task<IEnumerable<object>> ResultadoFiltroFechasTransacciones([FromBody] ModeloFiltroFechasTransacciones filtroFechas) 
         {
+            //return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
+            
             if (filtroFechas.Tipo == 2)
             {                
                 var fechaAtras = (filtroFechas.FechaInicio.AddDays(-5));            
                 var resultado = _context.TransaccionesExcel
                                        .Where(te => te.Machine_Sn == filtroFechas.Machine_Sn
-                                                    && te.FechaTransaccion >= fechaAtras
-                                                    && te.FechaTransaccion <= filtroFechas.FechaFin)
+                                                 && te.FechaTransaccion >= fechaAtras
+                                                 && te.FechaTransaccion <= filtroFechas.FechaFin)
                                        .OrderByDescending(te => te.FechaTransaccion)
                                        .ToList();
                 return resultado;
@@ -34,7 +36,6 @@ namespace PortalWeb_API.Controllers
             else
             {
                 return await _context.GetProcedures().SP_FiltroPorFechaTransaccionesAsync(filtroFechas.Tipo, filtroFechas.Machine_Sn, filtroFechas.FechaInicio, filtroFechas.FechaFin);
-
             }
         }
 
@@ -42,7 +43,7 @@ namespace PortalWeb_API.Controllers
         [HttpPost("Consolidado")]
         public List<SP_ConsolidadoLocalidadResult> ResultadoConsolidado([FromBody] ModeloConsolidado modelo)
         {
-            if (modelo.Equipos is not null && modelo.Equipos.Any())
+            if (modelo.Equipos.Any())
             {
                 var resultados = modelo.Equipos.SelectMany(equipo =>
                     _context.GetProcedures().SP_ConsolidadoLocalidadAsync(modelo.Tipo, equipo, modelo.FechaIni, modelo.FechaFin).Result

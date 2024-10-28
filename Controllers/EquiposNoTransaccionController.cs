@@ -26,15 +26,14 @@ namespace PortalWeb_API.Controllers
             int resultado = (todasTransacciones.Total == ultimaTransaccion[0].TotalMont) ? 0 : // 0 = iguales
                 (todasTransacciones.Total > ultimaTransaccion[0].TotalMont) ? 1 : 2; // 1 = duplicadas, 2 = faltante
             double? totalcuadre = (double?)_context.TotalesEquipos.Where(d => d.Equipo == machine_Sn).First().TotalCuadreEquipo;
-            if (totalcuadre == 0 )
+            if (totalcuadre == 0)
             {
                 return Ok(new { machine_Sn, diferencia = (todasTransacciones.Total - ultimaTransaccion[0].TotalMont), resultado });
             }
             else
             {
-                return Ok(new { machine_Sn, diferencia = (ultimaTransaccion[0].TotalMont - todasTransacciones.Total ) + totalcuadre, resultado = 2 });
-            }
-            
+                return Ok(new { machine_Sn, diferencia = (ultimaTransaccion[0].TotalMont - todasTransacciones.Total ) + totalcuadre, resultado = 2 });// revisar aqui
+            }       
         }
 
         [Authorize(Policy = "Nivel1")]

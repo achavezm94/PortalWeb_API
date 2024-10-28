@@ -24,7 +24,7 @@ namespace PortalWeb_API.Controllers
                         join l in _context.MasterTable on new { t.codigo, t.master } equals new { l.codigo, l.master }
                         join c in _context.Clientes on cliente equals c.CodigoCliente
                         where t.codigoCiente == cliente
-                        select new { id = t.id, idCliente = c.id, t.master, t.codigo, l.nombre };
+                        select new { t.id, idCliente = c.id, t.master, t.codigo, l.nombre };
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 

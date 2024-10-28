@@ -29,8 +29,8 @@ namespace PortalWeb_API.Controllers
                 {
                     item.FechaRegistro = cstTime;
                 }
-                await _context.TransaccionesAcreditadas.AddRangeAsync(model);               
-                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                await _context.TransaccionesAcreditadas.AddRangeAsync(model).ConfigureAwait(false);               
+                return (await _context.SaveChangesAsync().ConfigureAwait(false) > 0) ? Ok() : BadRequest();
             }
             else
             {

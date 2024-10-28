@@ -22,7 +22,7 @@ builder.Services.AddAuthentication(option =>
                             option.SaveToken = true;
                             option.TokenValidationParameters = new TokenValidationParameters
                             {
-                                    ValidateIssuer = true,//no valida del lado del servidor
+                                    ValidateIssuer = true,
                                     ValidateAudience = true,
                                     ValidateLifetime = true,
                                     ValidateIssuerSigningKey = true,
@@ -61,9 +61,8 @@ builder.Services.AddCors(opt =>
     {
         builder.WithOrigins(
         //"https://sfifront.azurewebsites.net"
-        "http://192.168.55.66:2251",
-        "http://192.168.55.19:2254",
-        "http://192.168.55.212:4251",
+        "http://192.168.55.236:2251",
+        "http://192.168.55.19:2253",
         "http://192.168.55.212:2251"
     )
    .AllowAnyHeader()
@@ -78,9 +77,8 @@ var webSocketOptions = new WebSocketOptions
 };
 
 //webSocketOptions.AllowedOrigins.Add("https://sfifront.azurewebsites.net");
-webSocketOptions.AllowedOrigins.Add("http://192.168.55.212:4251");
-webSocketOptions.AllowedOrigins.Add("http://192.168.55.66:2251");
-webSocketOptions.AllowedOrigins.Add("http://192.168.55.19:2254");
+webSocketOptions.AllowedOrigins.Add("http://192.168.55.236:2251");
+webSocketOptions.AllowedOrigins.Add("http://192.168.55.19:2253");
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.212:2251");
 
 var app = builder.Build();

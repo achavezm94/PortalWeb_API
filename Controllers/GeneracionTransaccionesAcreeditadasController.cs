@@ -55,32 +55,51 @@ namespace PortalWeb_API.Controllers
 
         [Authorize(Policy = "Nivel1")]
         [HttpGet("AprobacionTransacciones/{nombreArchivo}")]
-        public async Task<IActionResult> AprobarTransaccionesAcreeditadasAsync([FromRoute] string nombreArchivo)
+        public IActionResult AprobarTransaccionesAcreeditadas([FromRoute] string nombreArchivo)
         {
-            var update = _context.TransaccionesAcreditadas
-                            .Where(u => u.NombreArchivo.Equals(nombreArchivo))
-                            .ExecuteUpdate(u => u.SetProperty(u => u.Acreditada, "A"));
-            if (update != 0)
+            int registrosBorrados = 0;
+            using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                var listaDeDatos = _context.TransaccionesAcreditadas
-                                            .Where(t => t.NombreArchivo == nombreArchivo)
-                                            .Select(t => new
-                                            {
-                                                t.NoTransaction,
-                                                t.Machine_Sn
-                                            })
-                                            .ToList();
-                var registrosAEliminar = _context.TransaccionesExcel
-                                                .AsEnumerable() 
+                var update = _context.TransaccionesAcreditadas
+                           .Where(u => u.NombreArchivo.Equals(nombreArchivo))
+                           .ExecuteUpdate(u => u.SetProperty(u => u.Acreditada, "A"));
+
+                if (update != 0)
+                {
+                    var listaDeDatos = _context.TransaccionesAcreditadas
+                        .Where(t => t.NombreArchivo == nombreArchivo)
+                        .Select(t => new
+                        {
+                            t.NoTransaction,
+                            t.Machine_Sn
+                        })
+                        .ToList();
+                    
+                    if (listaDeDatos.Any())
+                    {
+                        var registrosAEliminar = _context.TransaccionesExcel
+                                                .AsEnumerable()
                                                 .Where(te => listaDeDatos.Any(d =>
                                                     d.NoTransaction == te.Transaccion_No &&
-                                                    d.Machine_Sn == te.Machine_Sn                                                     
-                                                ))
+                                                    d.Machine_Sn == te.Machine_Sn))
                                                 .ToList();
-
-                _context.TransaccionesExcel.RemoveRange(registrosAEliminar);
+                        registrosBorrados = registrosAEliminar.Count;
+                        _context.TransaccionesExcel.RemoveRange(registrosAEliminar);
+                    }
+                }
+                if (_context.SaveChanges() > 0)
+                {
+                    transaction.CommitAsync();
+                    return Ok();
+                }
             }
-            return (await _context.SaveChangesAsync() != 0) ? Ok() : BadRequest();
+            catch (Exception)
+            {
+                transaction.RollbackAsync();
+            }
+            transaction.RollbackAsync();
+            return BadRequest();
         }
 
         [Authorize(Policy = "Nivel1")]

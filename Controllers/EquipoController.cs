@@ -66,7 +66,7 @@ namespace PortalWeb_API.Controllers
                             indicadorCapacidadMaxMonedas = ep.capacidadIniSobres ?? 0,
                             ep.estadoPing,
                             ep.tiempoSincronizacion,
-                            ep.ultimaRecoleccion,
+                            ultimaRecoleccion = t.FechaUltimaRecoleccion,
                             provincia = mt2.nombre ?? "",
                             ep.IpEquipo,
                             UltimaNoTrans = t.UltimaTransaccion,
@@ -183,33 +183,34 @@ namespace PortalWeb_API.Controllers
         public async Task<IActionResult> GuardarEquipo([FromBody] Equipos model)
         {
             if (ModelState.IsValid)
-            {                
-                await _context.Equipos.AddAsync(model);
-                
-                var nuevoEquipo = new TotalesEquipos
+            {
+                bool equipoExists = _context.Equipos.Any(u => u.serieEquipo.Equals(model.serieEquipo));
+                if (equipoExists) 
                 {
-                    Equipo = model.serieEquipo,
-                    TotalCuadreEquipo = 0
-                };
-
-                await _context.TotalesEquipos.AddAsync(nuevoEquipo);
-                
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    var update = _context.EquiposTemporales
-                                .Where(u => u.IpEquipo.Equals(model.IpEquipo))
-                                .ExecuteUpdate(u => u.SetProperty(u => u.Active, "F"));
-                    return Ok();
+                    return BadRequest("Equipo ya existe");
                 }
                 else
                 {
-                    return BadRequest();
-                }  
-            }
-            else
-            {
-                return BadRequest();
-            }
+                    await _context.Equipos.AddAsync(model);
+
+                    var nuevoEquipo = new TotalesEquipos
+                    {
+                        Equipo = model.serieEquipo,
+                        TotalCuadreEquipo = 0
+                    };
+
+                    await _context.TotalesEquipos.AddAsync(nuevoEquipo);
+
+                    if (await _context.SaveChangesAsync() > 0)
+                    {
+                        var update = _context.EquiposTemporales
+                                    .Where(u => u.IpEquipo.Equals(model.IpEquipo))
+                                    .ExecuteUpdate(u => u.SetProperty(u => u.Active, "F"));
+                        return Ok();
+                    }
+                }                        
+            }            
+            return BadRequest();            
         }
 
         [Authorize(Policy = "Nivel1")]
