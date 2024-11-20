@@ -29,11 +29,7 @@ namespace PortalWeb_API.Controllers
         [Authorize(Policy = "Monitor")]
         [HttpGet("HoraActual")]
         public IActionResult HoraActual()
-        {
-            //TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            //DateTime timeUtc = DateTime.UtcNow;
-            //DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
-            //return Ok(cstTime.ToString("yyyy-MM-ddTHH:mm:ss.ffffffzzz"));   
+        {               
             HoraActual horaActual = new();            
             return Ok(horaActual.HoraActualProceso().ToString("yyyy-MM-ddTHH:mm:ss.ffffffzzz"));                    
         }
@@ -42,9 +38,6 @@ namespace PortalWeb_API.Controllers
         public async Task<IActionResult> ActualizarEquipo([FromBody] string ip)
         {
             MonitoreoModel monitoreoModel = new();
-            //TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            //DateTime timeUtc = DateTime.UtcNow;
-            //DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
             HoraActual horaActual = new();            
             DateTime cstTime = horaActual.HoraActualProceso();
             var res = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == ip);
@@ -420,6 +413,10 @@ namespace PortalWeb_API.Controllers
                                 }                            
                             }
                         }                      
+                    }                    
+                    else
+                    {
+                        return Ok(2);
                     }
                 }                            
             }
@@ -498,73 +495,73 @@ namespace PortalWeb_API.Controllers
                             {
                                 if (model.Time_generated < equipoExistente.FechaUltimaRecoleccion)
                                 {
-                                    equipoExistente.TotalCuadreEquipo -= ((model.Deposit_denom_1 * 1) +
-                                                                          (model.Deposit_denom_2 * 2) +
-                                                                          (model.Deposit_denom_5 * 5) +
-                                                                          (model.Deposit_denom_10 * 10) +
-                                                                          (model.Deposit_denom_20 * 20) +
-                                                                          (model.Deposit_denom_50 * 50) +
-                                                                          (model.Deposit_denom_100 * 100) +
-                                                                          (model.Deposit_coin_1 * 0.01m) +
-                                                                          (model.Deposit_coin_5 * 0.05m) +
-                                                                          (model.Deposit_coin_10 * 0.10m) +
-                                                                          (model.Deposit_coin_25 * 0.25m) +
-                                                                          (model.Deposit_coin_50 * 0.50m) +
-                                                                          (model.Deposit_coin_100 * 1m));
+                                    equipoExistente.TotalCuadreEquipo -= ((model.Deposit_denom_1    * 1    ) +
+                                                                          (model.Deposit_denom_2    * 2    ) +
+                                                                          (model.Deposit_denom_5    * 5    ) +
+                                                                          (model.Deposit_denom_10   * 10   ) +
+                                                                          (model.Deposit_denom_20   * 20   ) +
+                                                                          (model.Deposit_denom_50   * 50   ) +
+                                                                          (model.Deposit_denom_100  * 100  ) +
+                                                                          (model.Deposit_coin_1     * 0.01m) +
+                                                                          (model.Deposit_coin_5     * 0.05m) +
+                                                                          (model.Deposit_coin_10    * 0.10m) +
+                                                                          (model.Deposit_coin_25    * 0.25m) +
+                                                                          (model.Deposit_coin_50    * 0.50m) +
+                                                                          (model.Deposit_coin_100   * 1m   ));
                                 }
                                 else if (equipoExistente.FechaUltimaTransaccion > model.Time_generated)
                                 {
-                                    equipoExistente.EquipoManualCoin1 += model.Deposit_coin_1;
-                                    equipoExistente.EquipoManualCoin5 += model.Deposit_coin_5;
-                                    equipoExistente.EquipoManualCoin10 += model.Deposit_coin_10;
-                                    equipoExistente.EquipoManualCoin25 += model.Deposit_coin_25;
-                                    equipoExistente.EquipoManualCoin50 += model.Deposit_coin_50;
+                                    equipoExistente.EquipoManualCoin1   += model.Deposit_coin_1;
+                                    equipoExistente.EquipoManualCoin5   += model.Deposit_coin_5;
+                                    equipoExistente.EquipoManualCoin10  += model.Deposit_coin_10;
+                                    equipoExistente.EquipoManualCoin25  += model.Deposit_coin_25;
+                                    equipoExistente.EquipoManualCoin50  += model.Deposit_coin_50;
                                     equipoExistente.EquipoManualCoin100 += model.Deposit_coin_100;
-                                    equipoExistente.EquipoManualBill1 += model.Deposit_denom_1;
-                                    equipoExistente.EquipoManualBill2 += model.Deposit_denom_2;
-                                    equipoExistente.EquipoManualBill5 += model.Deposit_denom_5;
-                                    equipoExistente.EquipoManualBill10 += model.Deposit_denom_10;
-                                    equipoExistente.EquipoManualBill20 += model.Deposit_denom_20;
-                                    equipoExistente.EquipoManualBill50 += model.Deposit_denom_50;
+                                    equipoExistente.EquipoManualBill1   += model.Deposit_denom_1;
+                                    equipoExistente.EquipoManualBill2   += model.Deposit_denom_2;
+                                    equipoExistente.EquipoManualBill5   += model.Deposit_denom_5;
+                                    equipoExistente.EquipoManualBill10  += model.Deposit_denom_10;
+                                    equipoExistente.EquipoManualBill20  += model.Deposit_denom_20;
+                                    equipoExistente.EquipoManualBill50  += model.Deposit_denom_50;
                                     equipoExistente.EquipoManualBill100 += model.Deposit_denom_100;
                                 }
                                 else
                                 {
-                                    equipoExistente.UltimaTransaccion = model.Transaction_no;
+                                    equipoExistente.UltimaTransaccion      = model.Transaction_no;
                                     equipoExistente.FechaUltimaTransaccion = model.Time_generated;
                                     equipoExistente.Tipo = "M";
-                                    equipoExistente.EquipoManualCoin1 += model.Deposit_coin_1;
-                                    equipoExistente.EquipoManualCoin5 += model.Deposit_coin_5;
-                                    equipoExistente.EquipoManualCoin10 += model.Deposit_coin_10;
-                                    equipoExistente.EquipoManualCoin25 += model.Deposit_coin_25;
-                                    equipoExistente.EquipoManualCoin50 += model.Deposit_coin_50;
+                                    equipoExistente.EquipoManualCoin1   += model.Deposit_coin_1;
+                                    equipoExistente.EquipoManualCoin5   += model.Deposit_coin_5;
+                                    equipoExistente.EquipoManualCoin10  += model.Deposit_coin_10;
+                                    equipoExistente.EquipoManualCoin25  += model.Deposit_coin_25;
+                                    equipoExistente.EquipoManualCoin50  += model.Deposit_coin_50;
                                     equipoExistente.EquipoManualCoin100 += model.Deposit_coin_100;
-                                    equipoExistente.EquipoManualBill1 += model.Deposit_denom_1;
-                                    equipoExistente.EquipoManualBill2 += model.Deposit_denom_2;
-                                    equipoExistente.EquipoManualBill5 += model.Deposit_denom_5;
-                                    equipoExistente.EquipoManualBill10 += model.Deposit_denom_10;
-                                    equipoExistente.EquipoManualBill20 += model.Deposit_denom_20;
-                                    equipoExistente.EquipoManualBill50 += model.Deposit_denom_50;
+                                    equipoExistente.EquipoManualBill1   += model.Deposit_denom_1;
+                                    equipoExistente.EquipoManualBill2   += model.Deposit_denom_2;
+                                    equipoExistente.EquipoManualBill5   += model.Deposit_denom_5;
+                                    equipoExistente.EquipoManualBill10  += model.Deposit_denom_10;
+                                    equipoExistente.EquipoManualBill20  += model.Deposit_denom_20;
+                                    equipoExistente.EquipoManualBill50  += model.Deposit_denom_50;
                                     equipoExistente.EquipoManualBill100 += model.Deposit_denom_100;
-                                    equipoExistente.TotalEquipoDepositoBill1 = model.Total_deposit_denom_1;
-                                    equipoExistente.TotalEquipoDepositoBill2 = model.Total_deposit_denom_2;
-                                    equipoExistente.TotalEquipoDepositoBill5 = model.Total_deposit_denom_5;
-                                    equipoExistente.TotalEquipoDepositoBill10 = model.Total_deposit_denom_10;
-                                    equipoExistente.TotalEquipoDepositoBill20 = model.Total_deposit_denom_20;
-                                    equipoExistente.TotalEquipoDepositoBill50 = model.Total_deposit_denom_50;
+                                    equipoExistente.TotalEquipoDepositoBill1   = model.Total_deposit_denom_1;
+                                    equipoExistente.TotalEquipoDepositoBill2   = model.Total_deposit_denom_2;
+                                    equipoExistente.TotalEquipoDepositoBill5   = model.Total_deposit_denom_5;
+                                    equipoExistente.TotalEquipoDepositoBill10  = model.Total_deposit_denom_10;
+                                    equipoExistente.TotalEquipoDepositoBill20  = model.Total_deposit_denom_20;
+                                    equipoExistente.TotalEquipoDepositoBill50  = model.Total_deposit_denom_50;
                                     equipoExistente.TotalEquipoDepositoBill100 = model.Total_deposit_denom_100;
-                                    equipoExistente.TotalEquipoManualBill1 = model.Total_manual_deposit_denom_1;
-                                    equipoExistente.TotalEquipoManualBill2 = model.Total_manual_deposit_denom_2;
-                                    equipoExistente.TotalEquipoManualBill5 = model.Total_manual_deposit_denom_5;
-                                    equipoExistente.TotalEquipoManualBill10 = model.Total_manual_deposit_denom_10;
-                                    equipoExistente.TotalEquipoManualBill20 = model.Total_manual_deposit_denom_20;
-                                    equipoExistente.TotalEquipoManualBill50 = model.Total_manual_deposit_denom_50;
+                                    equipoExistente.TotalEquipoManualBill1   = model.Total_manual_deposit_denom_1;
+                                    equipoExistente.TotalEquipoManualBill2   = model.Total_manual_deposit_denom_2;
+                                    equipoExistente.TotalEquipoManualBill5   = model.Total_manual_deposit_denom_5;
+                                    equipoExistente.TotalEquipoManualBill10  = model.Total_manual_deposit_denom_10;
+                                    equipoExistente.TotalEquipoManualBill20  = model.Total_manual_deposit_denom_20;
+                                    equipoExistente.TotalEquipoManualBill50  = model.Total_manual_deposit_denom_50;
                                     equipoExistente.TotalEquipoManualBill100 = model.Total_manual_deposit_denom_100;
-                                    equipoExistente.TotalEquipoManualCoin1 = model.Total_manual_deposit_coin_1;
-                                    equipoExistente.TotalEquipoManualCoin5 = model.Total_manual_deposit_coin_5;
-                                    equipoExistente.TotalEquipoManualCoin10 = model.Total_manual_deposit_coin_10;
-                                    equipoExistente.TotalEquipoManualCoin25 = model.Total_manual_deposit_coin_25;
-                                    equipoExistente.TotalEquipoManualCoin50 = model.Total_manual_deposit_coin_50;
+                                    equipoExistente.TotalEquipoManualCoin1   = model.Total_manual_deposit_coin_1;
+                                    equipoExistente.TotalEquipoManualCoin5   = model.Total_manual_deposit_coin_5;
+                                    equipoExistente.TotalEquipoManualCoin10  = model.Total_manual_deposit_coin_10;
+                                    equipoExistente.TotalEquipoManualCoin25  = model.Total_manual_deposit_coin_25;
+                                    equipoExistente.TotalEquipoManualCoin50  = model.Total_manual_deposit_coin_50;
                                     equipoExistente.TotalEquipoManualCoin100 = model.Total_manual_deposit_coin_100;
                                 }
                             }
@@ -720,6 +717,10 @@ namespace PortalWeb_API.Controllers
                             }
                         }
                     }
+                    else
+                    {
+                        return Ok(2);
+                    }
                 }
             }
             catch (Exception)
@@ -867,7 +868,11 @@ namespace PortalWeb_API.Controllers
                                 equipoExiste.TotalEquipoManualCoin50 = 0;
                                 equipoExiste.TotalEquipoManualCoin100 = 0;
                                 equipoExiste.FechaUltimaRecoleccion = model.Time_generated;
-                                if (TotalEquipo != TotalBase && TotalBase is not null)
+
+                                TimeSpan diferencia = (TimeSpan)(model.Time_generated - equipoExiste.FechaUltimaRecoleccion);
+                                double minutos = diferencia.TotalMinutes;
+                                
+                                if (TotalEquipo != TotalBase && minutos > 5 && TotalBase is not null)
                                 {
                                     equipoExiste.TotalCuadreEquipo += Math.Abs((decimal)(TotalEquipo - TotalBase));
                                 }
@@ -881,7 +886,11 @@ namespace PortalWeb_API.Controllers
                                 return Ok(1);                                                                    
                             }
                         }
-                    }                                  
+                    }
+                    else
+                    {
+                        return Ok(2);
+                    }
                 }                
             }
             catch (Exception)
