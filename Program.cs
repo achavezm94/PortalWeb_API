@@ -36,8 +36,8 @@ builder.Services.AddAuthentication(option =>
 builder.Services.AddAuthorization(policies =>
 {
     policies.AddPolicy("Comi", p => p.RequireClaim(ClaimTypes.Role, "R004"));
-    policies.AddPolicy("Monitor", p => p.RequireClaim(ClaimTypes.Role, "R005", "R001", "R002", "R003"));
-    policies.AddPolicy("Transaccional", p => p.RequireClaim(ClaimTypes.Role, "R005", "R001", "R002"));
+    policies.AddPolicy("Monitor", p => p.RequireClaim(ClaimTypes.Role, "R005", "R001", "R002", "R003", "R006"));
+    policies.AddPolicy("Transaccional", p => p.RequireClaim(ClaimTypes.Role, "R005", "R001", "R002", "R006"));
     policies.AddPolicy("Nivel1", p => p.RequireClaim(ClaimTypes.Role, "R001"));
     policies.AddPolicy("Nivel2", p => p.RequireClaim(ClaimTypes.Role, "R001", "R002"));
     policies.AddPolicy("Nivel3", p => p.RequireClaim(ClaimTypes.Role, "R001", "R002", "R003"));
