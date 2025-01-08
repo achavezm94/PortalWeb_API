@@ -10,6 +10,9 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de Servicios Windows.
+    /// </summary>
     [Route("api/Servicios")]
     [ApiController]
     public class ServiciosController : ControllerBase
@@ -18,6 +21,10 @@ namespace PortalWeb_API.Controllers
         private readonly IHubContext<PingHubEquipos> _pinghub;
         private readonly IHubContext<ManualesHub> _manualesHub;
         private readonly IHubContext<UsuarioHub> _usuarioHub;
+
+        /// <summary>
+        /// Extraer el context de EF y hubs.
+        /// </summary>
         public ServiciosController(PortalWebContext context, IHubContext<PingHubEquipos> pingHub, IHubContext<ManualesHub> manualesHub, IHubContext<UsuarioHub> usuarioHub)
         {
             _context = context;
@@ -26,19 +33,32 @@ namespace PortalWeb_API.Controllers
             _usuarioHub = usuarioHub;
         }
 
+        /// <summary>
+        /// Obtiene la hora actual del servidor para monitoreo.
+        /// </summary>
+        /// <returns>La hora actual del servidor.</returns>
+        /// <response code="200">Devuelve la hora actual del servidor.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("HoraActual")]
         public IActionResult HoraActual()
-        {               
-            HoraActual horaActual = new();            
-            return Ok(horaActual.HoraActualProceso().ToString("yyyy-MM-ddTHH:mm:ss.ffffffzzz"));                    
+        {
+            HoraActual horaActual = new();
+            return Ok(horaActual.HoraActualProceso().ToString("yyyy-MM-ddTHH:mm:ss.ffffffzzz"));
         }
 
+        /// <summary>
+        /// Actualiza ping de comunicación con cada equipo.
+        /// </summary>
+        /// <response code="200">Realizo la comunicación correctamente.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPut("ActualizarEquipoIp")]
         public async Task<IActionResult> ActualizarEquipo([FromBody] string ip)
         {
             MonitoreoModel monitoreoModel = new();
-            HoraActual horaActual = new();            
+            HoraActual horaActual = new();
             DateTime cstTime = horaActual.HoraActualProceso();
             var res = await _context.Equipos.FirstOrDefaultAsync(x => x.IpEquipo == ip);
             if (res is not null)
@@ -59,12 +79,18 @@ namespace PortalWeb_API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Guarda un usuario temporal al sistema.
+        /// </summary>        
+        /// <response code="200">Se registro el usuario temporal al sistema.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("UsuarioTempIngresar")]
         public async Task<IActionResult> IngresarUsuario([FromBody] UsuariosTemporales model)
         {
             if (ModelState.IsValid)
             {
-                bool usuarioExists = _context.Usuarios.Any(u => u.Usuario == model.Usuario && model.IpMachineSolicitud ==u.IpMachine);
+                bool usuarioExists = _context.Usuarios.Any(u => u.Usuario == model.Usuario && model.IpMachineSolicitud == u.IpMachine);
                 if (!usuarioExists)
                 {
                     bool usuarioTemporalExists = _context.UsuariosTemporales.Any(ut => ut.Usuario == model.Usuario && model.IpMachineSolicitud == ut.IpMachineSolicitud);
@@ -76,11 +102,11 @@ namespace PortalWeb_API.Controllers
                             UserName = model.UserName,
                             IpMachineSolicitud = model.IpMachineSolicitud
                         });
-                        if (await _context.SaveChangesAsync() > 0) 
+                        if (await _context.SaveChangesAsync() > 0)
                         {
                             await _usuarioHub.Clients.All.SendAsync("SendUsuarioTemporal", model);
                             return Ok("Ok");
-                        }                                               
+                        }
                     }
                     else
                     {
@@ -106,6 +132,12 @@ namespace PortalWeb_API.Controllers
             return BadRequest("No se registro");
         }
 
+        /// <summary>
+        /// Guarda un usuario temporal al sistema.
+        /// </summary>        
+        /// <response code="200">Se registro el usuario temporal al sistema.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("EquipoTempIngresar")]
         public async Task<IActionResult> IngresarEquipo([FromBody] EquiposTemporalesResponse model)
         {
@@ -138,9 +170,15 @@ namespace PortalWeb_API.Controllers
             {
                 return BadRequest("Equipo ya Existe");
             }
-            return BadRequest("No se registro");            
+            return BadRequest("No se registro");
         }
 
+        /// <summary>
+        /// Eliminar un usuario temporal.
+        /// </summary>
+        /// <response code="200">Elimino correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpDelete("UsuarioTempEliminar/{usuario}/{ip}")]
         public async Task<IActionResult> EliminarUsuario([FromRoute] string usuario, [FromRoute] string ip)
         {
@@ -167,6 +205,12 @@ namespace PortalWeb_API.Controllers
             return BadRequest("No se registro");
         }
 
+        /// <summary>
+        /// Registra un deposito de los servicios Windows.
+        /// </summary>        
+        /// <response code="200">Se registro la transacción al sistema.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("DepositoIngresar")]
         public async Task<IActionResult> IngresarDepositoAsync([FromBody] ODeposito model)
         {
@@ -410,15 +454,15 @@ namespace PortalWeb_API.Controllers
                                                 model.Deposit_denom_100;
                                     await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", new { model.Machine_Sn, Cant, Monto, fechaTransaccion = model.Time_generated, model.Transaction_no, tipo = "A" });
                                     return Ok(1);
-                                }                            
+                                }
                             }
-                        }                      
-                    }                    
+                        }
+                    }
                     else
                     {
                         return Ok(2);
                     }
-                }                            
+                }
             }
             catch (Exception)
             {
@@ -429,6 +473,12 @@ namespace PortalWeb_API.Controllers
             return Ok(0);
         }
 
+        /// <summary>
+        /// Registra un deposito manual de los servicios Windows.
+        /// </summary>        
+        /// <response code="200">Se registro la transacción al sistema.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("ManualIngresar")]
         public async Task<IActionResult> IngresarManualAsync([FromBody] OManual model)
         {
@@ -447,43 +497,43 @@ namespace PortalWeb_API.Controllers
                     {
                         await _context.ManualDepositos.AddAsync(new ManualDepositos
                         {
-                            Usuarios_idFk     = model.User_id,
-                            Machine_Sn        = model.Machine_Sn,
-                            Transaccion_No    = model.Transaction_no,
-                            FechaTransaccion  = model.Time_generated,
+                            Usuarios_idFk = model.User_id,
+                            Machine_Sn = model.Machine_Sn,
+                            Transaccion_No = model.Transaction_no,
+                            FechaTransaccion = model.Time_generated,
                             DivisaTransaccion = "USD",
-                            Manual_Deposito_Bill_1   = model.Deposit_denom_1,
-                            Manual_Deposito_Bill_2   = model.Deposit_denom_2,
-                            Manual_Deposito_Bill_5   = model.Deposit_denom_5,
-                            Manual_Deposito_Bill_10  = model.Deposit_denom_10,
-                            Manual_Deposito_Bill_20  = model.Deposit_denom_20,
-                            Manual_Deposito_Bill_50  = model.Deposit_denom_50,
+                            Manual_Deposito_Bill_1 = model.Deposit_denom_1,
+                            Manual_Deposito_Bill_2 = model.Deposit_denom_2,
+                            Manual_Deposito_Bill_5 = model.Deposit_denom_5,
+                            Manual_Deposito_Bill_10 = model.Deposit_denom_10,
+                            Manual_Deposito_Bill_20 = model.Deposit_denom_20,
+                            Manual_Deposito_Bill_50 = model.Deposit_denom_50,
                             Manual_Deposito_Bill_100 = model.Deposit_denom_100,
-                            Manual_Deposito_Coin_1   = model.Deposit_coin_1,
-                            Manual_Deposito_Coin_5   = model.Deposit_coin_5,
-                            Manual_Deposito_Coin_10  = model.Deposit_coin_10,
-                            Manual_Deposito_Coin_25  = model.Deposit_coin_25,
-                            Manual_Deposito_Coin_50  = model.Deposit_coin_50,
+                            Manual_Deposito_Coin_1 = model.Deposit_coin_1,
+                            Manual_Deposito_Coin_5 = model.Deposit_coin_5,
+                            Manual_Deposito_Coin_10 = model.Deposit_coin_10,
+                            Manual_Deposito_Coin_25 = model.Deposit_coin_25,
+                            Manual_Deposito_Coin_50 = model.Deposit_coin_50,
                             Manual_Deposito_Coin_100 = model.Deposit_coin_100,
-                            Total_Deposito_Bill_1   = model.Total_deposit_denom_1,
-                            Total_Deposito_Bill_2   = model.Total_deposit_denom_2,
-                            Total_Deposito_Bill_5   = model.Total_deposit_denom_5,
-                            Total_Deposito_Bill_10  = model.Total_deposit_denom_10,
-                            Total_Deposito_Bill_20  = model.Total_deposit_denom_20,
-                            Total_Deposito_Bill_50  = model.Total_deposit_denom_50,
+                            Total_Deposito_Bill_1 = model.Total_deposit_denom_1,
+                            Total_Deposito_Bill_2 = model.Total_deposit_denom_2,
+                            Total_Deposito_Bill_5 = model.Total_deposit_denom_5,
+                            Total_Deposito_Bill_10 = model.Total_deposit_denom_10,
+                            Total_Deposito_Bill_20 = model.Total_deposit_denom_20,
+                            Total_Deposito_Bill_50 = model.Total_deposit_denom_50,
                             Total_Deposito_Bill_100 = model.Total_deposit_denom_100,
-                            Total_Manual_Deposito_Bill_1   = model.Total_manual_deposit_denom_1,
-                            Total_Manual_Deposito_Bill_2   = model.Total_manual_deposit_denom_2,
-                            Total_Manual_Deposito_Bill_5   = model.Total_manual_deposit_denom_5,
-                            Total_Manual_Deposito_Bill_10  = model.Total_manual_deposit_denom_10,
-                            Total_Manual_Deposito_Bill_20  = model.Total_manual_deposit_denom_20,
-                            Total_Manual_Deposito_Bill_50  = model.Total_manual_deposit_denom_50,
+                            Total_Manual_Deposito_Bill_1 = model.Total_manual_deposit_denom_1,
+                            Total_Manual_Deposito_Bill_2 = model.Total_manual_deposit_denom_2,
+                            Total_Manual_Deposito_Bill_5 = model.Total_manual_deposit_denom_5,
+                            Total_Manual_Deposito_Bill_10 = model.Total_manual_deposit_denom_10,
+                            Total_Manual_Deposito_Bill_20 = model.Total_manual_deposit_denom_20,
+                            Total_Manual_Deposito_Bill_50 = model.Total_manual_deposit_denom_50,
                             Total_Manual_Deposito_Bill_100 = model.Total_manual_deposit_denom_100,
-                            Total_Manual_Deposito_Coin_1   = model.Total_manual_deposit_coin_1,
-                            Total_Manual_Deposito_Coin_5   = model.Total_manual_deposit_coin_5,
-                            Total_Manual_Deposito_Coin_10  = model.Total_manual_deposit_coin_10,
-                            Total_Manual_Deposito_Coin_25  = model.Total_manual_deposit_coin_25,
-                            Total_Manual_Deposito_Coin_50  = model.Total_manual_deposit_coin_50,
+                            Total_Manual_Deposito_Coin_1 = model.Total_manual_deposit_coin_1,
+                            Total_Manual_Deposito_Coin_5 = model.Total_manual_deposit_coin_5,
+                            Total_Manual_Deposito_Coin_10 = model.Total_manual_deposit_coin_10,
+                            Total_Manual_Deposito_Coin_25 = model.Total_manual_deposit_coin_25,
+                            Total_Manual_Deposito_Coin_50 = model.Total_manual_deposit_coin_50,
                             Total_Manual_Deposito_Coin_100 = model.Total_manual_deposit_coin_100,
                             Active = "A"
                         });
@@ -495,73 +545,73 @@ namespace PortalWeb_API.Controllers
                             {
                                 if (model.Time_generated < equipoExistente.FechaUltimaRecoleccion)
                                 {
-                                    equipoExistente.TotalCuadreEquipo -= ((model.Deposit_denom_1    * 1    ) +
-                                                                          (model.Deposit_denom_2    * 2    ) +
-                                                                          (model.Deposit_denom_5    * 5    ) +
-                                                                          (model.Deposit_denom_10   * 10   ) +
-                                                                          (model.Deposit_denom_20   * 20   ) +
-                                                                          (model.Deposit_denom_50   * 50   ) +
-                                                                          (model.Deposit_denom_100  * 100  ) +
-                                                                          (model.Deposit_coin_1     * 0.01m) +
-                                                                          (model.Deposit_coin_5     * 0.05m) +
-                                                                          (model.Deposit_coin_10    * 0.10m) +
-                                                                          (model.Deposit_coin_25    * 0.25m) +
-                                                                          (model.Deposit_coin_50    * 0.50m) +
-                                                                          (model.Deposit_coin_100   * 1m   ));
+                                    equipoExistente.TotalCuadreEquipo -= ((model.Deposit_denom_1 * 1) +
+                                                                          (model.Deposit_denom_2 * 2) +
+                                                                          (model.Deposit_denom_5 * 5) +
+                                                                          (model.Deposit_denom_10 * 10) +
+                                                                          (model.Deposit_denom_20 * 20) +
+                                                                          (model.Deposit_denom_50 * 50) +
+                                                                          (model.Deposit_denom_100 * 100) +
+                                                                          (model.Deposit_coin_1 * 0.01m) +
+                                                                          (model.Deposit_coin_5 * 0.05m) +
+                                                                          (model.Deposit_coin_10 * 0.10m) +
+                                                                          (model.Deposit_coin_25 * 0.25m) +
+                                                                          (model.Deposit_coin_50 * 0.50m) +
+                                                                          (model.Deposit_coin_100 * 1m));
                                 }
                                 else if (equipoExistente.FechaUltimaTransaccion > model.Time_generated)
                                 {
-                                    equipoExistente.EquipoManualCoin1   += model.Deposit_coin_1;
-                                    equipoExistente.EquipoManualCoin5   += model.Deposit_coin_5;
-                                    equipoExistente.EquipoManualCoin10  += model.Deposit_coin_10;
-                                    equipoExistente.EquipoManualCoin25  += model.Deposit_coin_25;
-                                    equipoExistente.EquipoManualCoin50  += model.Deposit_coin_50;
+                                    equipoExistente.EquipoManualCoin1 += model.Deposit_coin_1;
+                                    equipoExistente.EquipoManualCoin5 += model.Deposit_coin_5;
+                                    equipoExistente.EquipoManualCoin10 += model.Deposit_coin_10;
+                                    equipoExistente.EquipoManualCoin25 += model.Deposit_coin_25;
+                                    equipoExistente.EquipoManualCoin50 += model.Deposit_coin_50;
                                     equipoExistente.EquipoManualCoin100 += model.Deposit_coin_100;
-                                    equipoExistente.EquipoManualBill1   += model.Deposit_denom_1;
-                                    equipoExistente.EquipoManualBill2   += model.Deposit_denom_2;
-                                    equipoExistente.EquipoManualBill5   += model.Deposit_denom_5;
-                                    equipoExistente.EquipoManualBill10  += model.Deposit_denom_10;
-                                    equipoExistente.EquipoManualBill20  += model.Deposit_denom_20;
-                                    equipoExistente.EquipoManualBill50  += model.Deposit_denom_50;
+                                    equipoExistente.EquipoManualBill1 += model.Deposit_denom_1;
+                                    equipoExistente.EquipoManualBill2 += model.Deposit_denom_2;
+                                    equipoExistente.EquipoManualBill5 += model.Deposit_denom_5;
+                                    equipoExistente.EquipoManualBill10 += model.Deposit_denom_10;
+                                    equipoExistente.EquipoManualBill20 += model.Deposit_denom_20;
+                                    equipoExistente.EquipoManualBill50 += model.Deposit_denom_50;
                                     equipoExistente.EquipoManualBill100 += model.Deposit_denom_100;
                                 }
                                 else
                                 {
-                                    equipoExistente.UltimaTransaccion      = model.Transaction_no;
+                                    equipoExistente.UltimaTransaccion = model.Transaction_no;
                                     equipoExistente.FechaUltimaTransaccion = model.Time_generated;
                                     equipoExistente.Tipo = "M";
-                                    equipoExistente.EquipoManualCoin1   += model.Deposit_coin_1;
-                                    equipoExistente.EquipoManualCoin5   += model.Deposit_coin_5;
-                                    equipoExistente.EquipoManualCoin10  += model.Deposit_coin_10;
-                                    equipoExistente.EquipoManualCoin25  += model.Deposit_coin_25;
-                                    equipoExistente.EquipoManualCoin50  += model.Deposit_coin_50;
+                                    equipoExistente.EquipoManualCoin1 += model.Deposit_coin_1;
+                                    equipoExistente.EquipoManualCoin5 += model.Deposit_coin_5;
+                                    equipoExistente.EquipoManualCoin10 += model.Deposit_coin_10;
+                                    equipoExistente.EquipoManualCoin25 += model.Deposit_coin_25;
+                                    equipoExistente.EquipoManualCoin50 += model.Deposit_coin_50;
                                     equipoExistente.EquipoManualCoin100 += model.Deposit_coin_100;
-                                    equipoExistente.EquipoManualBill1   += model.Deposit_denom_1;
-                                    equipoExistente.EquipoManualBill2   += model.Deposit_denom_2;
-                                    equipoExistente.EquipoManualBill5   += model.Deposit_denom_5;
-                                    equipoExistente.EquipoManualBill10  += model.Deposit_denom_10;
-                                    equipoExistente.EquipoManualBill20  += model.Deposit_denom_20;
-                                    equipoExistente.EquipoManualBill50  += model.Deposit_denom_50;
+                                    equipoExistente.EquipoManualBill1 += model.Deposit_denom_1;
+                                    equipoExistente.EquipoManualBill2 += model.Deposit_denom_2;
+                                    equipoExistente.EquipoManualBill5 += model.Deposit_denom_5;
+                                    equipoExistente.EquipoManualBill10 += model.Deposit_denom_10;
+                                    equipoExistente.EquipoManualBill20 += model.Deposit_denom_20;
+                                    equipoExistente.EquipoManualBill50 += model.Deposit_denom_50;
                                     equipoExistente.EquipoManualBill100 += model.Deposit_denom_100;
-                                    equipoExistente.TotalEquipoDepositoBill1   = model.Total_deposit_denom_1;
-                                    equipoExistente.TotalEquipoDepositoBill2   = model.Total_deposit_denom_2;
-                                    equipoExistente.TotalEquipoDepositoBill5   = model.Total_deposit_denom_5;
-                                    equipoExistente.TotalEquipoDepositoBill10  = model.Total_deposit_denom_10;
-                                    equipoExistente.TotalEquipoDepositoBill20  = model.Total_deposit_denom_20;
-                                    equipoExistente.TotalEquipoDepositoBill50  = model.Total_deposit_denom_50;
+                                    equipoExistente.TotalEquipoDepositoBill1 = model.Total_deposit_denom_1;
+                                    equipoExistente.TotalEquipoDepositoBill2 = model.Total_deposit_denom_2;
+                                    equipoExistente.TotalEquipoDepositoBill5 = model.Total_deposit_denom_5;
+                                    equipoExistente.TotalEquipoDepositoBill10 = model.Total_deposit_denom_10;
+                                    equipoExistente.TotalEquipoDepositoBill20 = model.Total_deposit_denom_20;
+                                    equipoExistente.TotalEquipoDepositoBill50 = model.Total_deposit_denom_50;
                                     equipoExistente.TotalEquipoDepositoBill100 = model.Total_deposit_denom_100;
-                                    equipoExistente.TotalEquipoManualBill1   = model.Total_manual_deposit_denom_1;
-                                    equipoExistente.TotalEquipoManualBill2   = model.Total_manual_deposit_denom_2;
-                                    equipoExistente.TotalEquipoManualBill5   = model.Total_manual_deposit_denom_5;
-                                    equipoExistente.TotalEquipoManualBill10  = model.Total_manual_deposit_denom_10;
-                                    equipoExistente.TotalEquipoManualBill20  = model.Total_manual_deposit_denom_20;
-                                    equipoExistente.TotalEquipoManualBill50  = model.Total_manual_deposit_denom_50;
+                                    equipoExistente.TotalEquipoManualBill1 = model.Total_manual_deposit_denom_1;
+                                    equipoExistente.TotalEquipoManualBill2 = model.Total_manual_deposit_denom_2;
+                                    equipoExistente.TotalEquipoManualBill5 = model.Total_manual_deposit_denom_5;
+                                    equipoExistente.TotalEquipoManualBill10 = model.Total_manual_deposit_denom_10;
+                                    equipoExistente.TotalEquipoManualBill20 = model.Total_manual_deposit_denom_20;
+                                    equipoExistente.TotalEquipoManualBill50 = model.Total_manual_deposit_denom_50;
                                     equipoExistente.TotalEquipoManualBill100 = model.Total_manual_deposit_denom_100;
-                                    equipoExistente.TotalEquipoManualCoin1   = model.Total_manual_deposit_coin_1;
-                                    equipoExistente.TotalEquipoManualCoin5   = model.Total_manual_deposit_coin_5;
-                                    equipoExistente.TotalEquipoManualCoin10  = model.Total_manual_deposit_coin_10;
-                                    equipoExistente.TotalEquipoManualCoin25  = model.Total_manual_deposit_coin_25;
-                                    equipoExistente.TotalEquipoManualCoin50  = model.Total_manual_deposit_coin_50;
+                                    equipoExistente.TotalEquipoManualCoin1 = model.Total_manual_deposit_coin_1;
+                                    equipoExistente.TotalEquipoManualCoin5 = model.Total_manual_deposit_coin_5;
+                                    equipoExistente.TotalEquipoManualCoin10 = model.Total_manual_deposit_coin_10;
+                                    equipoExistente.TotalEquipoManualCoin25 = model.Total_manual_deposit_coin_25;
+                                    equipoExistente.TotalEquipoManualCoin50 = model.Total_manual_deposit_coin_50;
                                     equipoExistente.TotalEquipoManualCoin100 = model.Total_manual_deposit_coin_100;
                                 }
                             }
@@ -730,8 +780,14 @@ namespace PortalWeb_API.Controllers
             }
             await transaction.RollbackAsync();
             return Ok(0);
-        }        
+        }
 
+        /// <summary>
+        /// Registra una recolección de los servicios Windows.
+        /// </summary>        
+        /// <response code="200">Se registro la transacción al sistema.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("RecoleccionIngresar")]
         public async Task<IActionResult> IngresarRecoleccionAsync([FromBody] ORecoleccion model)
         {
@@ -871,7 +927,7 @@ namespace PortalWeb_API.Controllers
 
                                 TimeSpan diferencia = (TimeSpan)(model.Time_generated - equipoExiste.FechaUltimaRecoleccion);
                                 double minutos = diferencia.TotalMinutes;
-                                
+
                                 if (TotalEquipo != TotalBase && minutos > 5 && TotalBase is not null)
                                 {
                                     equipoExiste.TotalCuadreEquipo += Math.Abs((decimal)(TotalEquipo - TotalBase));
@@ -883,7 +939,7 @@ namespace PortalWeb_API.Controllers
                                 decimal Monto = 0;
                                 int Cant = 0;
                                 await _manualesHub.Clients.All.SendAsync("SendTransaccionManual", new { model.Machine_Sn, Cant, Monto, fechaTransaccion = model.Time_generated, model.Transaction_no, tipo = "R" });
-                                return Ok(1);                                                                    
+                                return Ok(1);
                             }
                         }
                     }
@@ -891,7 +947,7 @@ namespace PortalWeb_API.Controllers
                     {
                         return Ok(2);
                     }
-                }                
+                }
             }
             catch (Exception)
             {
@@ -900,7 +956,7 @@ namespace PortalWeb_API.Controllers
             }
             await transaction.RollbackAsync();
             return Ok(0);
-        }    
+        }
 
         private bool VerificacionTransaccion(string? user_id, string? machine_Sn)
         {

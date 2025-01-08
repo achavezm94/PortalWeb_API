@@ -8,17 +8,30 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de equipos.
+    /// </summary>
     [Route("api/Equipo")]
     [ApiController]
     public class EquipoController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public EquipoController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene los totales de un equipo para poder ser visualizados en el moneq.
+        /// </summary>
+        /// <returns>Lista de totales de la ultima transacción de un equipo.</returns>
+        /// <response code="200">Devuelve la lista de datos de los totales de la ultima transaccion de un equipo.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("ObtenerTotalesMoneq/{Machine_Sn}")]
         public IActionResult ObtenerTotalesMoneq(string Machine_Sn)
@@ -28,6 +41,13 @@ namespace PortalWeb_API.Controllers
             return Ok(resultado);
         }
 
+        /// <summary>
+        /// Obtiene los datos de todos los equipos de un cliente para mostrar en el moneq.
+        /// </summary>
+        /// <returns>Lista de datos de todos los equipos de un cliente.</returns>
+        /// <response code="200">Devuelve la lista de datos de los equipos pertenecientes a un cliente.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("ObtenerEquipoMoneq/{opcion}/{codigoCliente}")]
         public IActionResult ObtenerEquipoMoneq(int opcion, string codigoCliente)
@@ -82,7 +102,13 @@ namespace PortalWeb_API.Controllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Obtiene los datos de todos los equipos para modulo equipos.
+        /// </summary>
+        /// <returns>Lista de datos de todos los equipos.</returns>
+        /// <response code="200">Devuelve la lista de datos de los equipos.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerEquipo")]
         public IActionResult ObtenerEquipo()
@@ -95,7 +121,7 @@ namespace PortalWeb_API.Controllers
                         join mt1 in _context.MasterTable on ep.tipo equals mt1.codigo into tipoGroup
                         from mt1 in tipoGroup.DefaultIfEmpty()
                         where mt1.master == "MQT"
-                        join mc in _context.marca on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca} into marcaGroup
+                        join mc in _context.marca on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca } into marcaGroup
                         from mc in marcaGroup.DefaultIfEmpty()
                         join md in _context.modelo on new { ep.marca, ep.tipo, ep.modelo } equals new { marca = md.codmarca, tipo = md.codigotipomaq, modelo = md.codmodelo } into modeloGroup
                         from md in modeloGroup.DefaultIfEmpty()
@@ -150,6 +176,13 @@ namespace PortalWeb_API.Controllers
             return Ok(query.OrderBy(x => x.SerieEquipo).ToList());
         }
 
+        /// <summary>
+        /// Obtiene los datos de todos los equipos de un cliente para modulo equipos.
+        /// </summary>
+        /// <returns>Lista de datos de todos los equipos pertenecientes a un cliente.</returns>
+        /// <response code="200">Devuelve la lista de datos de los equipos pertenecientes a un cliente.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Transaccional")]
         [HttpGet("EquipoLista/{codCliente}")]
         public IActionResult EquipoLista([FromRoute] string codCliente)
@@ -168,16 +201,29 @@ namespace PortalWeb_API.Controllers
             return Ok(Datos);
         }
 
+        /// <summary>
+        /// Obtiene los datos de todos los equipos nuevos para su ingreso a la plataforma.
+        /// </summary>
+        /// <returns>Lista de datos de todos los equipos nuevos.</returns>
+        /// <response code="200">Devuelve la lista de todos los equipos nuevos.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("EquipoNuevo")]
         public IActionResult ObtenerEquipoTemporal()
         {
-           var Datos = from eqt in _context.EquiposTemporales 
-                       where eqt.Active.Equals("A") 
-                       select new{ eqt.serieEquipo, eqt.IpEquipo};
+            var Datos = from eqt in _context.EquiposTemporales
+                        where eqt.Active.Equals("A")
+                        select new { eqt.serieEquipo, eqt.IpEquipo };
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Guarda un equipo nuevo.
+        /// </summary>        
+        /// <response code="200">Se registro el equipo a la plataforma.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarEquipo")]
         public async Task<IActionResult> GuardarEquipo([FromBody] Equipos model)
@@ -185,7 +231,7 @@ namespace PortalWeb_API.Controllers
             if (ModelState.IsValid)
             {
                 bool equipoExists = _context.Equipos.Any(u => u.serieEquipo.Equals(model.serieEquipo));
-                if (equipoExists) 
+                if (equipoExists)
                 {
                     return BadRequest("Equipo ya existe");
                 }
@@ -208,20 +254,32 @@ namespace PortalWeb_API.Controllers
                                     .ExecuteUpdate(u => u.SetProperty(u => u.Active, "F"));
                         return Ok();
                     }
-                }                        
-            }            
-            return BadRequest();            
+                }
+            }
+            return BadRequest();
         }
 
+        /// <summary>
+        /// Actualiza informacion de un equipo especifico.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarEquipo/{id}")]
         public async Task<IActionResult> ActualizarEquipo([FromRoute] int id, [FromBody] Equipos model)
-        {            
+        {
             _context.Entry(model).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok();
         }
 
+        /// <summary>
+        /// Activa el equipo en caso de encontrarse desactivado.
+        /// </summary>
+        /// <response code="200">Activo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActivarEquipo/{id}")]
         public IActionResult ActivarEquipo(int id)
@@ -232,6 +290,12 @@ namespace PortalWeb_API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Desactivar un equipo.
+        /// </summary>
+        /// <response code="200">Desactivo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarEquipo/{id}")]
         public IActionResult BorrarEquipo(int id)

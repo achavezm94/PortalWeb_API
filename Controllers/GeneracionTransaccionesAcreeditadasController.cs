@@ -7,17 +7,30 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion modulo de acreditación.
+    /// </summary>
     [Route("api/Acreeditacion")]
     [ApiController]
     public class GeneracionTransaccionesAcreeditadasController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public GeneracionTransaccionesAcreeditadasController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene los datos para generar card para aprobar transacciones acreditadas.
+        /// </summary>
+        /// <returns>Lista de los datos para generar vista para aprobación de transacciones acreditadas.</returns>
+        /// <response code="200">Devuelve todos los datos para generar vista para aprobación de transacciones acreditadas.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("GenerarCard")]
         public IActionResult GenerarCard()
@@ -29,6 +42,13 @@ namespace PortalWeb_API.Controllers
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Obtiene los datos para generar card para aprobar transacciones acreditadas segun filtros de fechas.
+        /// </summary>
+        /// <returns>Lista de los datos para generar vista para aprobación de transacciones acreditadas segun filtros de fechas.</returns>
+        /// <response code="200">Devuelve todos los datos para generar vista para aprobación de transacciones acreditadas segun filtro de fechas.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GenerarCardAcreeditadasFiltro")]
         public IActionResult GenerarCardFiltro([FromBody] FechasIniFin model)
@@ -41,6 +61,13 @@ namespace PortalWeb_API.Controllers
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Obtiene los datos para obtener todas las transacciones que ya han sido acreditadas segun el nombre del archivo que se registro.
+        /// </summary>
+        /// <returns>Lista de los datos de transacciones acreditadas filtro nombre del archivo registrado.</returns>
+        /// <response code="200">Devuelve los datos de transacciones acreditadas segun el filtro del nombre del archivo.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("GenerarTransacciones/{nombreArchivo}")]
         public IActionResult GenerarTransaccionesAcreeditadas([FromRoute] string nombreArchivo)
@@ -53,6 +80,12 @@ namespace PortalWeb_API.Controllers
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Aprobar todas las transacciones escogidas.
+        /// </summary>        
+        /// <response code="200">Se registro la aprobacion de todas las transacciones.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("AprobacionTransacciones/{nombreArchivo}")]
         public IActionResult AprobarTransaccionesAcreeditadas([FromRoute] string nombreArchivo)
@@ -75,7 +108,7 @@ namespace PortalWeb_API.Controllers
                             t.Machine_Sn
                         })
                         .ToList();
-                    
+
                     if (listaDeDatos.Any())
                     {
                         var registrosAEliminar = _context.TransaccionesExcel
@@ -102,6 +135,12 @@ namespace PortalWeb_API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Borrar una pre acreditacion.
+        /// </summary>
+        /// <response code="200">Borro correctamente la pre acreditacion.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarTransacciones/{nombreArchivo}")]
         public IActionResult EliminarTransaccionesAcreeditadasAsync([FromRoute] string nombreArchivo)

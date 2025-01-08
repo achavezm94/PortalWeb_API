@@ -7,17 +7,30 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion Usuarios del Portal.
+    /// </summary>
     [Route("api/UsuarioPortal")]
     [ApiController]
     public class UsuarioPortalController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public UsuarioPortalController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene todos los usuarios del Portal registrados.
+        /// </summary>
+        /// <returns>Lista de datos de los usuarios del Portal registrados.</returns>
+        /// <response code="200">Devuelve lista de datos de los usuarios del Portal registrados.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerUsuario")]
         public IActionResult ObtenerUsuario()
@@ -38,23 +51,17 @@ namespace PortalWeb_API.Controllers
                              dp.Nombres,
                              dp.Apellidos,
                              dp.Cedula,
-                             dp.Telefono                             
+                             dp.Telefono
                          });
             return Ok(Datos);
         }
 
-        [Authorize(Policy = "Nivel1")]
-        [HttpPut("ActualizarUsuario/{id}")]
-        public async Task<IActionResult> ActualizarUsuario([FromRoute] int id, [FromBody] Usuarios_Portal model)
-        {
-            if (id != model.id)
-            {
-                return BadRequest();
-            }
-            _context.Entry(model).State = EntityState.Modified;
-            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
-        }
-
+        /// <summary>
+        /// Guarda un usuario nuevo del portal a la plataforma.
+        /// </summary>        
+        /// <response code="200">Se registro el usuario a la plataforma.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarUsuario")]
         public async Task<IActionResult> GuardarUsuario([FromBody] UserPortal_DatosPersonales model)
@@ -71,6 +78,30 @@ namespace PortalWeb_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza información de un usuario del portal.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
+        [Authorize(Policy = "Nivel1")]
+        [HttpPut("ActualizarUsuario/{id}")]
+        public async Task<IActionResult> ActualizarUsuario([FromRoute] int id, [FromBody] Usuarios_Portal model)
+        {
+            if (id != model.id)
+            {
+                return BadRequest();
+            }
+            _context.Entry(model).State = EntityState.Modified;
+            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+        }
+
+        /// <summary>
+        /// Elimina un usuario del portal.
+        /// </summary>
+        /// <response code="200">Elimino correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarUsuario/{id}")]
         public async Task<IActionResult> BorrarUsuario([FromRoute] int id)

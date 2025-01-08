@@ -7,17 +7,30 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de clientes.
+    /// </summary>
     [Route("api/Cliente")]
     [ApiController]
     public class ClienteController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public ClienteController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene clientes con datos para cuentas bancarias y localidades.
+        /// </summary>
+        /// <returns>Lista de datos de los clientes.</returns>
+        /// <response code="200">Devuelve la lista de clientes.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerCliente")]
         public IActionResult ObtenerCliente()
@@ -57,6 +70,13 @@ namespace PortalWeb_API.Controllers
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Obtiene codigo y nombre de clientes.
+        /// </summary>
+        /// <returns>Lista de datos de los clientes.</returns>
+        /// <response code="200">Devuelve la lista de clientes.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("ObtenerClienteSelect")]
         public IActionResult ObtenerClienteSelect()
@@ -71,6 +91,13 @@ namespace PortalWeb_API.Controllers
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Obtiene cuenta de los clientes.
+        /// </summary>
+        /// <returns>Lista de datos de las cuentas de los clientes.</returns>
+        /// <response code="200">Devuelve lista con datos de cuentas de clientes.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerCuentaCliente/{CodCliente}")]
         public IActionResult ObtenerCuentaCliente(string CodCliente)
@@ -93,6 +120,12 @@ namespace PortalWeb_API.Controllers
             return (Datos != null) ? Ok(Datos) : NotFound();
         }
 
+        /// <summary>
+        /// Guarda un cliente.
+        /// </summary>
+        /// <response code="200">Se registro el cliente.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarCliente")]
         public async Task<IActionResult> GuardarCliente([FromBody] Clientes model)
@@ -108,6 +141,12 @@ namespace PortalWeb_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza información de un cliente.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarCliente")]
         public async Task<IActionResult> ActualizarClienteAsync([FromBody] Clientes model)
@@ -118,6 +157,12 @@ namespace PortalWeb_API.Controllers
             return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
         }
 
+        /// <summary>
+        /// Borra información de un cliente.
+        /// </summary>
+        /// <response code="200">Borro correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarCliente/{id}")]
         public IActionResult BorrarCliente(int id)

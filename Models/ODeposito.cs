@@ -3,7 +3,7 @@
     public class ODeposito
     {
         public string? User_id { get; set; }
-        public string? Machine_Sn { get; set; }    
+        public string? Machine_Sn { get; set; }
         public int Transaction_no { get; set; }
         public DateTime Time_generated { get; set; }
         public string? Deposit_currency { get; set; }

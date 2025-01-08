@@ -4,17 +4,30 @@ using PortalWeb_API.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de los totales de un equipo.
+    /// </summary>
     [Route("api/EquipoDetalle")]
     [ApiController]
     public class EquipoTransaccionController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public EquipoTransaccionController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene los totales de un equipo para modulo de transacciones.
+        /// </summary>
+        /// <returns>Lista de los totales de un equipo.</returns>
+        /// <response code="200">Devuelve todos los totales de un equipo.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Transaccional")]
         [HttpGet("ObtenerDetalle/{machineSn}")]
         public IActionResult ObtenerDetalle(string machineSn)
@@ -105,7 +118,7 @@ namespace PortalWeb_API.Controllers
                                                         (datos.TotalEquipoManualCoin1 * 0.01m)
             };
             var resultList = new List<object> { result };
-            return Ok(resultList);                       
+            return Ok(resultList);
         }
     }
 }

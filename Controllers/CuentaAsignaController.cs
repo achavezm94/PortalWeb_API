@@ -5,18 +5,30 @@ using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de asignacion de una cuenta a un cliente.
+    /// </summary>
     [Route("api/CuentAsigna")]
     [ApiController]
     public class CuentaAsignaController : ControllerBase
     {
 
-          private readonly PortalWebContext _context;
+        private readonly PortalWebContext _context;
 
-          public CuentaAsignaController ( PortalWebContext context )
-          {
-              _context = context;
-          }
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
+        public CuentaAsignaController(PortalWebContext context)
+        {
+            _context = context;
+        }
 
+        /// <summary>
+        /// Guarda cuenta asignada a un cliente.
+        /// </summary>        
+        /// <response code="200">Se registro la cuenta asignada en el cliente.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarCuentAsigna")]
         public async Task<IActionResult> GuardarCuentAsigna([FromBody] cuentaSignaTienda model)

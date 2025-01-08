@@ -52,11 +52,11 @@ namespace PortalWeb_API.Methods
                                                 (datos.TotalEquipoManualCoin5 * 0.05m) +
                                                 (datos.TotalEquipoManualCoin1 * 0.01m))
 
-            };      
-            return new[] { resultado};
-        }                                        
+            };
+            return new[] { resultado };
+        }
 
-        public TotalTodoTransacciones TotalesTodasTransacciones(string machine_Sn) 
+        public TotalTodoTransacciones TotalesTodasTransacciones(string machine_Sn)
         {
             var datos = _context.TotalesEquipos.Where(d => d.Equipo == machine_Sn).First();
             var TotalDepositos = (datos.EquipoDepositoBill1 * 1) +
@@ -79,14 +79,14 @@ namespace PortalWeb_API.Methods
                                         (datos.EquipoManualCoin25 * 0.25m) +
                                         (datos.EquipoManualCoin50 * 0.50m) +
                                         (datos.EquipoManualCoin100 * 1);
-           
+
             return new TotalTodoTransacciones
             {
                 Total = (double?)(TotalDepositos + TotalManualDepositos)
             };
         }
 
-        public DateTime? FechaUltimaRecoleccion(string machine_Sn) 
+        public DateTime? FechaUltimaRecoleccion(string machine_Sn)
         {
             DateTime? fechaRecoleccion = _context.Recolecciones
                 .Where(r => r.Machine_Sn == machine_Sn)

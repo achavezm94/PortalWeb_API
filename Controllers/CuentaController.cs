@@ -7,31 +7,50 @@ using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de cuenta bancarias.
+    /// </summary>
     [Route("api/Cuenta")]
     [ApiController]
     public class CuentaController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public CuentaController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene toda la informacion correspondiente de una cuenta bancaria y sus asignaciones.
+        /// </summary>
+        /// <returns>Lista de datos de las cuentas bancarias y sus asignaciones.</returns>
+        /// <response code="200">Devuelve la lista de datos de las cuentas bancarias y sus asignaciones.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("NTransacciones/{id}")]
-        public IActionResult GenerarTransaccionesAcreeditadas(int id)
+        public IActionResult ObtenerCuentasBancarias(int id)
         {
             var Datos = (from cb in _context.cuentas_bancarias
-                        join cs in _context.cuentaSignaTienda on cb.id equals cs.idcuentabancaria
-                        join t in _context.Tiendas on cs.idtienda equals t.CodigoTienda
-                        join e in _context.Equipos on t.id equals e.codigoTiendaidFk
-                        join d in _context.Depositos on e.serieEquipo equals d.Machine_Sn
-                        where cb.id.Equals(id)
-                        select d.Transaccion_No).IsNullOrEmpty();
+                         join cs in _context.cuentaSignaTienda on cb.id equals cs.idcuentabancaria
+                         join t in _context.Tiendas on cs.idtienda equals t.CodigoTienda
+                         join e in _context.Equipos on t.id equals e.codigoTiendaidFk
+                         join d in _context.Depositos on e.serieEquipo equals d.Machine_Sn
+                         where cb.id.Equals(id)
+                         select d.Transaccion_No).IsNullOrEmpty();
             return Ok(!Datos);
         }
 
+        /// <summary>
+        /// Guarda una cuenta bancaria.
+        /// </summary>        
+        /// <response code="200">Se registro la cuenta bancaria.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarCuenta")]
         public async Task<IActionResult> GuardarCuenta([FromBody] cuentas_bancarias model)
@@ -47,6 +66,12 @@ namespace PortalWeb_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza información de una cuenta bancaria.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarCuenta")]
         public async Task<IActionResult> ActualizarCuentaAsync([FromBody] cuentas_bancarias model)
@@ -57,6 +82,12 @@ namespace PortalWeb_API.Controllers
             return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
         }
 
+        /// <summary>
+        /// Borra información de una cuenta bancaria.
+        /// </summary>
+        /// <response code="200">Borro correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarCuenta/{id}")]
         public IActionResult BorrarCuenta(int id)

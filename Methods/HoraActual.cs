@@ -2,7 +2,7 @@
 {
     public class HoraActual
     {
-        public DateTime HoraActualProceso() 
+        public DateTime HoraActualProceso()
         {
             TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
             DateTime timeUtc = DateTime.UtcNow;

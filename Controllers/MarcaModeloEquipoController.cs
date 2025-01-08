@@ -4,17 +4,30 @@ using PortalWeb_API.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion de Modelos y Marcas de los equipos.
+    /// </summary>
     [Route("api/MarcaModeloEquipo")]
     [ApiController]
     public class MarcaModeloEquipoController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public MarcaModeloEquipoController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene los datos de las marcas para los equipos.
+        /// </summary>
+        /// <returns>Lista de datos de las marcas para los equipos.</returns>
+        /// <response code="200">Devuelve la lista de datos de las marcas para los equipos.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("ObtenerMarca/{codigotipomaq}")]
         public IActionResult ObtenerMarca(string codigotipomaq)
@@ -30,6 +43,13 @@ namespace PortalWeb_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene los datos de los modelos para los equipos.
+        /// </summary>
+        /// <returns>Lista de datos de los modelos para los equipos.</returns>
+        /// <response code="200">Devuelve la lista de datos de los modelos para los equipos.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("ObtenerModelo/{codigotipomaq}/{codmodelo}")]
         public IActionResult ObtenerMarca(string codigotipomaq, string codmodelo)

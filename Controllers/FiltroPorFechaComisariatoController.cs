@@ -6,6 +6,9 @@ using PortalWeb_API.Models;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion requisito Comisariato.
+    /// </summary>
     [Route("api/Comisariato")]
     [ApiController]
     public class FiltroPorFechaComisariatoController : ControllerBase
@@ -13,12 +16,22 @@ namespace PortalWeb_API.Controllers
         private readonly PortalWebContext _context;
         private readonly TokenValidator _tokenValidator;
 
+        /// <summary>
+        /// Extraer el context de EF y validador de token.
+        /// </summary>
         public FiltroPorFechaComisariatoController(PortalWebContext context, IConfiguration configuration)
         {
             _context = context;
             _tokenValidator = new TokenValidator(configuration);
         }
 
+        /// <summary>
+        /// Obtiene las transacciones por filtro de fecha para cliente Comisariato.
+        /// </summary>
+        /// <returns>Lista de todas las transacciones del cliente Comisariato filtrado por fechas.</returns>
+        /// <response code="200">Devuelve todas las transacciones del cliente Comisariato filtrado por fechas.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Comi")]
         [HttpPost("Filtrar")]
         public async Task<IActionResult> ResultadoFiltroFechasTransaccionesAsync([FromBody] ModeloFiltroComisariato filtroFechas)
@@ -42,6 +55,6 @@ namespace PortalWeb_API.Controllers
                 return BadRequest("La diferencia entre las fechas no puede ser mayor a 5 días");
             }
             return Ok(await _context.GetProcedures().SP_FiltroPorFechaComisariatoAsync(filtroFechas.Id_Local, filtroFechas.FechaInicio, filtroFechas.FechaFin));
-        }        
+        }
     }
 }

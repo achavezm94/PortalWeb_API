@@ -7,24 +7,38 @@ using System.Data;
 
 namespace PortalWeb_API.Controllers
 {
+    /// <summary>
+    /// ENDPOINT para seccion Usuarios de los Equipos.
+    /// </summary>
     [Route("api/Usuario")]
     [ApiController]
     public class UsuarioController : ControllerBase
     {
         private readonly PortalWebContext _context;
 
+        /// <summary>
+        /// Extraer el context de EF.
+        /// </summary>
         public UsuarioController(PortalWebContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Obtiene todos los usuarios de los equipos registrados.
+        /// </summary>
+        /// <returns>Lista de datos de los usuarios de los equipos registrados.</returns>
+        /// <response code="200">Devuelve lista de datos de los usuarios de los equipos registrados.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerUsuario")]
         public IActionResult ObtenerUsuario()
-        {            
+        {
             var Datos = (from usm in _context.Usuarios
-                         join td in _context.Tiendas on new {codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
-                         join mt1 in _context.MasterTable on td.CodProv equals mt1.codigo where mt1.master == "PRV00"
+                         join td in _context.Tiendas on new { codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
+                         join mt1 in _context.MasterTable on td.CodProv equals mt1.codigo
+                         where mt1.master == "PRV00"
                          join dp in _context.Datos_Personales on usm.Usuario equals dp.UsuarioidFk
                          join cli in _context.Clientes on td.CodigoClienteidFk equals cli.CodigoCliente
                          select new
@@ -48,13 +62,21 @@ namespace PortalWeb_API.Controllers
             return Ok(Datos);
         }
 
+        /// <summary>
+        /// Obtiene todos los usuarios de un equipo mediante su ip.
+        /// </summary>
+        /// <returns>Lista de datos de los usuarios de un equipo mediante ip.</returns>
+        /// <response code="200">Devuelve lista de datos de los usuarios de un equipo mediante ip.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerUsuarioIP/{ip}")]
         public IActionResult ObtenerUsuarioIp([FromRoute] string ip)
-        {            
+        {
             var Datos = (from usm in _context.Usuarios
                          join td in _context.Tiendas on new { codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
-                         join mt1 in _context.MasterTable on td.CodProv equals mt1.codigo where mt1.master == "CCAN"
+                         join mt1 in _context.MasterTable on td.CodProv equals mt1.codigo
+                         where mt1.master == "CCAN"
                          join dp in _context.Datos_Personales on usm.Usuario equals dp.UsuarioidFk
                          join cli in _context.Clientes on td.CodigoClienteidFk equals cli.CodigoCliente
                          join cb in _context.cuentas_bancarias on usm.CuentasidFk equals cb.id
@@ -83,6 +105,12 @@ namespace PortalWeb_API.Controllers
             return Ok(Datos);
         }
 
+        /// <summary>
+        /// Guarda un usuario nuevo a la plataforma.
+        /// </summary>        
+        /// <response code="200">Se registro el usuario a la plataforma.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost]
         [Route("GuardarUsuario")]
@@ -104,6 +132,12 @@ namespace PortalWeb_API.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza información de un usuario.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut]
         [Route("ActualizarUsuario/{id}")]
@@ -117,6 +151,12 @@ namespace PortalWeb_API.Controllers
             return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
         }
 
+        /// <summary>
+        /// Actualiza información de los datos personales de un usuario.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut]
         [Route("ActualizarDatosPersonales/{id}")]

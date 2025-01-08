@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PortalWeb_API.Data;
 using PortalWeb_APIs;
 using System.Security.Claims;
@@ -22,13 +23,13 @@ builder.Services.AddAuthentication(option =>
                             option.SaveToken = true;
                             option.TokenValidationParameters = new TokenValidationParameters
                             {
-                                    ValidateIssuer = true,
-                                    ValidateAudience = true,
-                                    ValidateLifetime = true,
-                                    ValidateIssuerSigningKey = true,
-                                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt configuration is missing or invalid.")))
+                                ValidateIssuer = true,
+                                ValidateAudience = true,
+                                ValidateLifetime = true,
+                                ValidateIssuerSigningKey = true,
+                                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                                ValidAudience = builder.Configuration["Jwt:Audience"],
+                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt configuration is missing or invalid.")))
                             };
                         }
 );
@@ -44,10 +45,54 @@ builder.Services.AddAuthorization(policies =>
 });
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API RESTful",
+        Version = "v1",
+        Description = "API para aplicacion FortiCash.",
+        Contact = new OpenApiContact
+        {
+            Name = "Adrian Chavez",
+            Email = "achavez@doriantrade.com",
+        }
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Ingrese 'Bearer' [espacio] y luego el token JWT.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 var reglasCors = "ReglasCors";
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 IServiceCollection serviceCollection = builder.Services.AddDbContext<PortalWebContext>(opt => opt.UseInMemoryDatabase(databaseName: "PortalWeb"));
+
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 builder.Services.AddSignalR(options =>
 {
@@ -72,7 +117,7 @@ builder.Services.AddCors(opt =>
 });
 
 var webSocketOptions = new WebSocketOptions
-{    
+{
     KeepAliveInterval = TimeSpan.FromSeconds(120)
 };
 
@@ -82,6 +127,19 @@ webSocketOptions.AllowedOrigins.Add("http://192.168.55.19:2253");
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.212:2251");
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API RESTful v1");
+        c.RoutePrefix = "swagger";
+    });
+}
+
+
 app.UseCors(reglasCors);
 app.UseHttpsRedirection();
 app.UseAuthentication();

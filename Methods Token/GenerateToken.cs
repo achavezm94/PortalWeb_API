@@ -9,7 +9,7 @@ namespace PortalWeb_API.Methods_Token
     public class GenerateToken
     {
         public IConfiguration _configuration;
-        public GenerateToken(IConfiguration configuration) 
+        public GenerateToken(IConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
