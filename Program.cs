@@ -138,6 +138,10 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+}
 
 
 app.UseCors(reglasCors);

@@ -19,6 +19,7 @@
       "applicationUrl": "http://192.168.55.96:9095",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+        //"ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "https": {
@@ -30,6 +31,7 @@
       "applicationUrl": "http://192.168.55.96:9095",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+        //"ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "IIS Express": {
@@ -38,6 +40,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+        //"ASPNETCORE_ENVIRONMENT": "Production"
       }
     }
   }
