@@ -38,8 +38,7 @@ namespace PortalWeb_API.Methods_Token
 
             try
             {
-                SecurityToken validatedToken;
-                tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+                tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
                 return true;
             }
             catch (SecurityTokenExpiredException)

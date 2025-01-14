@@ -15,7 +15,7 @@ namespace PortalWeb_API.Controllers
     public class LoginController : ControllerBase
     {
 
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         private readonly PortalWebContext _context;
 
         /// <summary>
@@ -33,9 +33,9 @@ namespace PortalWeb_API.Controllers
         /// <returns>Token del login.</returns>
         /// <response code="200">Token del login correcto.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
-        /// /// <response code="404">Datos de inicio de sesion incorrectos.</response>
+        /// <response code="404">Datos de inicio de sesion incorrectos.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
-        [HttpPost("login")]
+        [HttpPost]
         public IActionResult Login(UserRequest userRequest)
         {
             try
