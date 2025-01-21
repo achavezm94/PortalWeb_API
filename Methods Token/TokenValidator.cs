@@ -50,6 +50,5 @@ namespace PortalWeb_API.Methods_Token
                 return false;
             }
         }
-
     }
 }
