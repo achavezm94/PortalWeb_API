@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿`using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 using PortalWeb_API.Methods_Token;
@@ -64,7 +64,6 @@ namespace PortalWeb_API.Controllers
             {
                 return BadRequest("La diferencia entre las fechas no puede ser mayor a 5 días");
             }
-
             return Ok(await _context.GetProcedures().SP_FiltroPorFechaComisariatoAsync(filtroFechas.Id_Local, filtroFechas.FechaInicio, filtroFechas.FechaFin));
         }
 

@@ -28,6 +28,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de todas las transacciones de todos los equipos por filtro de fecha.</returns>
         /// <response code="200">Devuelve todas las transacciones de todos los equipos por filtro de fecha.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Transaccional")]
         [HttpPost("Filtrar")]

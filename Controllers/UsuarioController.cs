@@ -30,6 +30,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de los usuarios de los equipos registrados.</returns>
         /// <response code="200">Devuelve lista de datos de los usuarios de los equipos registrados.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerUsuario")]
@@ -68,6 +69,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de los usuarios de un equipo mediante ip.</returns>
         /// <response code="200">Devuelve lista de datos de los usuarios de un equipo mediante ip.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerUsuarioIP/{ip}")]
@@ -110,6 +112,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro el usuario a la plataforma.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost]
@@ -137,6 +140,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Actualizo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut]
@@ -156,6 +160,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Actualizo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut]

@@ -33,6 +33,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Token del login.</returns>
         /// <response code="200">Token del login correcto.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="404">Datos de inicio de sesion incorrectos.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost]
@@ -41,7 +42,6 @@ namespace PortalWeb_API.Controllers
             try
             {
                 GenerateToken generateToken = new(_configuration);
-
                 var usuario = _context?.Usuarios_Portal.SingleOrDefault(x => x.Usuario == userRequest.Usuario);
                 if (usuario == null)
                 {
@@ -57,7 +57,6 @@ namespace PortalWeb_API.Controllers
                 }
                 var token = generateToken.Generate(usuario);
                 return Ok(new { Token = token });
-
             }
             catch (Exception)
             {

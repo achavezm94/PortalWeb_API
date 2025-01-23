@@ -29,6 +29,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las tiendas y cuentas asignadas que estan registradas en el sistema.</returns>
         /// <response code="200">Devuelve lista de datos de todas las tiendas y cuentas asignadas del sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerTiendaCuentas/{id}")]
@@ -46,6 +47,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Elimino correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpDelete("BorrarCuentaTienda/{id}")]

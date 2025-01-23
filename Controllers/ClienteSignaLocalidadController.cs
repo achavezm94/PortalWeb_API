@@ -29,6 +29,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista localidades de un clientes.</returns>
         /// <response code="200">Devuelve litsa localidades de un cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerLocalidades/{cliente}")]
@@ -47,6 +48,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la localidad en el cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarClienteSignaTienda")]
@@ -69,6 +71,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Borro correctamente la localidad.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarLocalidad/{id}")]

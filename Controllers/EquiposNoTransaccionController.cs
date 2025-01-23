@@ -29,6 +29,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de los datos necesarios para saber si esta cuadrado el equipo.</returns>
         /// <response code="200">Devuelve la lista de datos de cuadre de un equipo.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("Cuadre/{machine_Sn}")]
@@ -56,6 +57,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de los conteo de transacciones de todos los equipos.</returns>
         /// <response code="200">Devuelve la lista de conteo de transacciones de todos los equipos.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("Conteo/{opcion}")]

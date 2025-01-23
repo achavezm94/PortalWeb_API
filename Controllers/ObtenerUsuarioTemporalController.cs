@@ -29,6 +29,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de usuarios temporales para ingresar a plataforma.</returns>
         /// <response code="200">Devuelve la lista de usuarios temporales.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("Usuario/{ip}")]
@@ -45,6 +46,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Borro correctamente el usuario temporal.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("UsuarioDelete/{id}")]

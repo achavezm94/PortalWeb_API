@@ -30,6 +30,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las tiendas que estan registradas en el sistema.</returns>
         /// <response code="200">Devuelve lista de datos de todas las tiendas del sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerTienda")]
@@ -52,6 +53,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las tiendas que estan registradas en el sistema de un cliente.</returns>
         /// <response code="200">Devuelve lista de datos de todas las tiendas del sistema de un cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("ObtenerTiendaFiltroCliente/{codigoCliente}")]
@@ -77,6 +79,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las tiendas con información de clientes, cuentas que estan registradas en el sistema.</returns>
         /// <response code="200">Devuelve lista de datos de todas las tiendas con información de clientes, cuentas del sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerTiendasCompletas")]
@@ -138,6 +141,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la tienda a la plataforma.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarTienda")]
@@ -159,6 +163,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Actualizo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarTienda")]
@@ -175,6 +180,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Elimino correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarTienda/{id}")]

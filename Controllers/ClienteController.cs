@@ -30,6 +30,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de los clientes.</returns>
         /// <response code="200">Devuelve la lista de clientes.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerCliente")]
@@ -76,6 +77,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de los clientes.</returns>
         /// <response code="200">Devuelve la lista de clientes.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("ObtenerClienteSelect")]
@@ -97,6 +99,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las cuentas de los clientes.</returns>
         /// <response code="200">Devuelve lista con datos de cuentas de clientes.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerCuentaCliente/{CodCliente}")]
@@ -125,6 +128,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Se registro el cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarCliente")]
@@ -146,6 +150,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Actualizo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarCliente")]
@@ -162,6 +167,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Borro correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarCliente/{id}")]

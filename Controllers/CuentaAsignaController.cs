@@ -28,6 +28,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la cuenta asignada en el cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarCuentAsigna")]

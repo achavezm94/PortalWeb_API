@@ -30,6 +30,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de los datos para generar vista para aprobación de transacciones acreditadas.</returns>
         /// <response code="200">Devuelve todos los datos para generar vista para aprobación de transacciones acreditadas.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("GenerarCard")]
@@ -48,6 +49,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de los datos para generar vista para aprobación de transacciones acreditadas segun filtros de fechas.</returns>
         /// <response code="200">Devuelve todos los datos para generar vista para aprobación de transacciones acreditadas segun filtro de fechas.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GenerarCardAcreeditadasFiltro")]
@@ -67,6 +69,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de los datos de transacciones acreditadas filtro nombre del archivo registrado.</returns>
         /// <response code="200">Devuelve los datos de transacciones acreditadas segun el filtro del nombre del archivo.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("GenerarTransacciones/{nombreArchivo}")]
@@ -85,6 +88,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la aprobacion de todas las transacciones.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("AprobacionTransacciones/{nombreArchivo}")]
@@ -140,6 +144,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Borro correctamente la pre acreditacion.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarTransacciones/{nombreArchivo}")]

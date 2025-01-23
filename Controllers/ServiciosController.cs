@@ -39,6 +39,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>La hora actual del servidor.</returns>
         /// <response code="200">Devuelve la hora actual del servidor.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("HoraActual")]
@@ -53,6 +54,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Realizo la comunicación correctamente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPut("ActualizarEquipoIp")]
         public async Task<IActionResult> ActualizarEquipo([FromBody] string ip)
@@ -84,6 +86,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro el usuario temporal al sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("UsuarioTempIngresar")]
         public async Task<IActionResult> IngresarUsuario([FromBody] UsuariosTemporales model)
@@ -137,6 +140,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro el usuario temporal al sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("EquipoTempIngresar")]
         public async Task<IActionResult> IngresarEquipo([FromBody] EquiposTemporalesResponse model)
@@ -178,6 +182,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Elimino correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpDelete("UsuarioTempEliminar/{usuario}/{ip}")]
         public async Task<IActionResult> EliminarUsuario([FromRoute] string usuario, [FromRoute] string ip)
@@ -210,6 +215,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la transacción al sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("DepositoIngresar")]
         public async Task<IActionResult> IngresarDepositoAsync([FromBody] ODeposito model)
@@ -478,6 +484,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la transacción al sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("ManualIngresar")]
         public async Task<IActionResult> IngresarManualAsync([FromBody] OManual model)
@@ -787,6 +794,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la transacción al sistema.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [HttpPost("RecoleccionIngresar")]
         public async Task<IActionResult> IngresarRecoleccionAsync([FromBody] ORecoleccion model)

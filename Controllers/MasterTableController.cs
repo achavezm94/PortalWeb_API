@@ -29,6 +29,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de la tabla Master.</returns>
         /// <response code="200">Devuelve la lista de datos de la tabla Master.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("GetDataMaster/{mast}")]
@@ -52,6 +53,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de los tipos de equipos existentes.</returns>
         /// <response code="200">Devuelve los tipos de equipos existentes.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel3")]
         [HttpGet("GetTipoEquipo")]
@@ -75,6 +77,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de localidades que existen en Master.</returns>
         /// <response code="200">Devuelve las localidades que existen en Master.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("ObtenerDatamasterLocalidades/{codCliente}")]

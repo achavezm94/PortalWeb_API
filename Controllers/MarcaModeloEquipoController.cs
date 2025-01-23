@@ -27,6 +27,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las marcas para los equipos.</returns>
         /// <response code="200">Devuelve la lista de datos de las marcas para los equipos.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("ObtenerMarca/{codigotipomaq}")]
@@ -49,6 +50,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de los modelos para los equipos.</returns>
         /// <response code="200">Devuelve la lista de datos de los modelos para los equipos.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("ObtenerModelo/{codigotipomaq}/{codmodelo}")]

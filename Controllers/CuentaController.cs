@@ -30,6 +30,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de las cuentas bancarias y sus asignaciones.</returns>
         /// <response code="200">Devuelve la lista de datos de las cuentas bancarias y sus asignaciones.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpGet("NTransacciones/{id}")]
@@ -50,6 +51,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro la cuenta bancaria.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarCuenta")]
@@ -71,6 +73,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Actualizo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarCuenta")]
@@ -87,6 +90,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Borro correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarCuenta/{id}")]

@@ -31,6 +31,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de totales de la ultima transacción de un equipo.</returns>
         /// <response code="200">Devuelve la lista de datos de los totales de la ultima transaccion de un equipo.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("ObtenerTotalesMoneq/{Machine_Sn}")]
@@ -47,6 +48,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de todos los equipos de un cliente.</returns>
         /// <response code="200">Devuelve la lista de datos de los equipos pertenecientes a un cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Monitor")]
         [HttpGet("ObtenerEquipoMoneq/{opcion}/{codigoCliente}")]
@@ -108,6 +110,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de todos los equipos.</returns>
         /// <response code="200">Devuelve la lista de datos de los equipos.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("ObtenerEquipo")]
@@ -182,6 +185,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de todos los equipos pertenecientes a un cliente.</returns>
         /// <response code="200">Devuelve la lista de datos de los equipos pertenecientes a un cliente.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Transaccional")]
         [HttpGet("EquipoLista/{codCliente}")]
@@ -207,6 +211,7 @@ namespace PortalWeb_API.Controllers
         /// <returns>Lista de datos de todos los equipos nuevos.</returns>
         /// <response code="200">Devuelve la lista de todos los equipos nuevos.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel2")]
         [HttpGet("EquipoNuevo")]
@@ -223,6 +228,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>        
         /// <response code="200">Se registro el equipo a la plataforma.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPost("GuardarEquipo")]
@@ -264,6 +270,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Actualizo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActualizarEquipo/{id}")]
@@ -279,6 +286,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Activo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpPut("ActivarEquipo/{id}")]
@@ -295,6 +303,7 @@ namespace PortalWeb_API.Controllers
         /// </summary>
         /// <response code="200">Desactivo correctamente el registro.</response>
         /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
         [HttpDelete("BorrarEquipo/{id}")]
