@@ -1,4 +1,4 @@
-﻿`using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortalWeb_API.Data;
 using PortalWeb_API.Methods_Token;
