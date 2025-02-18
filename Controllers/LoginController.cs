@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Methods_Token;
 using PortalWeb_API.Models;
@@ -42,7 +43,7 @@ namespace PortalWeb_API.Controllers
             try
             {
                 GenerateToken generateToken = new(_configuration);
-                var usuario = _context?.Usuarios_Portal.SingleOrDefault(x => x.Usuario == userRequest.Usuario);
+                var usuario = _context?.Usuarios_Portal.AsNoTracking().SingleOrDefault(x => x.Usuario == userRequest.Usuario);
                 if (usuario == null)
                 {
                     return NotFound(new { Message = "Usuario incorrecto" });

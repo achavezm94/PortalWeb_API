@@ -6,47 +6,40 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-/// <summary>
-/// Tabla que tiene los clientes que tienen los servicios
-/// </summary>
-public partial class Clientes
+namespace PortalWeb_API.Models
 {
-    public int id { get; set; }
-
-    [Key]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string CodigoCliente { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string NombreCliente { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string RUC { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Direccion { get; set; }
-
-    [StringLength(1)]
-    [Unicode(false)]
-    public string Active { get; set; }
-
-    [StringLength(20)]
-    [Unicode(false)]
-    public string telefcontacto { get; set; }
-
-    [StringLength(150)]
-    [Unicode(false)]
-    public string emailcontacto { get; set; }
-
-    [StringLength(150)]
-    [Unicode(false)]
-    public string nombrecontacto { get; set; }
+    /// <summary>
+    /// Tabla que tiene los clientes que tienen los servicios
+    /// </summary>
+    public partial class Clientes
+    {
+        public int id { get; set; }
+        [Key]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string CodigoCliente { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string NombreCliente { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string RUC { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Direccion { get; set; }
+        [StringLength(1)]
+        [Unicode(false)]
+        public string Active { get; set; }
+        [StringLength(20)]
+        [Unicode(false)]
+        public string telefcontacto { get; set; }
+        [StringLength(150)]
+        [Unicode(false)]
+        public string emailcontacto { get; set; }
+        [StringLength(150)]
+        [Unicode(false)]
+        public string nombrecontacto { get; set; }
+    }
 }

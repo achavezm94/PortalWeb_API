@@ -35,7 +35,6 @@ namespace PortalWeb_API.Data
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SP_ConsolidadoLocalidadResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_EquiposNoTransaccionesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaComisariatoResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaTransaccionesResult>().HasNoKey().ToView(null);
@@ -49,51 +48,6 @@ namespace PortalWeb_API.Data
         public PortalWebContextProcedures(PortalWebContext context)
         {
             _context = context;
-        }
-
-        public virtual async Task<List<SP_ConsolidadoLocalidadResult>> SP_ConsolidadoLocalidadAsync(int? tipo, string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "tipo",
-                    Value = tipo ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "id_tienda",
-                    Size = 100,
-                    Value = id_tienda ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NChar,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "fechaInicial",
-                    Value = fechaInicial ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.DateTime,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "fechaFinal",
-                    Value = fechaFinal ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.DateTime,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<SP_ConsolidadoLocalidadResult>("EXEC @returnValue = [dbo].[SP_ConsolidadoLocalidad] @tipo = @tipo, @id_tienda = @id_tienda, @fechaInicial = @fechaInicial, @fechaFinal = @fechaFinal", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
         }
 
         public virtual async Task<List<SP_EquiposNoTransaccionesResult>> SP_EquiposNoTransaccionesAsync(DateTime? fechaInicial, DateTime? fechaFinal, int? opcion, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)

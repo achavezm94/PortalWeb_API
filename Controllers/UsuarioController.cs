@@ -36,12 +36,12 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerUsuario")]
         public IActionResult ObtenerUsuario()
         {
-            var Datos = (from usm in _context.Usuarios
-                         join td in _context.Tiendas on new { codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
-                         join mt1 in _context.MasterTable on td.CodProv equals mt1.codigo
+            var Datos = (from usm in _context.Usuarios.AsNoTracking()
+                         join td in _context.Tiendas.AsNoTracking() on new { codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
+                         join mt1 in _context.MasterTable.AsNoTracking() on td.CodProv equals mt1.codigo
                          where mt1.master == "PRV00"
-                         join dp in _context.Datos_Personales on usm.Usuario equals dp.UsuarioidFk
-                         join cli in _context.Clientes on td.CodigoClienteidFk equals cli.CodigoCliente
+                         join dp in _context.Datos_Personales.AsNoTracking() on usm.Usuario equals dp.UsuarioidFk
+                         join cli in _context.Clientes.AsNoTracking() on td.CodigoClienteidFk equals cli.CodigoCliente
                          select new
                          {
                              usm.id,
@@ -75,13 +75,13 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerUsuarioIP/{ip}")]
         public IActionResult ObtenerUsuarioIp([FromRoute] string ip)
         {
-            var Datos = (from usm in _context.Usuarios
-                         join td in _context.Tiendas on new { codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
-                         join mt1 in _context.MasterTable on td.CodProv equals mt1.codigo
+            var Datos = (from usm in _context.Usuarios.AsNoTracking()
+                         join td in _context.Tiendas.AsNoTracking() on new { codigo = usm.TiendasidFk } equals new { codigo = (td.id).ToString() }
+                         join mt1 in _context.MasterTable.AsNoTracking() on td.CodProv equals mt1.codigo
                          where mt1.master == "CCAN"
-                         join dp in _context.Datos_Personales on usm.Usuario equals dp.UsuarioidFk
-                         join cli in _context.Clientes on td.CodigoClienteidFk equals cli.CodigoCliente
-                         join cb in _context.cuentas_bancarias on usm.CuentasidFk equals cb.id
+                         join dp in _context.Datos_Personales.AsNoTracking() on usm.Usuario equals dp.UsuarioidFk
+                         join cli in _context.Clientes.AsNoTracking() on td.CodigoClienteidFk equals cli.CodigoCliente
+                         join cb in _context.cuentas_bancarias.AsNoTracking() on usm.CuentasidFk equals cb.id
                          where ip == usm.IpMachine
                          select new
                          {

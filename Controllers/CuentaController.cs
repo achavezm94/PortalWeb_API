@@ -36,11 +36,11 @@ namespace PortalWeb_API.Controllers
         [HttpGet("NTransacciones/{id}")]
         public IActionResult ObtenerCuentasBancarias(int id)
         {
-            var Datos = (from cb in _context.cuentas_bancarias
-                         join cs in _context.cuentaSignaTienda on cb.id equals cs.idcuentabancaria
-                         join t in _context.Tiendas on cs.idtienda equals t.CodigoTienda
-                         join e in _context.Equipos on t.id equals e.codigoTiendaidFk
-                         join d in _context.Depositos on e.serieEquipo equals d.Machine_Sn
+            var Datos = (from cb in _context.cuentas_bancarias.AsNoTracking()
+                         join cs in _context.cuentaSignaTienda.AsNoTracking() on cb.id equals cs.idcuentabancaria
+                         join t in _context.Tiendas.AsNoTracking() on cs.idtienda equals t.CodigoTienda
+                         join e in _context.Equipos.AsNoTracking() on t.id equals e.codigoTiendaidFk
+                         join d in _context.Depositos.AsNoTracking() on e.serieEquipo equals d.Machine_Sn
                          where cb.id.Equals(id)
                          select d.Transaccion_No).IsNullOrEmpty();
             return Ok(!Datos);

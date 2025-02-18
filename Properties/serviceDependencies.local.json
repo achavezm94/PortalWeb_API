@@ -3,11 +3,8 @@
     "compute.appService1": {
       "group": "connections",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/sfiBACK",
-      "type": "compute.appService.windows"
-    },
-    "apis1": {
-      "ignored": "true",
-      "type": "apis"
+      "type": "compute.appService.windows",
+      "dynamicId": null
     }
   }
 }

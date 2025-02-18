@@ -3,325 +3,478 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using PortalWeb_API.Models;
 
-namespace PortalWeb_API.Data;
-
-public partial class PortalWebContext : DbContext
+namespace PortalWeb_API.Data
 {
-    public PortalWebContext(DbContextOptions<PortalWebContext> options)
-        : base(options)
+    public partial class PortalWebContext : DbContext
     {
+        public PortalWebContext()
+        {
+        }
+
+        public PortalWebContext(DbContextOptions<PortalWebContext> options)
+            : base(options)
+        {
+        }
+
+        public virtual DbSet<ClienteSignaLocalidad> ClienteSignaLocalidad { get; set; }
+        public virtual DbSet<Clientes> Clientes { get; set; }
+        public virtual DbSet<ConsolidadoSaldoCajas> ConsolidadoSaldoCajas { get; set; }
+        public virtual DbSet<Datos_Personales> Datos_Personales { get; set; }
+        public virtual DbSet<Depositos> Depositos { get; set; }
+        public virtual DbSet<DetalleAcreditadas> DetalleAcreditadas { get; set; }
+        public virtual DbSet<Equipos> Equipos { get; set; }
+        public virtual DbSet<EquiposTemporales> EquiposTemporales { get; set; }
+        public virtual DbSet<ManualDepositos> ManualDepositos { get; set; }
+        public virtual DbSet<MasterTable> MasterTable { get; set; }
+        public virtual DbSet<NumeroCortesDias> NumeroCortesDias { get; set; }
+        public virtual DbSet<Recolecciones> Recolecciones { get; set; }
+        public virtual DbSet<Tiendas> Tiendas { get; set; }
+        public virtual DbSet<TotalesEquipos> TotalesEquipos { get; set; }
+        public virtual DbSet<TransaccionesAcreditadas> TransaccionesAcreditadas { get; set; }
+        public virtual DbSet<TransaccionesExcel> TransaccionesExcel { get; set; }
+        public virtual DbSet<Usuarios> Usuarios { get; set; }
+        public virtual DbSet<UsuariosTemporales> UsuariosTemporales { get; set; }
+        public virtual DbSet<Usuarios_Portal> Usuarios_Portal { get; set; }
+        public virtual DbSet<cuentaSignaTienda> cuentaSignaTienda { get; set; }
+        public virtual DbSet<cuentas_bancarias> cuentas_bancarias { get; set; }
+        public virtual DbSet<marca> marca { get; set; }
+        public virtual DbSet<modelo> modelo { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ClienteSignaLocalidad>(entity =>
+            {
+                entity.Property(e => e.codigo).IsFixedLength();
+
+                entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.master).IsFixedLength();
+            });
+
+            modelBuilder.Entity<Clientes>(entity =>
+            {
+                entity.HasKey(e => e.CodigoCliente)
+                    .HasName("PK_Cliente");
+
+                entity.HasComment("Tabla que tiene los clientes que tienen los servicios");
+
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<ConsolidadoSaldoCajas>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('P')");
+            });
+
+            modelBuilder.Entity<Datos_Personales>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+            });
+
+            modelBuilder.Entity<Depositos>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<DetalleAcreditadas>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('P')");
+            });
+
+            modelBuilder.Entity<Equipos>(entity =>
+            {
+                entity.HasKey(e => new { e.id, e.serieEquipo })
+                    .HasName("PK_Equipos1");
+
+                entity.Property(e => e.id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.fechaInstalacion).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.tiempoSincronizacion).HasDefaultValueSql("(getdate())");
+            });
+
+            modelBuilder.Entity<EquiposTemporales>(entity =>
+            {
+                entity.HasKey(e => e.serieEquipo)
+                    .HasName("PK__EquiposT__7A57188BB54A0B96");
+
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<ManualDepositos>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<MasterTable>(entity =>
+            {
+                entity.Property(e => e.campo1).IsFixedLength();
+
+                entity.Property(e => e.campo2).IsFixedLength();
+
+                entity.Property(e => e.codigo).IsFixedLength();
+
+                entity.Property(e => e.gestion)
+                    .HasDefaultValueSql("('')")
+                    .IsFixedLength();
+
+                entity.Property(e => e.master).IsFixedLength();
+
+                entity.Property(e => e.nomtag)
+                    .HasDefaultValueSql("(' ')")
+                    .IsFixedLength();
+
+                entity.Property(e => e.sgrupo).IsFixedLength();
+
+                entity.Property(e => e.valor).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<NumeroCortesDias>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.Fecha).HasDefaultValueSql("(CONVERT([varchar],getdate(),(112)))");
+
+                entity.Property(e => e.NumCorte).HasDefaultValueSql("((1))");
+            });
+
+            modelBuilder.Entity<Recolecciones>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.Total_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<Tiendas>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.CodProv).IsFixedLength();
+
+                entity.Property(e => e.fecreate).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<TotalesEquipos>(entity =>
+            {
+                entity.Property(e => e.EquipoDepositoBill1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoDepositoBill10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoDepositoBill100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoDepositoBill2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoDepositoBill20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoDepositoBill5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoDepositoBill50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualBill50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualCoin1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualCoin10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualCoin100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualCoin25).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualCoin5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipoManualCoin50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoDepositoBill50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill2).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill20).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualBill50).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualCoin1).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualCoin10).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualCoin100).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualCoin25).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualCoin5).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalEquipoManualCoin50).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<TransaccionesAcreditadas>(entity =>
+            {
+                entity.Property(e => e.Acreditada).HasDefaultValueSql("('E')");
+            });
+
+            modelBuilder.Entity<TransaccionesExcel>(entity =>
+            {
+                entity.Property(e => e.Acreditada).IsFixedLength();
+
+                entity.Property(e => e.Repetido).IsFixedLength();
+            });
+
+            modelBuilder.Entity<Usuarios>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.CuentasidFk).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<UsuariosTemporales>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+
+                entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
+            });
+
+            modelBuilder.Entity<Usuarios_Portal>(entity =>
+            {
+                entity.Property(e => e.Active).HasDefaultValueSql("('A')");
+            });
+
+            modelBuilder.Entity<cuentaSignaTienda>(entity =>
+            {
+                entity.Property(e => e.idtienda).IsFixedLength();
+            });
+
+            modelBuilder.Entity<cuentas_bancarias>(entity =>
+            {
+                entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<marca>(entity =>
+            {
+                entity.HasKey(e => new { e.codigotipomaq, e.codmarca })
+                    .HasName("PK_modelo1");
+
+                entity.Property(e => e.codmarca).IsFixedLength();
+            });
+
+            modelBuilder.Entity<modelo>(entity =>
+            {
+                entity.HasKey(e => new { e.codigotipomaq, e.codmodelo, e.codmarca })
+                    .HasName("PK_marca1_1");
+
+                entity.Property(e => e.codmodelo).IsFixedLength();
+
+                entity.Property(e => e.codmarca).IsFixedLength();
+            });
+
+            OnModelCreatingGeneratedProcedures(modelBuilder);
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-
-    public virtual DbSet<ClienteSignaLocalidad> ClienteSignaLocalidad { get; set; }
-
-    public virtual DbSet<Clientes> Clientes { get; set; }
-
-    public virtual DbSet<Datos_Personales> Datos_Personales { get; set; }
-
-    public virtual DbSet<Depositos> Depositos { get; set; }
-
-    public virtual DbSet<Equipos> Equipos { get; set; }
-
-    public virtual DbSet<EquiposTemporales> EquiposTemporales { get; set; }
-
-    public virtual DbSet<ManualDepositos> ManualDepositos { get; set; }
-
-    public virtual DbSet<MasterTable> MasterTable { get; set; }
-
-    public virtual DbSet<Recolecciones> Recolecciones { get; set; }
-
-    public virtual DbSet<Tiendas> Tiendas { get; set; }
-
-    public virtual DbSet<TotalesEquipos> TotalesEquipos { get; set; }
-
-    public virtual DbSet<TransaccionesAcreditadas> TransaccionesAcreditadas { get; set; }
-
-    public virtual DbSet<TransaccionesExcel> TransaccionesExcel { get; set; }
-
-    public virtual DbSet<Usuarios> Usuarios { get; set; }
-
-    public virtual DbSet<UsuariosTemporales> UsuariosTemporales { get; set; }
-
-    public virtual DbSet<Usuarios_Portal> Usuarios_Portal { get; set; }
-
-    public virtual DbSet<cuentaSignaTienda> cuentaSignaTienda { get; set; }
-
-    public virtual DbSet<cuentas_bancarias> cuentas_bancarias { get; set; }
-
-    public virtual DbSet<marca> marca { get; set; }
-
-    public virtual DbSet<modelo> modelo { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ClienteSignaLocalidad>(entity =>
-        {
-            entity.Property(e => e.codigo).IsFixedLength();
-            entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.master).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Clientes>(entity =>
-        {
-            entity.HasKey(e => e.CodigoCliente).HasName("PK_Cliente");
-
-            entity.ToTable(tb => tb.HasComment("Tabla que tiene los clientes que tienen los servicios"));
-
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.id).ValueGeneratedOnAdd();
-        });
-
-        modelBuilder.Entity<Datos_Personales>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-        });
-
-        modelBuilder.Entity<Depositos>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
-        });
-
-        modelBuilder.Entity<Equipos>(entity =>
-        {
-            entity.HasKey(e => new { e.id, e.serieEquipo }).HasName("PK_Equipos1");
-
-            entity.Property(e => e.id).ValueGeneratedOnAdd();
-            entity.Property(e => e.active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.fechaInstalacion).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.tiempoSincronizacion).HasDefaultValueSql("(getdate())");
-        });
-
-        modelBuilder.Entity<EquiposTemporales>(entity =>
-        {
-            entity.HasKey(e => e.serieEquipo).HasName("PK__EquiposT__7A57188BB54A0B96");
-
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.id).ValueGeneratedOnAdd();
-        });
-
-        modelBuilder.Entity<ManualDepositos>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
-        });
-
-        modelBuilder.Entity<MasterTable>(entity =>
-        {
-            entity.Property(e => e.campo1).IsFixedLength();
-            entity.Property(e => e.campo2).IsFixedLength();
-            entity.Property(e => e.codigo).IsFixedLength();
-            entity.Property(e => e.gestion)
-                .HasDefaultValueSql("('')")
-                .IsFixedLength();
-            entity.Property(e => e.master).IsFixedLength();
-            entity.Property(e => e.nomtag)
-                .HasDefaultValueSql("(' ')")
-                .IsFixedLength();
-            entity.Property(e => e.sgrupo).IsFixedLength();
-            entity.Property(e => e.valor).HasDefaultValueSql("((0))");
-        });
-
-        modelBuilder.Entity<Recolecciones>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.Total_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Bill_50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_25).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
-        });
-
-        modelBuilder.Entity<Tiendas>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.CodProv).IsFixedLength();
-            entity.Property(e => e.fecreate).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.id).ValueGeneratedOnAdd();
-        });
-
-        modelBuilder.Entity<TotalesEquipos>(entity =>
-        {
-            entity.Property(e => e.EquipoDepositoBill1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoDepositoBill10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoDepositoBill100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoDepositoBill2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoDepositoBill20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoDepositoBill5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoDepositoBill50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualBill50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualCoin1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualCoin10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualCoin100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualCoin25).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualCoin5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.EquipoManualCoin50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoDepositoBill50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill2).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill20).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualBill50).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualCoin1).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualCoin10).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualCoin100).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualCoin25).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualCoin5).HasDefaultValueSql("((0))");
-            entity.Property(e => e.TotalEquipoManualCoin50).HasDefaultValueSql("((0))");
-        });
-
-        modelBuilder.Entity<TransaccionesAcreditadas>(entity =>
-        {
-            entity.Property(e => e.Acreditada).HasDefaultValueSql("('E')");
-        });
-
-        modelBuilder.Entity<TransaccionesExcel>(entity =>
-        {
-            entity.HasKey(e => e.ID).HasName("PK__Transacc__3214EC27974EF0DD");
-
-            entity.Property(e => e.Acreditada).IsFixedLength();
-            entity.Property(e => e.Repetido).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Usuarios>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.CuentasidFk).HasDefaultValueSql("((0))");
-        });
-
-        modelBuilder.Entity<UsuariosTemporales>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-            entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
-        });
-
-        modelBuilder.Entity<Usuarios_Portal>(entity =>
-        {
-            entity.Property(e => e.Active).HasDefaultValueSql("('A')");
-        });
-
-        modelBuilder.Entity<cuentaSignaTienda>(entity =>
-        {
-            entity.HasKey(e => e.id).HasName("PK_cuentaSignaTienda1");
-
-            entity.Property(e => e.idtienda).IsFixedLength();
-        });
-
-        modelBuilder.Entity<cuentas_bancarias>(entity =>
-        {
-            entity.Property(e => e.fecrea).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.id).ValueGeneratedOnAdd();
-        });
-
-        modelBuilder.Entity<marca>(entity =>
-        {
-            entity.HasKey(e => new { e.codigotipomaq, e.codmarca }).HasName("PK_modelo1");
-
-            entity.Property(e => e.codmarca).IsFixedLength();
-        });
-
-        modelBuilder.Entity<modelo>(entity =>
-        {
-            entity.HasKey(e => new { e.codigotipomaq, e.codmodelo, e.codmarca }).HasName("PK_marca1_1");
-
-            entity.Property(e => e.codmodelo).IsFixedLength();
-            entity.Property(e => e.codmarca).IsFixedLength();
-        });
-
-        OnModelCreatingGeneratedProcedures(modelBuilder);
-        OnModelCreatingPartial(modelBuilder);
-    }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -34,21 +35,42 @@ namespace PortalWeb_API.Controllers
         public async Task<IActionResult> GuardarTransacciones([FromBody] List<TransaccionesAcreditadas> model)
         {
             TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            DateTime timeUtc = DateTime.UtcNow;
-            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
-            if (ModelState.IsValid)
+            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, cstZone);
+            if (!ModelState.IsValid)
             {
-                foreach (var item in model)
+                return BadRequest();
+            }
+            foreach (var item in model)
+            {
+                item.FechaRegistro = cstTime;
+            }
+            await _context.TransaccionesAcreditadas.AddRangeAsync(model).ConfigureAwait(false);
+            if (await _context.SaveChangesAsync().ConfigureAwait(false) > 0)
+            {
+                string fechaHoy = cstTime.ToString("yyyyMMdd");            
+                var ultimoRegistro = await _context.NumeroCortesDias
+                                       .OrderByDescending(x => x.id)
+                                       .FirstOrDefaultAsync()
+                                       .ConfigureAwait(false);
+                if (ultimoRegistro == null || fechaHoy != ultimoRegistro.Fecha)
                 {
-                    item.FechaRegistro = cstTime;
+                    var nuevoCorte = new NumeroCortesDias
+                    {
+                        Fecha = fechaHoy,
+                        NumCorte = 1
+                    };
+                    await _context.NumeroCortesDias.AddAsync(nuevoCorte).ConfigureAwait(false);
                 }
-                await _context.TransaccionesAcreditadas.AddRangeAsync(model).ConfigureAwait(false);
+                else
+                {
+                    ultimoRegistro.NumCorte += 1;
+                }
                 return (await _context.SaveChangesAsync().ConfigureAwait(false) > 0) ? Ok() : BadRequest();
             }
             else
             {
                 return BadRequest();
-            }
+            }                                                       
         }
     }
 }

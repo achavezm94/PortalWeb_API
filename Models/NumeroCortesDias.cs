@@ -8,18 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PortalWeb_API.Models
 {
-    public partial class EquiposTemporales
+    public partial class NumeroCortesDias
     {
-        public int id { get; set; }
         [Key]
+        public int id { get; set; }
+        [Required]
         [StringLength(50)]
         [Unicode(false)]
-        public string serieEquipo { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string IpEquipo { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? fecrea { get; set; }
+        public string Fecha { get; set; }
+        public int NumCorte { get; set; }
+        [Required]
         [StringLength(1)]
         [Unicode(false)]
         public string Active { get; set; }

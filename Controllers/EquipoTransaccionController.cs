@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 
 namespace PortalWeb_API.Controllers
@@ -31,9 +32,13 @@ namespace PortalWeb_API.Controllers
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Transaccional")]
         [HttpGet("ObtenerDetalle/{machineSn}")]
-        public IActionResult ObtenerDetalle(string machineSn)
+        public async  Task<IActionResult> ObtenerDetalle(string machineSn)
         {
-            var datos = _context.TotalesEquipos.Where(d => d.Equipo == machineSn).First();
+            var datos = await _context.TotalesEquipos
+             .AsNoTracking()
+             .FirstOrDefaultAsync(d => d.Equipo == machineSn);
+            if (datos == null)
+                return NotFound($"No se encontraron datos para el equipo {machineSn}");
             var result = new
             {
                 machineSn = datos.Equipo,

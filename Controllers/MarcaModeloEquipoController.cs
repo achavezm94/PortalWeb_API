@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 
 namespace PortalWeb_API.Controllers
@@ -35,7 +36,7 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var marcas = from m in _context.marca where m.codigotipomaq.Equals(codigotipomaq) select m;
+                var marcas = from m in _context.marca.AsNoTracking() where m.codigotipomaq.Equals(codigotipomaq) select m;
                 return (marcas != null) ? Ok(marcas) : NotFound();
             }
             else
@@ -58,7 +59,8 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var modelos = from mo in _context.modelo where mo.codigotipomaq.Equals(codigotipomaq) && mo.codmarca.Equals(codmodelo) select mo;
+                var modelos = from mo in _context.modelo.AsNoTracking() 
+                              where mo.codigotipomaq.Equals(codigotipomaq) && mo.codmarca.Equals(codmodelo) select mo;
                 return (modelos != null) ? Ok(modelos) : NotFound();
             }
             else

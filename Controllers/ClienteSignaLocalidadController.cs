@@ -35,9 +35,9 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerLocalidades/{cliente}")]
         public IActionResult ObtenerDatamasterLocalidades(string cliente)
         {
-            var Datos = from t in _context.ClienteSignaLocalidad
-                        join l in _context.MasterTable on new { t.codigo, t.master } equals new { l.codigo, l.master }
-                        join c in _context.Clientes on cliente equals c.CodigoCliente
+            var Datos = from t in _context.ClienteSignaLocalidad.AsNoTracking()
+                        join l in _context.MasterTable.AsNoTracking() on new { t.codigo, t.master } equals new { l.codigo, l.master }
+                        join c in _context.Clientes.AsNoTracking() on cliente equals c.CodigoCliente
                         where t.codigoCiente == cliente
                         select new { t.id, idCliente = c.id, t.master, t.codigo, l.nombre };
             return (Datos != null) ? Ok(Datos) : NotFound();

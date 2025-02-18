@@ -36,9 +36,9 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerUsuario")]
         public IActionResult ObtenerUsuario()
         {
-            var Datos = (from usp in _context.Usuarios_Portal
-                         join mt1 in _context.MasterTable on usp.Rol equals mt1.codigo
-                         join dp in _context.Datos_Personales on usp.Usuario equals dp.UsuarioPortaidFk
+            var Datos = (from usp in _context.Usuarios_Portal.AsNoTracking()
+                         join mt1 in _context.MasterTable.AsNoTracking() on usp.Rol equals mt1.codigo
+                         join dp in _context.Datos_Personales.AsNoTracking() on usp.Usuario equals dp.UsuarioPortaidFk
                          select new
                          {
                              usp.id,

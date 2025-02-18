@@ -6,63 +6,46 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-[PrimaryKey("id", "serieEquipo")]
-public partial class Equipos
+namespace PortalWeb_API.Models
 {
-    [Key]
-    public int id { get; set; }
-
-    public int codigoTiendaidFk { get; set; }
-
-    [StringLength(80)]
-    [Unicode(false)]
-    public string tipo { get; set; }
-
-    [StringLength(80)]
-    [Unicode(false)]
-    public string marca { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string modelo { get; set; }
-
-    [Key]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string serieEquipo { get; set; }
-
-    [Required]
-    [StringLength(1)]
-    [Unicode(false)]
-    public string active { get; set; }
-
-    public int? capacidadIni { get; set; }
-
-    public int? capacidadFin { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? fechaInstalacion { get; set; }
-
-    public int estadoPing { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime tiempoSincronizacion { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? fecrea { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? ultimaRecoleccion { get; set; }
-
-    public int? capacidadIniSobres { get; set; }
-
-    public int? capacidadFinSobres { get; set; }
-
-    [StringLength(20)]
-    [Unicode(false)]
-    public string IpEquipo { get; set; }
-
-    public int? capacidadAsegurada { get; set; }
+    public partial class Equipos
+    {
+        [Key]
+        public int id { get; set; }
+        public int codigoTiendaidFk { get; set; }
+        [StringLength(80)]
+        [Unicode(false)]
+        public string tipo { get; set; }
+        [StringLength(80)]
+        [Unicode(false)]
+        public string marca { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string modelo { get; set; }
+        [Key]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string serieEquipo { get; set; }
+        [Required]
+        [StringLength(1)]
+        [Unicode(false)]
+        public string active { get; set; }
+        public int? capacidadIni { get; set; }
+        public int? capacidadFin { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? fechaInstalacion { get; set; }
+        public int estadoPing { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime tiempoSincronizacion { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? fecrea { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? ultimaRecoleccion { get; set; }
+        public int? capacidadIniSobres { get; set; }
+        public int? capacidadFinSobres { get; set; }
+        [StringLength(20)]
+        [Unicode(false)]
+        public string IpEquipo { get; set; }
+        public int? capacidadAsegurada { get; set; }
+    }
 }

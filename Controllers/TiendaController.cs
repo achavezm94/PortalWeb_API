@@ -38,7 +38,7 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var tiendas = await _context.Tiendas.ToListAsync();
+                var tiendas = await _context.Tiendas.AsNoTracking().ToListAsync();
                 return (tiendas != null) ? Ok(tiendas) : NotFound();
             }
             else
@@ -61,7 +61,7 @@ namespace PortalWeb_API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var tiendas = await _context.Tiendas
+                var tiendas = await _context.Tiendas.AsNoTracking()
                                                     .Where(t => t.CodigoClienteidFk == codigoCliente)
                                                     .Select(t => new { t.id, t.NombreTienda })
                                                     .ToListAsync();
@@ -85,14 +85,14 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerTiendasCompletas")]
         public IActionResult ObtenerTiendas()
         {
-            var query = from td in _context.Tiendas
-                        join cli in _context.Clientes
+            var query = from td in _context.Tiendas.AsNoTracking()
+                        join cli in _context.Clientes.AsNoTracking()
                             on td.CodigoClienteidFk equals cli.CodigoCliente into cliGroup
                         from cli in cliGroup.DefaultIfEmpty()
-                        join mt1 in _context.MasterTable
+                        join mt1 in _context.MasterTable.AsNoTracking()
                             on td.CodProv equals mt1.codigo into mt1Group
                         from mt1 in mt1Group.Where(m => m.master == "CCAN").DefaultIfEmpty()
-                        join ct in _context.cuentaSignaTienda
+                        join ct in _context.cuentaSignaTienda.AsNoTracking()
                             on td.CodigoTienda equals ct.idtienda into ctGroup
                         group new { td, cli, mt1, ctGroup } by new
                         {

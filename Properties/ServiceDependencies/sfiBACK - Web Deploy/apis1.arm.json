@@ -82,7 +82,6 @@
                 },
                 "virtualNetworkType": "None",
                 "certificates": null,
-                "enableClientCertificate": false,
                 "disableGateway": false,
                 "apiVersionConstraint": {
                   "minApiVersion": null

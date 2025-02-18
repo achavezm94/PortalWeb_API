@@ -35,8 +35,8 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerTiendaCuentas/{id}")]
         public IActionResult ObtenerTiendaCuentas([FromRoute] string id)
         {
-            var Datos = from otc in _context.cuentaSignaTienda
-                        join ct in _context.cuentas_bancarias on otc.idcuentabancaria equals ct.id
+            var Datos = from otc in _context.cuentaSignaTienda.AsNoTracking()
+                        join ct in _context.cuentas_bancarias.AsNoTracking() on otc.idcuentabancaria equals ct.id
                         where otc.idtienda == id
                         select new { otc.idcuentabancaria, ct.nombanco, ct.numerocuenta, otc.id, ct.TipoCuenta, ct.Observacion };
             return (Datos != null) ? Ok(Datos) : NotFound();

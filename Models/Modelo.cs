@@ -6,27 +6,24 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-[PrimaryKey("codigotipomaq", "codmodelo", "codmarca")]
-public partial class modelo
+namespace PortalWeb_API.Models
 {
-    [Key]
-    [StringLength(35)]
-    [Unicode(false)]
-    public string codigotipomaq { get; set; }
-
-    [Key]
-    [StringLength(5)]
-    [Unicode(false)]
-    public string codmodelo { get; set; }
-
-    [Key]
-    [StringLength(5)]
-    [Unicode(false)]
-    public string codmarca { get; set; }
-
-    [StringLength(250)]
-    [Unicode(false)]
-    public string nombremodelo { get; set; }
+    public partial class modelo
+    {
+        [Key]
+        [StringLength(35)]
+        [Unicode(false)]
+        public string codigotipomaq { get; set; }
+        [Key]
+        [StringLength(5)]
+        [Unicode(false)]
+        public string codmodelo { get; set; }
+        [Key]
+        [StringLength(5)]
+        [Unicode(false)]
+        public string codmarca { get; set; }
+        [StringLength(250)]
+        [Unicode(false)]
+        public string nombremodelo { get; set; }
+    }
 }

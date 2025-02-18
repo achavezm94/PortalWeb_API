@@ -54,24 +54,24 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerEquipoMoneq/{opcion}/{codigoCliente}")]
         public IActionResult ObtenerEquipoMoneq(int opcion, string codigoCliente)
         {
-            var query = from ep in _context.Equipos
-                        join mt1 in _context.MasterTable
+            var query = from ep in _context.Equipos.AsNoTracking()
+                        join mt1 in _context.MasterTable.AsNoTracking()
                             on ep.tipo equals mt1.codigo into mt1Join
                         from mt1 in mt1Join.DefaultIfEmpty()
                         where mt1.master == "MQT"
-                        join mc in _context.marca
+                        join mc in _context.marca.AsNoTracking()
                             on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca } into mcJoin
                         from mc in mcJoin.DefaultIfEmpty()
-                        join md in _context.modelo
+                        join md in _context.modelo.AsNoTracking()
                             on new { ep.marca, ep.tipo, ep.modelo } equals new { marca = md.codmarca, tipo = md.codigotipomaq, modelo = md.codmodelo } into mdJoin
                         from md in mdJoin.DefaultIfEmpty()
-                        join td in _context.Tiendas
+                        join td in _context.Tiendas.AsNoTracking()
                             on ep.codigoTiendaidFk equals td.id into tdJoin
                         from td in tdJoin.DefaultIfEmpty()
-                        join mt2 in _context.MasterTable
+                        join mt2 in _context.MasterTable.AsNoTracking()
                             on td.CodProv equals mt2.codigo into mt2Join
                         from mt2 in mt2Join.DefaultIfEmpty()
-                        join t in _context.TotalesEquipos
+                        join t in _context.TotalesEquipos.AsNoTracking()
                             on ep.serieEquipo equals t.Equipo into tJoin
                         from t in tJoin.DefaultIfEmpty()
                         where ep.active == "A"
@@ -97,11 +97,11 @@ namespace PortalWeb_API.Controllers
                         };
             if (@opcion == 2)
             {
-                query = query.Where(x => x.idCliente == @codigoCliente);
+                query = query.Where(x => x.idCliente == @codigoCliente).OrderBy(x => x.serieEquipo);
             }
-            query = query.OrderBy(x => x.serieEquipo);
-            var result = query.ToList();
-            return Ok(result);
+            //query = query.OrderBy(x => x.serieEquipo);
+            //var result = query.ToList();
+            return Ok(query.ToList());
         }
 
         /// <summary>
@@ -116,19 +116,19 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerEquipo")]
         public IActionResult ObtenerEquipo()
         {
-            var query = from ep in _context.Equipos
-                        join td in _context.Tiendas on ep.codigoTiendaidFk equals td.id into tiendaGroup
+            var query = from ep in _context.Equipos.AsNoTracking()
+                        join td in _context.Tiendas.AsNoTracking() on ep.codigoTiendaidFk equals td.id into tiendaGroup
                         from td in tiendaGroup.DefaultIfEmpty()
-                        join cli in _context.Clientes on td.CodigoClienteidFk equals cli.CodigoCliente into clienteGroup
+                        join cli in _context.Clientes.AsNoTracking() on td.CodigoClienteidFk equals cli.CodigoCliente into clienteGroup
                         from cli in clienteGroup.DefaultIfEmpty()
-                        join mt1 in _context.MasterTable on ep.tipo equals mt1.codigo into tipoGroup
+                        join mt1 in _context.MasterTable.AsNoTracking() on ep.tipo equals mt1.codigo into tipoGroup
                         from mt1 in tipoGroup.DefaultIfEmpty()
                         where mt1.master == "MQT"
-                        join mc in _context.marca on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca } into marcaGroup
+                        join mc in _context.marca.AsNoTracking() on new { ep.tipo, ep.marca } equals new { tipo = mc.codigotipomaq, marca = mc.codmarca } into marcaGroup
                         from mc in marcaGroup.DefaultIfEmpty()
-                        join md in _context.modelo on new { ep.marca, ep.tipo, ep.modelo } equals new { marca = md.codmarca, tipo = md.codigotipomaq, modelo = md.codmodelo } into modeloGroup
+                        join md in _context.modelo.AsNoTracking() on new { ep.marca, ep.tipo, ep.modelo } equals new { marca = md.codmarca, tipo = md.codigotipomaq, modelo = md.codmodelo } into modeloGroup
                         from md in modeloGroup.DefaultIfEmpty()
-                        join u in _context.Usuarios on ep.IpEquipo equals u.IpMachine into usuarioGroup
+                        join u in _context.Usuarios.AsNoTracking() on ep.IpEquipo equals u.IpMachine into usuarioGroup
                         from u in usuarioGroup.DefaultIfEmpty()
                         group new { ep, td, cli, mt1, mc, md, u } by new
                         {
@@ -191,10 +191,10 @@ namespace PortalWeb_API.Controllers
         [HttpGet("EquipoLista/{codCliente}")]
         public IActionResult EquipoLista([FromRoute] string codCliente)
         {
-            var Datos = from eq in _context.Equipos
-                        join ti in _context.Tiendas on eq.codigoTiendaidFk equals ti.id into tiGroup
+            var Datos = from eq in _context.Equipos.AsNoTracking()
+                        join ti in _context.Tiendas.AsNoTracking() on eq.codigoTiendaidFk equals ti.id into tiGroup
                         from ti in tiGroup.DefaultIfEmpty()
-                        join cli in _context.Clientes on ti.CodigoClienteidFk equals cli.CodigoCliente
+                        join cli in _context.Clientes.AsNoTracking() on ti.CodigoClienteidFk equals cli.CodigoCliente
                         where cli.CodigoCliente == codCliente
                         orderby eq.serieEquipo ascending
                         select new
@@ -217,7 +217,7 @@ namespace PortalWeb_API.Controllers
         [HttpGet("EquipoNuevo")]
         public IActionResult ObtenerEquipoTemporal()
         {
-            var Datos = from eqt in _context.EquiposTemporales
+            var Datos = from eqt in _context.EquiposTemporales.AsNoTracking()
                         where eqt.Active.Equals("A")
                         select new { eqt.serieEquipo, eqt.IpEquipo };
             return (Datos != null) ? Ok(Datos) : NotFound();

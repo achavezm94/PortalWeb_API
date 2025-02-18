@@ -6,18 +6,16 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-public partial class cuentaSignaTienda
+namespace PortalWeb_API.Models
 {
-    [Key]
-    public int id { get; set; }
-
-    [StringLength(30)]
-    public string idtienda { get; set; }
-
-    public int? idcuentabancaria { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? fcrea { get; set; }
+    public partial class cuentaSignaTienda
+    {
+        [Key]
+        public int id { get; set; }
+        [StringLength(30)]
+        public string idtienda { get; set; }
+        public int? idcuentabancaria { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? fcrea { get; set; }
+    }
 }

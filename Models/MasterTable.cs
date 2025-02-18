@@ -6,54 +6,43 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-[Keyless]
-public partial class MasterTable
+namespace PortalWeb_API.Models
 {
-    [StringLength(5)]
-    [Unicode(false)]
-    public string master { get; set; }
-
-    [Required]
-    [StringLength(20)]
-    [Unicode(false)]
-    public string codigo { get; set; }
-
-    [StringLength(200)]
-    public string nombre { get; set; }
-
-    [Column(TypeName = "decimal(15, 2)")]
-    public decimal? valor { get; set; }
-
-    [StringLength(10)]
-    [Unicode(false)]
-    public string nomtag { get; set; }
-
-    [StringLength(3)]
-    [Unicode(false)]
-    public string gestion { get; set; }
-
-    public bool pideval { get; set; }
-
-    [StringLength(30)]
-    [Unicode(false)]
-    public string campo1 { get; set; }
-
-    [StringLength(70)]
-    public string grupo { get; set; }
-
-    [StringLength(70)]
-    [Unicode(false)]
-    public string sgrupo { get; set; }
-
-    [StringLength(30)]
-    [Unicode(false)]
-    public string campo2 { get; set; }
-
-    [Column(TypeName = "decimal(2, 0)")]
-    public decimal lencod { get; set; }
-
-    [Column(TypeName = "decimal(16, 2)")]
-    public decimal? VALOR2 { get; set; }
+    [Keyless]
+    public partial class MasterTable
+    {
+        [StringLength(5)]
+        [Unicode(false)]
+        public string master { get; set; }
+        [Required]
+        [StringLength(20)]
+        [Unicode(false)]
+        public string codigo { get; set; }
+        [StringLength(200)]
+        public string nombre { get; set; }
+        [Column(TypeName = "decimal(15, 2)")]
+        public decimal? valor { get; set; }
+        [StringLength(10)]
+        [Unicode(false)]
+        public string nomtag { get; set; }
+        [StringLength(3)]
+        [Unicode(false)]
+        public string gestion { get; set; }
+        public bool pideval { get; set; }
+        [StringLength(30)]
+        [Unicode(false)]
+        public string campo1 { get; set; }
+        [StringLength(70)]
+        public string grupo { get; set; }
+        [StringLength(70)]
+        [Unicode(false)]
+        public string sgrupo { get; set; }
+        [StringLength(30)]
+        [Unicode(false)]
+        public string campo2 { get; set; }
+        [Column(TypeName = "decimal(2, 0)")]
+        public decimal lencod { get; set; }
+        [Column(TypeName = "decimal(16, 2)")]
+        public decimal? VALOR2 { get; set; }
+    }
 }

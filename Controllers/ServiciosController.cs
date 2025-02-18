@@ -222,15 +222,14 @@ namespace PortalWeb_API.Controllers
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
-            {
-                bool verificacion = VerificacionTransaccion(model.User_id, model.Machine_Sn);
-                if (verificacion)
-                {
-                    bool transactionExists = _context.Depositos
-                                            .Where(d => d.FechaTransaccion >= model.Time_generated.AddDays(-5) && d.Machine_Sn == model.Machine_Sn)
-                                            .Any(d => d.Transaccion_No == model.Transaction_no &&
-                                                        d.Usuarios_idFk == model.User_id &&
-                                                        d.Machine_Sn == model.Machine_Sn);
+            {                
+                if (VerificacionTransaccion(model.User_id, model.Machine_Sn))
+                {                    
+                    bool transactionExists = await _context.Depositos
+                                            .AnyAsync(d => d.FechaTransaccion >= model.Time_generated.AddDays(-5)
+                                                && d.Machine_Sn == model.Machine_Sn
+                                                && d.Transaccion_No == model.Transaction_no
+                                                && d.Usuarios_idFk == model.User_id);
                     if (!transactionExists)
                     {
                         await _context.Depositos.AddAsync(new Depositos
@@ -267,7 +266,7 @@ namespace PortalWeb_API.Controllers
                             Total_Manual_Deposito_Coin_25 = model.Total_manual_deposit_coin_25,
                             Total_Manual_Deposito_Coin_50 = model.Total_manual_deposit_coin_50,
                             Total_Manual_Deposito_Coin_100 = model.Total_manual_deposit_coin_100,
-                            Active = "A"
+                            Active = "P"
                         });
                         if (await _context.SaveChangesAsync() > 0)
                         {
@@ -369,7 +368,7 @@ namespace PortalWeb_API.Controllers
                             }
                             if (await _context.SaveChangesAsync() > 0)
                             {
-                                var resultado = from cli in _context.Clientes
+                                var resultado = await(from cli in _context.Clientes
                                                 join eq in _context.Equipos
                                                 on model.Machine_Sn equals eq.serieEquipo into eqJoin
                                                 from eq in eqJoin.DefaultIfEmpty()
@@ -381,7 +380,7 @@ namespace PortalWeb_API.Controllers
                                                 {
                                                     cli.NombreCliente,
                                                     ti.NombreTienda
-                                                };
+                                                }).FirstOrDefaultAsync();
 
                                 var resultado1 = from u in _context.Usuarios
                                                  join dp in _context.Datos_Personales
@@ -406,8 +405,8 @@ namespace PortalWeb_API.Controllers
                                     FechaTransaccion = model.Time_generated,
                                     Fecha = model.Time_generated.Date,
                                     Hora = model.Time_generated.ToString("HH:mm:ss"),
-                                    NombreCliente = resultado.First().NombreCliente,
-                                    NombreTienda = resultado.First().NombreTienda,
+                                    NombreCliente = resultado?.NombreCliente,
+                                    NombreTienda = resultado?.NombreTienda,
                                     Transaccion_No = model.Transaction_no,
                                     Machine_Sn = model.Machine_Sn,
                                     Usuarios_idFk = model.User_id,
@@ -492,14 +491,13 @@ namespace PortalWeb_API.Controllers
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                bool verificacion = VerificacionTransaccion(model.User_id, model.Machine_Sn);
-                if (verificacion)
-                {
-                    bool transactionExists = _context.ManualDepositos
-                                            .Where(d => d.FechaTransaccion >= model.Time_generated.AddDays(-5) && d.Machine_Sn == model.Machine_Sn)
-                                            .Any(d => d.Transaccion_No == model.Transaction_no &&
-                                                        d.Usuarios_idFk == model.User_id &&
-                                                        d.Machine_Sn == model.Machine_Sn);
+                if (VerificacionTransaccion(model.User_id, model.Machine_Sn))
+                {                    
+                    bool transactionExists = await _context.ManualDepositos
+                                           .AnyAsync(d => d.FechaTransaccion >= model.Time_generated.AddDays(-5)
+                                               && d.Machine_Sn == model.Machine_Sn
+                                               && d.Transaccion_No == model.Transaction_no
+                                               && d.Usuarios_idFk == model.User_id);
                     if (!transactionExists)
                     {
                         await _context.ManualDepositos.AddAsync(new ManualDepositos
@@ -542,7 +540,7 @@ namespace PortalWeb_API.Controllers
                             Total_Manual_Deposito_Coin_25 = model.Total_manual_deposit_coin_25,
                             Total_Manual_Deposito_Coin_50 = model.Total_manual_deposit_coin_50,
                             Total_Manual_Deposito_Coin_100 = model.Total_manual_deposit_coin_100,
-                            Active = "A"
+                            Active = "P"
                         });
                         if (await _context.SaveChangesAsync() > 0)
                         {
@@ -668,7 +666,7 @@ namespace PortalWeb_API.Controllers
                             }
                             if (await _context.SaveChangesAsync() > 0)
                             {
-                                var resultado = from cli in _context.Clientes
+                                var resultado = await(from cli in _context.Clientes
                                                 join eq in _context.Equipos
                                                 on model.Machine_Sn equals eq.serieEquipo into eqJoin
                                                 from eq in eqJoin.DefaultIfEmpty()
@@ -680,7 +678,7 @@ namespace PortalWeb_API.Controllers
                                                 {
                                                     cli.NombreCliente,
                                                     ti.NombreTienda
-                                                };
+                                                }).FirstOrDefaultAsync();
 
                                 var resultado1 = from u in _context.Usuarios
                                                  join dp in _context.Datos_Personales
@@ -705,8 +703,8 @@ namespace PortalWeb_API.Controllers
                                     FechaTransaccion = model.Time_generated,
                                     Fecha = model.Time_generated.Date,
                                     Hora = model.Time_generated.ToString("HH:mm:ss"),
-                                    NombreCliente = resultado.First().NombreCliente,
-                                    NombreTienda = resultado.First().NombreTienda,
+                                    NombreCliente = resultado?.NombreCliente,
+                                    NombreTienda = resultado?.NombreTienda,
                                     Transaccion_No = model.Transaction_no,
                                     Machine_Sn = model.Machine_Sn,
                                     Usuarios_idFk = model.User_id,
@@ -802,14 +800,13 @@ namespace PortalWeb_API.Controllers
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                bool verificacion = VerificacionTransaccion(model.User_id, model.Machine_Sn);
-                if (verificacion)
-                {
-                    bool transactionExists = _context.Recolecciones
-                                            .Where(d => d.FechaTransaccion >= model.Time_generated.AddDays(-5) && d.Machine_Sn == model.Machine_Sn)
-                                            .Any(d => d.Transaccion_No == model.Transaction_no &&
-                                                        d.Usuarios_idFk == model.User_id &&
-                                                        d.Machine_Sn == model.Machine_Sn);
+                if (VerificacionTransaccion(model.User_id, model.Machine_Sn))
+                {                   
+                    bool transactionExists = await _context.Recolecciones
+                                           .AnyAsync(d => d.FechaTransaccion >= model.Time_generated.AddDays(-5)
+                                               && d.Machine_Sn == model.Machine_Sn
+                                               && d.Transaccion_No == model.Transaction_no
+                                               && d.Usuarios_idFk == model.User_id);
                     if (!transactionExists)
                     {
                         await _context.Recolecciones.AddAsync(new Recolecciones
@@ -839,7 +836,7 @@ namespace PortalWeb_API.Controllers
                             Total_Manual_Deposito_Coin_25 = model.Total_manual_deposit_coin_25,
                             Total_Manual_Deposito_Coin_50 = model.Total_manual_deposit_coin_50,
                             Total_Manual_Deposito_Coin_100 = model.Total_manual_deposit_coin_100,
-                            Active = "A"
+                            Active = "P"
                         });
                         if (await _context.SaveChangesAsync() > 0)
                         {

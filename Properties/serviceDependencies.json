@@ -5,7 +5,8 @@
     },
     "compute.appService1": {
       "group": "connections",
-      "type": "compute.appService"
+      "type": "compute.appService",
+      "dynamicId": null
     }
   }
 }

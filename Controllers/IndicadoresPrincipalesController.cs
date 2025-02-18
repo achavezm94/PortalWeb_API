@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 
 namespace PortalWeb_API.Controllers
@@ -35,10 +36,10 @@ namespace PortalWeb_API.Controllers
         {
             if (opcion == 1)
             {
-                var NoClientes = _context.Clientes.Count(e => e.Active != "F");
-                var NoTiendas = _context.Tiendas.Count(e => e.Active != "F");
-                var NoEquipos = _context.Equipos.Count(e => e.active != "F");
-                var NoUsuarios = _context.Usuarios_Portal.Count(e => e.Active != "F");
+                var NoClientes = _context.Clientes.AsNoTracking().Count(e => e.Active != "F");
+                var NoTiendas = _context.Tiendas.AsNoTracking().Count(e => e.Active != "F");
+                var NoEquipos = _context.Equipos.AsNoTracking().Count(e => e.active != "F");
+                var NoUsuarios = _context.Usuarios_Portal.AsNoTracking().Count(e => e.Active != "F");
                 var Datos = new List<object>
                 {
                     new { tipo = "clientes", Cantidad = NoClientes },

@@ -35,7 +35,7 @@ namespace PortalWeb_API.Controllers
         [HttpGet("Usuario/{ip}")]
         public IActionResult ObtenerUsuarioTemporal(string ip)
         {
-            var Datos = from ut in _context.UsuariosTemporales
+            var Datos = from ut in _context.UsuariosTemporales.AsNoTracking()
                         where ut.IpMachineSolicitud.Equals(ip) && ut.Active.Equals("A")
                         select new { ut.id, ut.Usuario, ut.IpMachineSolicitud, ut.fecrea };
             return (Datos != null) ? Ok(Datos) : NotFound();

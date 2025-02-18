@@ -6,38 +6,32 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-public partial class Datos_Personales
+namespace PortalWeb_API.Models
 {
-    [Key]
-    public int id { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string UsuarioPortaidFk { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string UsuarioidFk { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Nombres { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Apellidos { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Cedula { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Telefono { get; set; }
-
-    [StringLength(1)]
-    [Unicode(false)]
-    public string Active { get; set; }
+    public partial class Datos_Personales
+    {
+        [Key]
+        public int id { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string UsuarioPortaidFk { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string UsuarioidFk { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Nombres { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Apellidos { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Cedula { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Telefono { get; set; }
+        [StringLength(1)]
+        [Unicode(false)]
+        public string Active { get; set; }
+    }
 }

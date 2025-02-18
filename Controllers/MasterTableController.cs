@@ -35,7 +35,7 @@ namespace PortalWeb_API.Controllers
         [HttpGet("GetDataMaster/{mast}")]
         public IActionResult GetDataMaster([FromRoute] string mast)
         {
-            var Datos = from m in _context.MasterTable
+            var Datos = from m in _context.MasterTable.AsNoTracking()
                         where m.master.Equals(mast)
                         group m by new { m.master, m.codigo, m.nombre } into g
                         select new
@@ -59,7 +59,7 @@ namespace PortalWeb_API.Controllers
         [HttpGet("GetTipoEquipo")]
         public IActionResult GetTipoEquipo()
         {
-            var Datos = from m in _context.MasterTable
+            var Datos = from m in _context.MasterTable.AsNoTracking()
                         where m.master.Equals("MQT") && (m.codigo == "009" || m.codigo == "012")
                         group m by new { m.master, m.codigo, m.nombre } into g
                         select new
@@ -83,7 +83,7 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerDatamasterLocalidades/{codCliente}")]
         public IActionResult ObtenerDatamasterLocalidades([FromRoute] string codCliente)
         {
-            var Datos = from t in _context.MasterTable
+            var Datos = from t in _context.MasterTable.AsNoTracking()
                         where t.master.Equals("CCAN") && !(
                                                             from l in _context.ClienteSignaLocalidad
                                                             where l.codigoCiente == codCliente

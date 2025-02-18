@@ -6,28 +6,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortalWeb_API.Models;
-
-public partial class Usuarios_Portal
+namespace PortalWeb_API.Models
 {
-    [Key]
-    public int id { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Usuario { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Contrasenia { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Rol { get; set; }
-
-    [StringLength(1)]
-    [Unicode(false)]
-    public string Active { get; set; }
+    public partial class Usuarios_Portal
+    {
+        [Key]
+        public int id { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Usuario { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Contrasenia { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Rol { get; set; }
+        [StringLength(1)]
+        [Unicode(false)]
+        public string Active { get; set; }
+    }
 }

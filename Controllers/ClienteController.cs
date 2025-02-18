@@ -36,10 +36,10 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerCliente")]
         public IActionResult ObtenerCliente()
         {
-            var query = from cl in _context.Clientes
-                        join cb in _context.cuentas_bancarias on cl.CodigoCliente equals cb.CodigoCliente into cbGroup
+            var query = from cl in _context.Clientes.AsNoTracking()
+                        join cb in _context.cuentas_bancarias.AsNoTracking() on cl.CodigoCliente equals cb.CodigoCliente into cbGroup
                         from cbg in cbGroup.DefaultIfEmpty()
-                        join csl in _context.ClienteSignaLocalidad on cl.CodigoCliente equals csl.codigoCiente into cslGroup
+                        join csl in _context.ClienteSignaLocalidad.AsNoTracking() on cl.CodigoCliente equals csl.codigoCiente into cslGroup
                         from cslg in cslGroup.DefaultIfEmpty()
                         group new { cl, cbg, cslg } by new
                         {
@@ -83,7 +83,7 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerClienteSelect")]
         public IActionResult ObtenerClienteSelect()
         {
-            var Datos = from cl in _context.Clientes
+            var Datos = from cl in _context.Clientes.AsNoTracking()
                         select new
                         {
                             cl.id,
@@ -105,8 +105,8 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerCuentaCliente/{CodCliente}")]
         public IActionResult ObtenerCuentaCliente(string CodCliente)
         {
-            var Datos = from cli in _context.Clientes
-                        join cb in _context.cuentas_bancarias on cli.CodigoCliente equals cb.CodigoCliente
+            var Datos = from cli in _context.Clientes.AsNoTracking()
+                        join cb in _context.cuentas_bancarias.AsNoTracking() on cli.CodigoCliente equals cb.CodigoCliente
                         where cli.CodigoCliente == CodCliente
                         select new
                         {
