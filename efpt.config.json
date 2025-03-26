@@ -43,10 +43,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[DetalleAcreditadas]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Equipos]",
          "ObjectType": 0
       },
@@ -105,6 +101,10 @@
       {
          "Name": "[dbo].[UsuariosTemporales]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SP_ConsolidadoCajas]",
+         "ObjectType": 1
       },
       {
          "Name": "[dbo].[SP_EquiposNoTransacciones]",

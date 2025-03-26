@@ -35,19 +35,26 @@ namespace PortalWeb_API.Controllers
         [HttpGet("Cuadre/{machine_Sn}")]
         public IActionResult ResultadoCuadre([FromRoute] string machine_Sn)
         {
-            MetodosTotales metodosTotales = new(_context);
-            TotalTodoTransacciones todasTransacciones = metodosTotales.TotalesTodasTransacciones(machine_Sn);
-            TotalUltimaTransaccion[] ultimaTransaccion = metodosTotales.TotalesUltimaTransaccion(machine_Sn);
-            int resultado = (todasTransacciones.Total == ultimaTransaccion[0].TotalMont) ? 0 : // 0 = iguales
-                (todasTransacciones.Total > ultimaTransaccion[0].TotalMont) ? 1 : 2; // 1 = duplicadas, 2 = faltante
-            double? totalcuadre = (double?)_context.TotalesEquipos.Where(d => d.Equipo == machine_Sn).First().TotalCuadreEquipo;
-            if (totalcuadre == 0)
+            try
             {
-                return Ok(new { machine_Sn, diferencia = (todasTransacciones.Total - ultimaTransaccion[0].TotalMont), resultado });
+                MetodosTotales metodosTotales = new(_context);
+                TotalTodoTransacciones todasTransacciones = metodosTotales.TotalesTodasTransacciones(machine_Sn);
+                TotalUltimaTransaccion[] ultimaTransaccion = metodosTotales.TotalesUltimaTransaccion(machine_Sn);
+                int resultado = (todasTransacciones.Total == ultimaTransaccion[0].TotalMont) ? 0 : // 0 = iguales
+                    (todasTransacciones.Total > ultimaTransaccion[0].TotalMont) ? 1 : 2; // 1 = duplicadas, 2 = faltante
+                double? totalcuadre = (double?)_context.TotalesEquipos.Where(d => d.Equipo == machine_Sn).First().TotalCuadreEquipo;
+                if (totalcuadre == 0)
+                {
+                    return Ok(new { machine_Sn, diferencia = (todasTransacciones.Total - ultimaTransaccion[0].TotalMont), resultado });
+                }
+                else
+                {
+                    return Ok(new { machine_Sn, diferencia = (ultimaTransaccion[0].TotalMont - todasTransacciones.Total) + totalcuadre, resultado = 2 });// revisar aqui
+                }
             }
-            else
+            catch (Exception)
             {
-                return Ok(new { machine_Sn, diferencia = (ultimaTransaccion[0].TotalMont - todasTransacciones.Total) + totalcuadre, resultado = 2 });// revisar aqui
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 

@@ -24,7 +24,6 @@ namespace PortalWeb_API.Data
         public virtual DbSet<ConsolidadoSaldoCajas> ConsolidadoSaldoCajas { get; set; }
         public virtual DbSet<Datos_Personales> Datos_Personales { get; set; }
         public virtual DbSet<Depositos> Depositos { get; set; }
-        public virtual DbSet<DetalleAcreditadas> DetalleAcreditadas { get; set; }
         public virtual DbSet<Equipos> Equipos { get; set; }
         public virtual DbSet<EquiposTemporales> EquiposTemporales { get; set; }
         public virtual DbSet<ManualDepositos> ManualDepositos { get; set; }
@@ -135,11 +134,6 @@ namespace PortalWeb_API.Data
                 entity.Property(e => e.Total_Manual_Deposito_Coin_50).HasDefaultValueSql("((0))");
             });
 
-            modelBuilder.Entity<DetalleAcreditadas>(entity =>
-            {
-                entity.Property(e => e.Active).HasDefaultValueSql("('P')");
-            });
-
             modelBuilder.Entity<Equipos>(entity =>
             {
                 entity.HasKey(e => new { e.id, e.serieEquipo })
@@ -159,7 +153,7 @@ namespace PortalWeb_API.Data
             modelBuilder.Entity<EquiposTemporales>(entity =>
             {
                 entity.HasKey(e => e.serieEquipo)
-                    .HasName("PK__EquiposT__7A57188BB54A0B96");
+                    .HasName("PK__EquiposT__7A57188BDAF56F3B");
 
                 entity.Property(e => e.Active).HasDefaultValueSql("('A')");
 
@@ -243,9 +237,9 @@ namespace PortalWeb_API.Data
             {
                 entity.Property(e => e.campo1).IsFixedLength();
 
-                entity.Property(e => e.campo2).IsFixedLength();
-
                 entity.Property(e => e.codigo).IsFixedLength();
+
+                entity.Property(e => e.codigoLocalidadBanco).IsFixedLength();
 
                 entity.Property(e => e.gestion)
                     .HasDefaultValueSql("('')")

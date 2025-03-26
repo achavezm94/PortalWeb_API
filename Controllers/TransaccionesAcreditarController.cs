@@ -34,43 +34,50 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GuardarTransacciones")]
         public async Task<IActionResult> GuardarTransacciones([FromBody] List<TransaccionesAcreditadas> model)
         {
-            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, cstZone);
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest();
-            }
-            foreach (var item in model)
-            {
-                item.FechaRegistro = cstTime;
-            }
-            await _context.TransaccionesAcreditadas.AddRangeAsync(model).ConfigureAwait(false);
-            if (await _context.SaveChangesAsync().ConfigureAwait(false) > 0)
-            {
-                string fechaHoy = cstTime.ToString("yyyyMMdd");            
-                var ultimoRegistro = await _context.NumeroCortesDias
-                                       .OrderByDescending(x => x.id)
-                                       .FirstOrDefaultAsync()
-                                       .ConfigureAwait(false);
-                if (ultimoRegistro == null || fechaHoy != ultimoRegistro.Fecha)
+                TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+                DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, cstZone);
+                if (!ModelState.IsValid)
                 {
-                    var nuevoCorte = new NumeroCortesDias
+                    return BadRequest();
+                }
+                foreach (var item in model)
+                {
+                    item.FechaRegistro = cstTime;
+                }
+                await _context.TransaccionesAcreditadas.AddRangeAsync(model).ConfigureAwait(false);
+                if (await _context.SaveChangesAsync().ConfigureAwait(false) > 0)
+                {
+                    string fechaHoy = cstTime.ToString("yyyyMMdd");
+                    var ultimoRegistro = await _context.NumeroCortesDias
+                                           .OrderByDescending(x => x.id)
+                                           .FirstOrDefaultAsync()
+                                           .ConfigureAwait(false);
+                    if (ultimoRegistro == null || fechaHoy != ultimoRegistro.Fecha)
                     {
-                        Fecha = fechaHoy,
-                        NumCorte = 1
-                    };
-                    await _context.NumeroCortesDias.AddAsync(nuevoCorte).ConfigureAwait(false);
+                        var nuevoCorte = new NumeroCortesDias
+                        {
+                            Fecha = fechaHoy,
+                            NumCorte = 1
+                        };
+                        await _context.NumeroCortesDias.AddAsync(nuevoCorte).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        ultimoRegistro.NumCorte += 1;
+                    }
+                    return (await _context.SaveChangesAsync().ConfigureAwait(false) > 0) ? Ok() : BadRequest();
                 }
                 else
                 {
-                    ultimoRegistro.NumCorte += 1;
+                    return BadRequest();
                 }
-                return (await _context.SaveChangesAsync().ConfigureAwait(false) > 0) ? Ok() : BadRequest();
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
-            }                                                       
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

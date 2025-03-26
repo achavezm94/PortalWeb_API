@@ -34,7 +34,7 @@ namespace PortalWeb_API.Models
         public string Active { get; set; }
         [StringLength(20)]
         [Unicode(false)]
-        public string telefcontacto { get; set; }
+        public string CodigoClienteBanco { get; set; }
         [StringLength(150)]
         [Unicode(false)]
         public string emailcontacto { get; set; }

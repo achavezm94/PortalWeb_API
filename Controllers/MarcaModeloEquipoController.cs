@@ -34,14 +34,21 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerMarca/{codigotipomaq}")]
         public IActionResult ObtenerMarca(string codigotipomaq)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var marcas = from m in _context.marca.AsNoTracking() where m.codigotipomaq.Equals(codigotipomaq) select m;
-                return (marcas != null) ? Ok(marcas) : NotFound();
+                if (ModelState.IsValid)
+                {
+                    var marcas = from m in _context.marca.AsNoTracking() where m.codigotipomaq.Equals(codigotipomaq) select m;
+                    return (marcas != null) ? Ok(marcas) : NotFound();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 
@@ -57,15 +64,23 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerModelo/{codigotipomaq}/{codmodelo}")]
         public IActionResult ObtenerMarca(string codigotipomaq, string codmodelo)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var modelos = from mo in _context.modelo.AsNoTracking() 
-                              where mo.codigotipomaq.Equals(codigotipomaq) && mo.codmarca.Equals(codmodelo) select mo;
-                return (modelos != null) ? Ok(modelos) : NotFound();
+                if (ModelState.IsValid)
+                {
+                    var modelos = from mo in _context.modelo.AsNoTracking()
+                                  where mo.codigotipomaq.Equals(codigotipomaq) && mo.codmarca.Equals(codmodelo)
+                                  select mo;
+                    return (modelos != null) ? Ok(modelos) : NotFound();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
     }

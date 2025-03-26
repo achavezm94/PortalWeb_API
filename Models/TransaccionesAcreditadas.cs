@@ -32,7 +32,7 @@ namespace PortalWeb_API.Models
         [Required]
         [StringLength(50)]
         [Unicode(false)]
-        public string UsuarioRegistro { get; set; }
+        public string NombreConsolidado { get; set; }
         [StringLength(1)]
         [Unicode(false)]
         public string Acreditada { get; set; }

@@ -34,14 +34,21 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GuardarCuentAsigna")]
         public async Task<IActionResult> GuardarCuentAsigna([FromBody] cuentaSignaTienda model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _context.cuentaSignaTienda.AddAsync(model);
-                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                if (ModelState.IsValid)
+                {
+                    await _context.cuentaSignaTienda.AddAsync(model);
+                    return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
     }

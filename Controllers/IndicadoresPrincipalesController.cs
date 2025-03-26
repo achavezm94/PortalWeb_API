@@ -34,24 +34,31 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerIndicadoresHome/{opcion}")]
         public IActionResult ObtenerHome(int opcion)
         {
-            if (opcion == 1)
+            try
             {
-                var NoClientes = _context.Clientes.AsNoTracking().Count(e => e.Active != "F");
-                var NoTiendas = _context.Tiendas.AsNoTracking().Count(e => e.Active != "F");
-                var NoEquipos = _context.Equipos.AsNoTracking().Count(e => e.active != "F");
-                var NoUsuarios = _context.Usuarios_Portal.AsNoTracking().Count(e => e.Active != "F");
-                var Datos = new List<object>
+                if (opcion == 1)
+                {
+                    var NoClientes = _context.Clientes.AsNoTracking().Count(e => e.Active != "F");
+                    var NoTiendas = _context.Tiendas.AsNoTracking().Count(e => e.Active != "F");
+                    var NoEquipos = _context.Equipos.AsNoTracking().Count(e => e.active != "F");
+                    var NoUsuarios = _context.Usuarios_Portal.AsNoTracking().Count(e => e.Active != "F");
+                    var Datos = new List<object>
                 {
                     new { tipo = "clientes", Cantidad = NoClientes },
                     new { tipo = "tiendas", Cantidad = NoTiendas },
                     new { tipo = "equipos", Cantidad = NoEquipos },
                     new { tipo = "usuarios", Cantidad = NoUsuarios }
                 };
-                return Ok(Datos);
+                    return Ok(Datos);
+                }
+                else
+                {
+                    return Ok(null);
+                }
             }
-            else
+            catch (Exception)
             {
-                return Ok(null);
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
     }

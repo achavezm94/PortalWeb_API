@@ -13,6 +13,7 @@ namespace PortalWeb_API.Data
 {
     public partial interface IPortalWebContextProcedures
     {
+        Task<List<SP_ConsolidadoCajasResult>> SP_ConsolidadoCajasAsync(string tipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_EquiposNoTransaccionesResult>> SP_EquiposNoTransaccionesAsync(DateTime? fechaInicial, DateTime? fechaFinal, int? opcion, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_FiltroPorFechaComisariatoResult>> SP_FiltroPorFechaComisariatoAsync(string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<SP_FiltroPorFechaTransaccionesResult>> SP_FiltroPorFechaTransaccionesAsync(int? tipo, string id_tienda, DateTime? fechaInicial, DateTime? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

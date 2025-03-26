@@ -36,11 +36,18 @@ namespace PortalWeb_API.Controllers
         [HttpGet("GenerarCard")]
         public IActionResult GenerarCard()
         {
-            var Datos = from t in _context.TransaccionesAcreditadas.AsNoTracking()
-                        where t.Acreditada.Equals("E")
-                        group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro } into g
-                        select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.UsuarioRegistro, Total = g.Count() };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from t in _context.TransaccionesAcreditadas.AsNoTracking()
+                            where t.Acreditada.Equals("E")
+                            group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.NombreConsolidado } into g
+                            select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.NombreConsolidado, Total = g.Count() };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -55,12 +62,19 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GenerarCardAcreeditadasFiltro")]
         public IActionResult GenerarCardFiltro([FromBody] FechasIniFin model)
         {
-            var Datos = from t in _context.TransaccionesAcreditadas.AsNoTracking()
-                        where t.FechaRegistro >= model.FechaIni && t.FechaRegistro <= model.FechaFin && t.Acreditada.Equals("A")
-                        group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.UsuarioRegistro } into g
-                        orderby g.Key.FechaRegistro descending
-                        select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.UsuarioRegistro, Total = g.Count() };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from t in _context.TransaccionesAcreditadas.AsNoTracking()
+                            where t.FechaRegistro >= model.FechaIni && t.FechaRegistro <= model.FechaFin && t.Acreditada.Equals("A")
+                            group t by new { t.NombreArchivo, t.FechaRegistro, t.FechaIni, t.FechaFin, t.NombreConsolidado } into g
+                            orderby g.Key.FechaRegistro descending
+                            select new { g.Key.NombreArchivo, g.Key.FechaRegistro, g.Key.FechaIni, g.Key.FechaFin, g.Key.NombreConsolidado, Total = g.Count() };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -75,41 +89,19 @@ namespace PortalWeb_API.Controllers
         [HttpGet("GenerarTransacciones/{nombreArchivo}")]
         public IActionResult GenerarTransaccionesAcreeditadas([FromRoute] string nombreArchivo)
         {
-            var Datos = from t in _context.TransaccionesAcreditadas.AsNoTracking()
-                        join m in _context.Equipos.AsNoTracking() on t.Machine_Sn equals m.serieEquipo
-                        where t.NombreArchivo.Equals(nombreArchivo)
-                        group t by new { t.Machine_Sn, m.IpEquipo } into g
-                        select new { g.Key.Machine_Sn, g.Key.IpEquipo, Total = g.Count() };            
-            return (Datos != null) ? Ok(Datos) : NotFound();
-        }
-
-        /// <summary>
-        /// Obtiene los datos para generar el detalle de acreditaciones cuando se quiera volver a descargar.
-        /// </summary>
-        /// <returns>Lista de los datos de detalle de acreditaciones para generar el historico.</returns>
-        /// <response code="200">Devuelve los detalles de las acreditaciones.</response>
-        /// <response code="401">Es necesario iniciar sesión.</response>
-        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
-        /// <response code="500">Si ocurre un error en el servidor.</response>
-        [Authorize(Policy = "Nivel1")]
-        [HttpGet("GenerarDetalleAcreditaciones/{nombreArchivo}")]
-        public IActionResult GenerarDetalleAcreeditadas([FromRoute] string nombreArchivo)
-        {
-            var Detalle = from t in _context.DetalleAcreditadas.AsNoTracking()
-                          where t.NomArchivo.Equals(nombreArchivo)
-                          select new { t.Fecha, 
-                                       t.CodLocalidad, 
-                                       t.Localidad, 
-                                       t.CodCliente, 
-                                       t.NomCliente, 
-                                       t.CodEstablecimiento,
-                                       t.NomEstablecimiento,
-                                       t.Equipo,
-                                       t.NumCuenta,
-                                       t.Monto};
-            var NomArchivo = _context.DetalleAcreditadas.AsNoTracking().Where(x => x.NomArchivo == nombreArchivo).Select(x => x.NomArchivoDetalle).FirstOrDefault();
-
-            return (Detalle != null) ? Ok(new { Detalle, NomArchivo }) : NotFound();
+            try
+            {
+                var Datos = from t in _context.TransaccionesAcreditadas.AsNoTracking()
+                            join m in _context.Equipos.AsNoTracking() on t.Machine_Sn equals m.serieEquipo
+                            where t.NombreArchivo.Equals(nombreArchivo)
+                            group t by new { t.Machine_Sn, m.IpEquipo } into g
+                            select new { g.Key.Machine_Sn, g.Key.IpEquipo, Total = g.Count() };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -123,48 +115,55 @@ namespace PortalWeb_API.Controllers
         [HttpGet("AprobacionTransacciones/{nombreArchivo}")]
         public IActionResult AprobarTransaccionesAcreeditadas([FromRoute] string nombreArchivo)
         {
-            int registrosBorrados = 0;
-            using var transaction = _context.Database.BeginTransaction();
             try
             {
-                var update = _context.TransaccionesAcreditadas
-                           .Where(u => u.NombreArchivo.Equals(nombreArchivo))
-                           .ExecuteUpdate(u => u.SetProperty(u => u.Acreditada, "A"));
-
-                if (update != 0)
+                int registrosBorrados = 0;
+                using var transaction = _context.Database.BeginTransaction();
+                try
                 {
-                    var listaDeDatos = _context.TransaccionesAcreditadas
-                        .Where(t => t.NombreArchivo == nombreArchivo)
-                        .Select(t => new
-                        {
-                            t.NoTransaction,
-                            t.Machine_Sn
-                        }).ToList();
+                    var update = _context.TransaccionesAcreditadas
+                               .Where(u => u.NombreArchivo.Equals(nombreArchivo))
+                               .ExecuteUpdate(u => u.SetProperty(u => u.Acreditada, "A"));
 
-                    if (listaDeDatos.Any())
+                    if (update != 0)
                     {
-                        var registrosAEliminar = _context.TransaccionesExcel
-                                                .AsEnumerable()
-                                                .Where(te => listaDeDatos.Any(d =>
-                                                    d.NoTransaction == te.Transaccion_No &&
-                                                    d.Machine_Sn == te.Machine_Sn))
-                                                .ToList();
-                        registrosBorrados = registrosAEliminar.Count;
-                        _context.TransaccionesExcel.RemoveRange(registrosAEliminar);
+                        var listaDeDatos = _context.TransaccionesAcreditadas
+                            .Where(t => t.NombreArchivo == nombreArchivo)
+                            .Select(t => new
+                            {
+                                t.NoTransaction,
+                                t.Machine_Sn
+                            }).ToList();
+
+                        if (listaDeDatos.Any())
+                        {
+                            var registrosAEliminar = _context.TransaccionesExcel
+                                                    .AsEnumerable()
+                                                    .Where(te => listaDeDatos.Any(d =>
+                                                        d.NoTransaction == te.Transaccion_No &&
+                                                        d.Machine_Sn == te.Machine_Sn))
+                                                    .ToList();
+                            registrosBorrados = registrosAEliminar.Count;
+                            _context.TransaccionesExcel.RemoveRange(registrosAEliminar);
+                        }
+                    }
+                    if (_context.SaveChanges() > 0)
+                    {
+                        transaction.CommitAsync();
+                        return Ok();
                     }
                 }
-                if (_context.SaveChanges() > 0)
+                catch (Exception)
                 {
-                    transaction.CommitAsync();
-                    return Ok();
+                    transaction.RollbackAsync();
                 }
+                transaction.RollbackAsync();
+                return BadRequest();
             }
             catch (Exception)
             {
-                transaction.RollbackAsync();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
-            transaction.RollbackAsync();
-            return BadRequest();
         }
 
         /// <summary>
@@ -200,12 +199,7 @@ namespace PortalWeb_API.Controllers
                 var registrosEliminados = await _context.TransaccionesAcreditadas
                     .Where(b => b.NombreArchivo.Equals(nombreArchivo))
                     .ExecuteDeleteAsync();
-                
-                /*
-                var registrosEliminadosDetalle = await _context.DetalleAcreditadas
-                    .Where(b => b.NomArchivo.Equals(nombreArchivo))
-                    .ExecuteDeleteAsync();
-                */
+
                 if (registrosEliminados > 0)
                 {
                     var fechaFormateada = fecha.ToString("yyyyMMdd");
@@ -222,7 +216,7 @@ namespace PortalWeb_API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Error interno del servidor");
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
     }

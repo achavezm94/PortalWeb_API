@@ -35,12 +35,19 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerLocalidades/{cliente}")]
         public IActionResult ObtenerDatamasterLocalidades(string cliente)
         {
-            var Datos = from t in _context.ClienteSignaLocalidad.AsNoTracking()
-                        join l in _context.MasterTable.AsNoTracking() on new { t.codigo, t.master } equals new { l.codigo, l.master }
-                        join c in _context.Clientes.AsNoTracking() on cliente equals c.CodigoCliente
-                        where t.codigoCiente == cliente
-                        select new { t.id, idCliente = c.id, t.master, t.codigo, l.nombre };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from t in _context.ClienteSignaLocalidad.AsNoTracking()
+                            join l in _context.MasterTable.AsNoTracking() on new { t.codigo, t.master } equals new { l.codigo, l.master }
+                            join c in _context.Clientes.AsNoTracking() on cliente equals c.CodigoCliente
+                            where t.codigoCiente == cliente
+                            select new { t.id, idCliente = c.id, t.master, t.codigo, l.nombre };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -54,16 +61,23 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GuardarClienteSignaTienda")]
         public async Task<IActionResult> GuardarCliente([FromBody] ObjClienteLocalidad model)
         {
-            foreach (var item in model.Localidades)
+            try
             {
-                await _context.ClienteSignaLocalidad.AddAsync(new ClienteSignaLocalidad
+                foreach (var item in model.Localidades)
                 {
-                    codigoCiente = model.Cliente,
-                    master = "CCAN",
-                    codigo = item
-                });
+                    await _context.ClienteSignaLocalidad.AddAsync(new ClienteSignaLocalidad
+                    {
+                        codigoCiente = model.Cliente,
+                        master = "CCAN",
+                        codigo = item
+                    });
+                }
+                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
             }
-            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -77,10 +91,17 @@ namespace PortalWeb_API.Controllers
         [HttpDelete("BorrarLocalidad/{id}")]
         public IActionResult EliminarLocalidadAsync(int id)
         {
-            var delete = _context.ClienteSignaLocalidad
-                            .Where(b => b.id.Equals(id))
-                            .ExecuteDelete();
-            return (delete != 0) ? Ok() : BadRequest();
+            try
+            {
+                var delete = _context.ClienteSignaLocalidad
+                                .Where(b => b.id.Equals(id))
+                                .ExecuteDelete();
+                return (delete != 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

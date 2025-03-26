@@ -36,14 +36,21 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerTienda")]
         public async Task<IActionResult> ObtenerTienda()
         {
-            if (ModelState.IsValid)
+            try
             {
-                var tiendas = await _context.Tiendas.AsNoTracking().ToListAsync();
-                return (tiendas != null) ? Ok(tiendas) : NotFound();
+                if (ModelState.IsValid)
+                {
+                    var tiendas = await _context.Tiendas.AsNoTracking().ToListAsync();
+                    return (tiendas != null) ? Ok(tiendas) : NotFound();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 
@@ -59,17 +66,24 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerTiendaFiltroCliente/{codigoCliente}")]
         public async Task<IActionResult> ObtenerTiendaFiltroCliene(string codigoCliente)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var tiendas = await _context.Tiendas.AsNoTracking()
-                                                    .Where(t => t.CodigoClienteidFk == codigoCliente)
-                                                    .Select(t => new { t.id, t.NombreTienda })
-                                                    .ToListAsync();
-                return (tiendas != null) ? Ok(tiendas) : NotFound();
+                if (ModelState.IsValid)
+                {
+                    var tiendas = await _context.Tiendas.AsNoTracking()
+                                                        .Where(t => t.CodigoClienteidFk == codigoCliente)
+                                                        .Select(t => new { t.id, t.NombreTienda })
+                                                        .ToListAsync();
+                    return (tiendas != null) ? Ok(tiendas) : NotFound();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 
@@ -85,55 +99,62 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerTiendasCompletas")]
         public IActionResult ObtenerTiendas()
         {
-            var query = from td in _context.Tiendas.AsNoTracking()
-                        join cli in _context.Clientes.AsNoTracking()
-                            on td.CodigoClienteidFk equals cli.CodigoCliente into cliGroup
-                        from cli in cliGroup.DefaultIfEmpty()
-                        join mt1 in _context.MasterTable.AsNoTracking()
-                            on td.CodProv equals mt1.codigo into mt1Group
-                        from mt1 in mt1Group.Where(m => m.master == "CCAN").DefaultIfEmpty()
-                        join ct in _context.cuentaSignaTienda.AsNoTracking()
-                            on td.CodigoTienda equals ct.idtienda into ctGroup
-                        group new { td, cli, mt1, ctGroup } by new
-                        {
-                            cli.CodigoCliente,
-                            cli.NombreCliente,
-                            cli.RUC,
-                            td.Telefono,
-                            td.NombreAdmin,
-                            td.TelfAdmin,
-                            td.Direccion,
-                            mt1.nombre,
-                            td.id,
-                            td.CodigoTienda,
-                            td.CodigoClienteidFk,
-                            td.NombreTienda,
-                            td.EmailAdmin,
-                            td.CodProv
-                        } into grouped
-                        select new
-                        {
-                            grouped.Key.CodigoCliente,
-                            grouped.Key.NombreCliente,
-                            grouped.Key.RUC,
-                            grouped.Key.Telefono,
-                            grouped.Key.NombreAdmin,
-                            grouped.Key.TelfAdmin,
-                            grouped.Key.Direccion,
-                            NombreLocalidad = grouped.Key.nombre,
-                            grouped.Key.id,
-                            grouped.Key.CodigoTienda,
-                            grouped.Key.CodigoClienteidFk,
-                            grouped.Key.NombreTienda,
-                            grouped.Key.EmailAdmin,
-                            grouped.Key.CodProv,
-                            CantidadCuentasAsign = grouped.SelectMany(g => g.ctGroup).Count()
-                        };
-            var result = query
-                .OrderBy(x => x.NombreCliente)
-                .ThenBy(x => x.NombreTienda)
-                .ToList();
-            return Ok(result);
+            try
+            {
+                var query = from td in _context.Tiendas.AsNoTracking()
+                            join cli in _context.Clientes.AsNoTracking()
+                                on td.CodigoClienteidFk equals cli.CodigoCliente into cliGroup
+                            from cli in cliGroup.DefaultIfEmpty()
+                            join mt1 in _context.MasterTable.AsNoTracking()
+                                on td.CodProv equals mt1.codigo into mt1Group
+                            from mt1 in mt1Group.Where(m => m.master == "CCAN").DefaultIfEmpty()
+                            join ct in _context.cuentaSignaTienda.AsNoTracking()
+                                on td.CodigoTienda equals ct.idtienda into ctGroup
+                            group new { td, cli, mt1, ctGroup } by new
+                            {
+                                cli.CodigoCliente,
+                                cli.NombreCliente,
+                                cli.RUC,
+                                td.Telefono,
+                                td.NombreAdmin,
+                                td.TelfAdmin,
+                                td.Direccion,
+                                mt1.nombre,
+                                td.id,
+                                td.CodigoTienda,
+                                td.CodigoClienteidFk,
+                                td.NombreTienda,
+                                td.EmailAdmin,
+                                td.CodProv
+                            } into grouped
+                            select new
+                            {
+                                grouped.Key.CodigoCliente,
+                                grouped.Key.NombreCliente,
+                                grouped.Key.RUC,
+                                grouped.Key.Telefono,
+                                grouped.Key.NombreAdmin,
+                                grouped.Key.TelfAdmin,
+                                grouped.Key.Direccion,
+                                NombreLocalidad = grouped.Key.nombre,
+                                grouped.Key.id,
+                                grouped.Key.CodigoTienda,
+                                grouped.Key.CodigoClienteidFk,
+                                grouped.Key.NombreTienda,
+                                grouped.Key.EmailAdmin,
+                                grouped.Key.CodProv,
+                                CantidadCuentasAsign = grouped.SelectMany(g => g.ctGroup).Count()
+                            };
+                var result = query
+                    .OrderBy(x => x.NombreCliente)
+                    .ThenBy(x => x.NombreTienda)
+                    .ToList();
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -147,14 +168,21 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GuardarTienda")]
         public async Task<IActionResult> GuardarTienda([FromBody] Tiendas model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _context.Tiendas.AddAsync(model);
-                return (await _context.SaveChangesAsync() > 0) ? Ok(model) : BadRequest();
+                if (ModelState.IsValid)
+                {
+                    await _context.Tiendas.AddAsync(model);
+                    return (await _context.SaveChangesAsync() > 0) ? Ok(model) : BadRequest();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 
@@ -169,10 +197,17 @@ namespace PortalWeb_API.Controllers
         [HttpPut("ActualizarTienda")]
         public async Task<IActionResult> ActualizarTiendaAsync([FromBody] Tiendas model)
         {
-            _context.Attach(model);
-            _context.Entry(model).State = EntityState.Modified;
-            _context.Entry(model).Property(nameof(model.id)).IsModified = false;
-            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            try
+            {
+                _context.Attach(model);
+                _context.Entry(model).State = EntityState.Modified;
+                _context.Entry(model).Property(nameof(model.id)).IsModified = false;
+                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -186,10 +221,17 @@ namespace PortalWeb_API.Controllers
         [HttpDelete("BorrarTienda/{id}")]
         public IActionResult BorrarTienda(int id)
         {
-            var delete = _context.Tiendas
-                            .Where(b => b.id.Equals(id))
-                            .ExecuteDelete();
-            return (delete != 0) ? Ok() : BadRequest();
+            try
+            {
+                var delete = _context.Tiendas
+                                .Where(b => b.id.Equals(id))
+                                .ExecuteDelete();
+                return (delete != 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

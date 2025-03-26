@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
 using PortalWeb_API.Models;
 
@@ -35,21 +34,28 @@ namespace PortalWeb_API.Controllers
         [HttpPost("FiltroConsolidado")]
         public IActionResult FiltroConsolidados([FromBody] FechasIniFin model)
         {
-            string fechaIniStr = model.FechaIni.ToString("yyyyMMdd");
-            string fechaFinStr = model.FechaFin.ToString("yyyyMMdd");
-            var Datos = _context.ConsolidadoSaldoCajas
-                .Where(s => s.Fecha.CompareTo(fechaIniStr) >= 0 && s.Fecha.CompareTo(fechaFinStr) <= 0)
-                .GroupBy(c => c.NomArchivo)
-                .Select(g => new
-                {
-                    NomArchivo = g.Key,
-                    CantidadEquipos = g.Count(),
-                    g.First().Fecha,
-                    g.First().Generado
-
-                })
-                .ToList();
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                string fechaIniStr = model.FechaIni.ToString("yyyyMMdd");
+                string fechaFinStr = model.FechaFin.ToString("yyyyMMdd");
+                var Datos = _context.ConsolidadoSaldoCajas
+                    .Where(s => s.Fecha.CompareTo(fechaIniStr) >= 0 && s.Fecha.CompareTo(fechaFinStr) <= 0)
+                    .GroupBy(c => c.NomArchivo)
+                    .Select(g => new
+                    {
+                        NomArchivo = g.Key,
+                        CantidadEquipos = g.Count(),
+                        g.First().Fecha,
+                        g.First().Generado
+                    })
+                    .OrderByDescending(te => te.Fecha)
+                    .ToList();
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -61,12 +67,57 @@ namespace PortalWeb_API.Controllers
         /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
-        [HttpGet("GenerarConsolidado/{nombreArchivo}")]
-        public IActionResult GenerarConsolidados([FromRoute] string nombreArchivo)
-        {           
-            var Datos = _context.ConsolidadoSaldoCajas
-                .Where(s => s.NomArchivo == nombreArchivo).ToList();
-            return (Datos != null) ? Ok(Datos) : NotFound();
+        [HttpGet("ObtenerConsolidado/{nombreArchivo}")]
+        public IActionResult ObtenerConsolidados([FromRoute] string nombreArchivo)
+        {
+            try
+            {
+                var Datos = _context.ConsolidadoSaldoCajas
+                    .Where(s => s.NomArchivo == nombreArchivo)
+                    .Select(s => new
+                    {
+                        s.Fecha,
+                        CodLocalidad = s.CodLocalidad.Trim(),
+                        s.Localidad,
+                        s.CodCliente,
+                        s.NomCliente,
+                        s.CodEstablecimiento,
+                        s.NomEstablecimiento,
+                        s.Equipo,
+                        s.SaldoInicial,
+                        s.DepositosProcesados,
+                        s.Retiros,
+                        s.SaldoFinal
+                    });
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// Genera los datos para el txt consolidado de cajas de forma manual.
+        /// </summary>
+        /// <returns>Ejecuta el sp que genera los datos para el txt consolidado de cajas de forma manual.</returns>
+        /// <response code="200">Ejecuta el sp que genera los datos para el txt consolidado de cajas de forma manual.</response>
+        /// <response code="204">Ejecuta el sp pero no se actualiza ningun dato debido a la falta de transacciones.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
+        [Authorize(Policy = "Nivel1")]
+        [HttpGet("GenerarConsolidadoManual/{tipo}")]
+        public async Task<IActionResult> GenerarConsolidadosManualAsync([FromRoute] string tipo)
+        {
+            try
+            {
+                return Ok(await _context.GetProcedures().SP_ConsolidadoCajasAsync(tipo.ToUpper()));
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

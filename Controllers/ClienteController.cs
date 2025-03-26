@@ -36,7 +36,9 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerCliente")]
         public IActionResult ObtenerCliente()
         {
-            var query = from cl in _context.Clientes.AsNoTracking()
+            try
+            {
+                var query = from cl in _context.Clientes.AsNoTracking()
                         join cb in _context.cuentas_bancarias.AsNoTracking() on cl.CodigoCliente equals cb.CodigoCliente into cbGroup
                         from cbg in cbGroup.DefaultIfEmpty()
                         join csl in _context.ClienteSignaLocalidad.AsNoTracking() on cl.CodigoCliente equals csl.codigoCiente into cslGroup
@@ -49,7 +51,7 @@ namespace PortalWeb_API.Controllers
                             cl.RUC,
                             cl.Direccion,
                             cl.Active,
-                            cl.telefcontacto,
+                            cl.CodigoClienteBanco,
                             cl.emailcontacto,
                             cl.nombrecontacto
                         } into g
@@ -61,7 +63,7 @@ namespace PortalWeb_API.Controllers
                             g.Key.RUC,
                             g.Key.Direccion,
                             g.Key.Active,
-                            g.Key.telefcontacto,
+                            g.Key.CodigoClienteBanco,
                             g.Key.emailcontacto,
                             g.Key.nombrecontacto,
                             cantidadCuentasBancarias = g.Select(x => x.cbg.id).Distinct().Count(),
@@ -69,6 +71,11 @@ namespace PortalWeb_API.Controllers
                         };
             var Datos = query.ToList();
             return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -83,7 +90,9 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerClienteSelect")]
         public IActionResult ObtenerClienteSelect()
         {
-            var Datos = from cl in _context.Clientes.AsNoTracking()
+            try
+            {
+                var Datos = from cl in _context.Clientes.AsNoTracking()
                         select new
                         {
                             cl.id,
@@ -91,6 +100,11 @@ namespace PortalWeb_API.Controllers
                             cl.NombreCliente
                         };
             return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -105,22 +119,29 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerCuentaCliente/{CodCliente}")]
         public IActionResult ObtenerCuentaCliente(string CodCliente)
         {
-            var Datos = from cli in _context.Clientes.AsNoTracking()
-                        join cb in _context.cuentas_bancarias.AsNoTracking() on cli.CodigoCliente equals cb.CodigoCliente
-                        where cli.CodigoCliente == CodCliente
-                        select new
-                        {
-                            cb.id,
-                            ClienteID = cli.id,
-                            cb.CodigoCliente,
-                            cb.codcuentacontable,
-                            cb.nombanco,
-                            cb.numerocuenta,
-                            cb.TipoCuenta,
-                            cb.Observacion,
-                            cb.fecrea
-                        };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from cli in _context.Clientes.AsNoTracking()
+                            join cb in _context.cuentas_bancarias.AsNoTracking() on cli.CodigoCliente equals cb.CodigoCliente
+                            where cli.CodigoCliente == CodCliente
+                            select new
+                            {
+                                cb.id,
+                                ClienteID = cli.id,
+                                cb.CodigoCliente,
+                                cb.codcuentacontable,
+                                cb.nombanco,
+                                cb.numerocuenta,
+                                cb.TipoCuenta,
+                                cb.Observacion,
+                                cb.fecrea
+                            };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -134,14 +155,21 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GuardarCliente")]
         public async Task<IActionResult> GuardarCliente([FromBody] Clientes model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _context.Clientes.AddAsync(model);
-                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                if (ModelState.IsValid)
+                {
+                    await _context.Clientes.AddAsync(model);
+                    return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 
@@ -156,10 +184,17 @@ namespace PortalWeb_API.Controllers
         [HttpPut("ActualizarCliente")]
         public async Task<IActionResult> ActualizarClienteAsync([FromBody] Clientes model)
         {
-            _context.Attach(model);
-            _context.Entry(model).State = EntityState.Modified;
-            _context.Entry(model).Property(nameof(model.id)).IsModified = false;
-            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            try
+            {
+                _context.Attach(model);
+                _context.Entry(model).State = EntityState.Modified;
+                _context.Entry(model).Property(nameof(model.id)).IsModified = false;
+                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -173,10 +208,17 @@ namespace PortalWeb_API.Controllers
         [HttpDelete("BorrarCliente/{id}")]
         public IActionResult BorrarCliente(int id)
         {
-            var delete = _context.Clientes
-                           .Where(b => b.id.Equals(id))
-                           .ExecuteDelete();
-            return (delete != 0) ? Ok() : BadRequest();
+            try
+            {
+                var delete = _context.Clientes
+                               .Where(b => b.id.Equals(id))
+                               .ExecuteDelete();
+                return (delete != 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

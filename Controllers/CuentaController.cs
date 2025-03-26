@@ -36,14 +36,21 @@ namespace PortalWeb_API.Controllers
         [HttpGet("NTransacciones/{id}")]
         public IActionResult ObtenerCuentasBancarias(int id)
         {
-            var Datos = (from cb in _context.cuentas_bancarias.AsNoTracking()
-                         join cs in _context.cuentaSignaTienda.AsNoTracking() on cb.id equals cs.idcuentabancaria
-                         join t in _context.Tiendas.AsNoTracking() on cs.idtienda equals t.CodigoTienda
-                         join e in _context.Equipos.AsNoTracking() on t.id equals e.codigoTiendaidFk
-                         join d in _context.Depositos.AsNoTracking() on e.serieEquipo equals d.Machine_Sn
-                         where cb.id.Equals(id)
-                         select d.Transaccion_No).IsNullOrEmpty();
-            return Ok(!Datos);
+            try
+            {
+                var Datos = (from cb in _context.cuentas_bancarias.AsNoTracking()
+                             join cs in _context.cuentaSignaTienda.AsNoTracking() on cb.id equals cs.idcuentabancaria
+                             join t in _context.Tiendas.AsNoTracking() on cs.idtienda equals t.CodigoTienda
+                             join e in _context.Equipos.AsNoTracking() on t.id equals e.codigoTiendaidFk
+                             join d in _context.Depositos.AsNoTracking() on e.serieEquipo equals d.Machine_Sn
+                             where cb.id.Equals(id)
+                             select d.Transaccion_No).IsNullOrEmpty();
+                return Ok(!Datos);
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -57,14 +64,21 @@ namespace PortalWeb_API.Controllers
         [HttpPost("GuardarCuenta")]
         public async Task<IActionResult> GuardarCuenta([FromBody] cuentas_bancarias model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _context.cuentas_bancarias.AddAsync(model);
-                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                if (ModelState.IsValid)
+                {
+                    await _context.cuentas_bancarias.AddAsync(model);
+                    return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
+            catch (Exception)
             {
-                return BadRequest();
+                return Problem("Ocurrió un error interno", statusCode: 500);
             }
         }
 
@@ -79,10 +93,17 @@ namespace PortalWeb_API.Controllers
         [HttpPut("ActualizarCuenta")]
         public async Task<IActionResult> ActualizarCuentaAsync([FromBody] cuentas_bancarias model)
         {
-            _context.Attach(model);
-            _context.Entry(model).State = EntityState.Modified;
-            _context.Entry(model).Property(nameof(model.id)).IsModified = false;
-            return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            try
+            {
+                _context.Attach(model);
+                _context.Entry(model).State = EntityState.Modified;
+                _context.Entry(model).Property(nameof(model.id)).IsModified = false;
+                return (await _context.SaveChangesAsync() > 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -96,10 +117,17 @@ namespace PortalWeb_API.Controllers
         [HttpDelete("BorrarCuenta/{id}")]
         public IActionResult BorrarCuenta(int id)
         {
-            var delete = _context.cuentas_bancarias
-                           .Where(b => b.id.Equals(id))
-                           .ExecuteDelete();
-            return (delete != 0) ? Ok() : BadRequest();
+            try
+            {
+                var delete = _context.cuentas_bancarias
+                               .Where(b => b.id.Equals(id))
+                               .ExecuteDelete();
+                return (delete != 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

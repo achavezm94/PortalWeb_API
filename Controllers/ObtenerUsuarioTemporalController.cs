@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
@@ -35,11 +36,18 @@ namespace PortalWeb_API.Controllers
         [HttpGet("Usuario/{ip}")]
         public IActionResult ObtenerUsuarioTemporal(string ip)
         {
-            var Datos = from ut in _context.UsuariosTemporales.AsNoTracking()
-                        where ut.IpMachineSolicitud.Equals(ip) && ut.Active.Equals("A")
-                        select new { ut.id, ut.Usuario, ut.IpMachineSolicitud, ut.fecrea };
-            return (Datos != null) ? Ok(Datos) : NotFound();
-        }
+            try
+            {
+                var Datos = from ut in _context.UsuariosTemporales.AsNoTracking()
+                            where ut.IpMachineSolicitud.Equals(ip) && ut.Active.Equals("A")
+                            select new { ut.id, ut.Usuario, ut.IpMachineSolicitud, ut.fecrea };
+                return (Datos != null) ? Ok(Datos) : NotFound();            
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+    }
+}
 
         /// <summary>
         /// Borrar un usuario temporal.
@@ -52,11 +60,18 @@ namespace PortalWeb_API.Controllers
         [HttpGet("UsuarioDelete/{id}")]
         public IActionResult BorrarUsuarioTemporal([FromRoute] int id)
         {
-            var update = _context.UsuariosTemporales
-                           .Where(u => u.id.Equals(id))
-                           .ExecuteUpdate(u => u
-                           .SetProperty(u => u.Active, "F"));
-            return (update != 0) ? Ok() : BadRequest();
+            try
+            {
+                var update = _context.UsuariosTemporales
+                               .Where(u => u.id.Equals(id))
+                               .ExecuteUpdate(u => u
+                               .SetProperty(u => u.Active, "F"));
+                return (update != 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

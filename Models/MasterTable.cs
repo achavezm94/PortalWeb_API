@@ -39,7 +39,7 @@ namespace PortalWeb_API.Models
         public string sgrupo { get; set; }
         [StringLength(30)]
         [Unicode(false)]
-        public string campo2 { get; set; }
+        public string codigoLocalidadBanco { get; set; }
         [Column(TypeName = "decimal(2, 0)")]
         public decimal lencod { get; set; }
         [Column(TypeName = "decimal(16, 2)")]

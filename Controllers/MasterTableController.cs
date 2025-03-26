@@ -35,16 +35,23 @@ namespace PortalWeb_API.Controllers
         [HttpGet("GetDataMaster/{mast}")]
         public IActionResult GetDataMaster([FromRoute] string mast)
         {
-            var Datos = from m in _context.MasterTable.AsNoTracking()
-                        where m.master.Equals(mast)
-                        group m by new { m.master, m.codigo, m.nombre } into g
-                        select new
-                        {
-                            master = g.Key.master.Trim(),
-                            codigo = g.Key.codigo.Trim(),
-                            nombre = g.Key.nombre.Trim()
-                        };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from m in _context.MasterTable.AsNoTracking()
+                            where m.master.Equals(mast)
+                            group m by new { m.master, m.codigo, m.nombre } into g
+                            select new
+                            {
+                                master = g.Key.master.Trim(),
+                                codigo = g.Key.codigo.Trim(),
+                                nombre = g.Key.nombre.Trim()
+                            };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -59,16 +66,23 @@ namespace PortalWeb_API.Controllers
         [HttpGet("GetTipoEquipo")]
         public IActionResult GetTipoEquipo()
         {
-            var Datos = from m in _context.MasterTable.AsNoTracking()
-                        where m.master.Equals("MQT") && (m.codigo == "009" || m.codigo == "012")
-                        group m by new { m.master, m.codigo, m.nombre } into g
-                        select new
-                        {
-                            master = g.Key.master.Trim(),
-                            codigo = g.Key.codigo.Trim(),
-                            nombre = g.Key.nombre.Trim()
-                        };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from m in _context.MasterTable.AsNoTracking()
+                            where m.master.Equals("MQT") && (m.codigo == "009" || m.codigo == "012")
+                            group m by new { m.master, m.codigo, m.nombre } into g
+                            select new
+                            {
+                                master = g.Key.master.Trim(),
+                                codigo = g.Key.codigo.Trim(),
+                                nombre = g.Key.nombre.Trim()
+                            };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -83,14 +97,70 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerDatamasterLocalidades/{codCliente}")]
         public IActionResult ObtenerDatamasterLocalidades([FromRoute] string codCliente)
         {
-            var Datos = from t in _context.MasterTable.AsNoTracking()
-                        where t.master.Equals("CCAN") && !(
-                                                            from l in _context.ClienteSignaLocalidad
-                                                            where l.codigoCiente == codCliente
-                                                            select l.codigo
-                                                           ).Contains(t.codigo)
-                        select new { Master = t.master.Trim(), Codigo = t.codigo.Trim(), Nombre = t.nombre.Trim() };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from t in _context.MasterTable.AsNoTracking()
+                            where t.master.Equals("CCAN") && !(
+                                                                from l in _context.ClienteSignaLocalidad
+                                                                where l.codigoCiente == codCliente
+                                                                select l.codigo
+                                                               ).Contains(t.codigo)
+                            select new { Master = t.master.Trim(), Codigo = t.codigo.Trim(), Nombre = t.nombre.Trim() };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene todas las localidades de la tabla Master para modificar el codigolocalidadbanco (campo2).
+        /// </summary>
+        /// <returns>Lista de localidades que existen en Master.</returns>
+        /// <response code="200">Se devuelve todas las localidades existentes en dataMaster.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
+        [Authorize(Policy = "Nivel1")]
+        [HttpGet("ObtenerLocalidades")]
+        public IActionResult ObtenerLocalidades()
+        {
+            try
+            {
+                var Datos = from t in _context.MasterTable.AsNoTracking()
+                            where t.master.Equals("CCAN")
+                            select new { Codigo = t.codigo.Trim(), Nombre = t.nombre.Trim(), t.codigoLocalidadBanco };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// Actualiza informacion de el codigo localidad del banco especifica.
+        /// </summary>
+        /// <response code="200">Actualizo correctamente el registro.</response>
+        /// <response code="401">Es necesario iniciar sesión.</response>
+        /// <response code="403">Acceso denegado, permisos insuficientes.</response>
+        /// <response code="500">Si ocurre un error en el servidor.</response>
+        [Authorize(Policy = "Nivel1")]
+        [HttpPut("ActualizarLocalidad/{codigo}/{codigoLocalidad}")]
+        public async Task<IActionResult> ActualizarLocalidadAsync([FromRoute] string codigo, [FromRoute]  string codigoLocalidad)
+        {
+            try
+            {
+                var affectedRows = await _context.MasterTable
+                                           .Where(u => u.codigo == codigo)
+                                           .ExecuteUpdateAsync(u => u.SetProperty(p => p.codigoLocalidadBanco, codigoLocalidad));
+                return affectedRows > 0 ? Ok() : NotFound("Registro no encontrado");
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }          
         }
     }
 }

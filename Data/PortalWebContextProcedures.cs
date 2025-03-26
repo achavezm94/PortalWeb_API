@@ -35,6 +35,7 @@ namespace PortalWeb_API.Data
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<SP_ConsolidadoCajasResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_EquiposNoTransaccionesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaComisariatoResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<SP_FiltroPorFechaTransaccionesResult>().HasNoKey().ToView(null);
@@ -48,6 +49,33 @@ namespace PortalWeb_API.Data
         public PortalWebContextProcedures(PortalWebContext context)
         {
             _context = context;
+        }
+
+        public virtual async Task<List<SP_ConsolidadoCajasResult>> SP_ConsolidadoCajasAsync(string tipo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "tipo",
+                    Size = 2,
+                    Value = tipo ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<SP_ConsolidadoCajasResult>("EXEC @returnValue = [dbo].[SP_ConsolidadoCajas] @tipo = @tipo", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
         }
 
         public virtual async Task<List<SP_EquiposNoTransaccionesResult>> SP_EquiposNoTransaccionesAsync(DateTime? fechaInicial, DateTime? fechaFinal, int? opcion, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)

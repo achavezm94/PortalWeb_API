@@ -35,11 +35,19 @@ namespace PortalWeb_API.Controllers
         [HttpGet("ObtenerTiendaCuentas/{id}")]
         public IActionResult ObtenerTiendaCuentas([FromRoute] string id)
         {
-            var Datos = from otc in _context.cuentaSignaTienda.AsNoTracking()
-                        join ct in _context.cuentas_bancarias.AsNoTracking() on otc.idcuentabancaria equals ct.id
-                        where otc.idtienda == id
-                        select new { otc.idcuentabancaria, ct.nombanco, ct.numerocuenta, otc.id, ct.TipoCuenta, ct.Observacion };
-            return (Datos != null) ? Ok(Datos) : NotFound();
+            try
+            {
+                var Datos = from otc in _context.cuentaSignaTienda.AsNoTracking()
+                            join ct in _context.cuentas_bancarias.AsNoTracking() on otc.idcuentabancaria equals ct.id
+                            where otc.idtienda == id
+                            select new { otc.idcuentabancaria, ct.nombanco, ct.numerocuenta, otc.id, ct.TipoCuenta, ct.Observacion };
+                return (Datos != null) ? Ok(Datos) : NotFound();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
+
         }
 
         /// <summary>
@@ -53,10 +61,17 @@ namespace PortalWeb_API.Controllers
         [HttpDelete("BorrarCuentaTienda/{id}")]
         public IActionResult BorrarCuentaTienda([FromRoute] int id)
         {
-            var delete = _context.cuentaSignaTienda
-                          .Where(b => b.id.Equals(id))
-                          .ExecuteDelete();
-            return (delete != 0) ? Ok() : BadRequest();
+            try
+            {
+                var delete = _context.cuentaSignaTienda
+                              .Where(b => b.id.Equals(id))
+                              .ExecuteDelete();
+                return (delete != 0) ? Ok() : BadRequest();
+            }
+            catch (Exception)
+            {
+                return Problem("Ocurrió un error interno", statusCode: 500);
+            }
         }
     }
 }

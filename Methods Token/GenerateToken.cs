@@ -31,7 +31,7 @@ namespace PortalWeb_API.Methods_Token
                 jwt.Audience,
                 claims,
                 expires: tokenExpiration,
-                signingCredentials: singIn);            
+                signingCredentials: singIn);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
