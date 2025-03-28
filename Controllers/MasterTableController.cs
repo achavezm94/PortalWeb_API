@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PortalWeb_API.Data;
+using PortalWeb_API.Models;
 using System.Data;
 
 namespace PortalWeb_API.Controllers
@@ -130,7 +132,7 @@ namespace PortalWeb_API.Controllers
             {
                 var Datos = from t in _context.MasterTable.AsNoTracking()
                             where t.master.Equals("CCAN")
-                            select new { Codigo = t.codigo.Trim(), Nombre = t.nombre.Trim(), t.codigoLocalidadBanco };
+                            select new { Codigo = t.codigo.Trim(), Nombre = t.nombre.Trim(), codigoLocalidadBanco =  t.codigoLocalidadBanco.Trim() };
                 return (Datos != null) ? Ok(Datos) : NotFound();
             }
             catch (Exception)
@@ -147,20 +149,34 @@ namespace PortalWeb_API.Controllers
         /// <response code="403">Acceso denegado, permisos insuficientes.</response>
         /// <response code="500">Si ocurre un error en el servidor.</response>
         [Authorize(Policy = "Nivel1")]
-        [HttpPut("ActualizarLocalidad/{codigo}/{codigoLocalidad}")]
-        public async Task<IActionResult> ActualizarLocalidadAsync([FromRoute] string codigo, [FromRoute]  string codigoLocalidad)
+        [HttpPut("ActualizarLocalidad")]
+        public async Task<IActionResult> ActualizarLocalidadAsync([FromBody] ActualizarCodigoLocalidad actualizarCodigoLocalidad)
         {
             try
             {
+                bool existeDuplicado = await _context.MasterTable
+                    .AnyAsync(u =>
+                        u.codigoLocalidadBanco == actualizarCodigoLocalidad.codigoLocalidad
+                        && u.codigo != actualizarCodigoLocalidad.codigo
+                    );
+
+                if (existeDuplicado)
+                {
+                    return Ok(new {respuesta = "Repetido"});
+                }
+
                 var affectedRows = await _context.MasterTable
-                                           .Where(u => u.codigo == codigo)
-                                           .ExecuteUpdateAsync(u => u.SetProperty(p => p.codigoLocalidadBanco, codigoLocalidad));
+                    .Where(u => u.codigo == actualizarCodigoLocalidad.codigo)
+                    .ExecuteUpdateAsync(u => u
+                        .SetProperty(p => p.codigoLocalidadBanco, actualizarCodigoLocalidad.codigoLocalidad)
+                    );
+
                 return affectedRows > 0 ? Ok() : NotFound("Registro no encontrado");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Problem("Ocurrió un error interno", statusCode: 500);
-            }          
+                return Problem("Error interno: " + ex.Message, statusCode: 500);
+            }
         }
     }
 }
