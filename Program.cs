@@ -9,6 +9,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.WebHost.UseUrls("http://192.168.55.37:9095");
+
 // Add services to the container.
 builder.Services.AddDbContext<PortalWebContext>(
         options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
@@ -107,7 +109,8 @@ builder.Services.AddCors(opt =>
         builder.WithOrigins(
         //"https://sfifront.azurewebsites.net"
         "http://192.168.55.34:2253",
-        "http://192.168.55.38:2253"
+        "http://192.168.55.38:2253",
+        "http://192.168.55.37:2253"
     )
    .AllowAnyHeader()
    .AllowAnyMethod()
@@ -123,7 +126,7 @@ var webSocketOptions = new WebSocketOptions
 //webSocketOptions.AllowedOrigins.Add("https://sfifront.azurewebsites.net");
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.34:2253");
 webSocketOptions.AllowedOrigins.Add("http://192.168.55.38:2253");
-
+webSocketOptions.AllowedOrigins.Add("http://192.168.55.37:2253");
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
